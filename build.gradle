@@ -20,13 +20,13 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-minecraft.coreMod = "eutros.fsd.asm.ASMRPlugin"
-
 jar {
+    /*
     manifest {
-        attributes "FMLCorePlugin": "eutros.fsd.asm.ASMRPlugin"
+        attributes "FMLCorePlugin": "${group}.asm.ASMRPlugin"
         attributes "FMLCorePluginContainsFMLMod": true
     }
+    */
 
     from sourceSets.main.output
     from sourceSets.api.output
@@ -58,10 +58,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
-    compileOnly "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
-    runtimeOnly "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
-    runtimeOnly "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
+    compile "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
+    compile "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
+    runtime "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
+    runtime "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
 }
 
 processResources {

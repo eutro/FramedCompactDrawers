@@ -9,10 +9,9 @@ import net.minecraftforge.fml.common.ModMetadata;
 @SuppressWarnings("unused")
 public class FCDContainer extends DummyModContainer {
 
-    public FCDContainer() {
-        super(new ModMetadata());
-        ModMetadata meta = getMetadata(); // Thanks java requiring super to be first
+    private static final ModMetadata meta = new ModMetadata();
 
+    static {
         meta.version = "1.0.0";
         meta.modId = "framedcompactdrawers";
         meta.name = "Framed-Corempacting-Drawers";
@@ -20,6 +19,10 @@ public class FCDContainer extends DummyModContainer {
         meta.description = "Don't mind me, just a little coremod used by Framed Compacting Drawers!";
         meta.screenshots = new String[0];
         meta.logoFile = "";
+    }
+
+    public FCDContainer() {
+        super(meta);
     }
 
     @Override
