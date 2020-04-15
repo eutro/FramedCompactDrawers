@@ -1,0 +1,84 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+version = "${mod_version}"
+group = "eutros.fcd" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "${mod_id}"
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft.coreMod = "eutros.fsd.asm.ASMRPlugin"
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "eutros.fsd.asm.ASMRPlugin"
+        attributes "FMLCorePluginContainsFMLMod": true
+    }
+
+    from sourceSets.main.output
+    from sourceSets.api.output
+}
+
+minecraft {
+    version = "${mc_version}-${forge_version}"
+    runDir = "run"
+
+    mappings = "snapshot_20170925"
+
+    useDepAts = true
+    makeObfSourceJar = false
+
+    if (project.hasProperty("mc_uuid")) {
+        clientRunArgs += ["--uuid", project.mc_uuid]
+    }
+
+    if (project.hasProperty("mc_username")) {
+        clientRunArgs += ["--username", project.mc_username]
+    }
+}
+
+repositories {
+    maven {
+        name = "storagedrawers"
+        url = "https://dl.bintray.com/jaquadro/dev/"
+    }
+}
+
+dependencies {
+    compileOnly "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
+    compileOnly "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
+    runtimeOnly "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
+    runtimeOnly "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}

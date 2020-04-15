@@ -1,0 +1,9 @@
+{
+    "parent": "framedcompactdrawers:block/drawer_orientable",
+    "textures": {
+        "top": "framedcompactdrawers:blocks/drawers_comp_raw_side",
+        "front": "framedcompactdrawers:blocks/drawers_comp_raw_front_0",
+        "side": "framedcompactdrawers:blocks/drawers_comp_raw_side",
+        "trim": "framedcompactdrawers:blocks/drawers_comp_raw_side"
+    }
+}

@@ -1,0 +1,35 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+/config/
+/crash-reports/
+/logs/
+/saves/
+/world/
+/banned-ips.json
+/banned-players.json
+/ops.json
+/options.txt
+/server.properties
+/usercache.json
+/usernamecache.json
+/whitelist.json
