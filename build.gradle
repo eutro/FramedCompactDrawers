@@ -21,13 +21,6 @@ compileJava {
 }
 
 jar {
-    /*
-    manifest {
-        attributes "FMLCorePlugin": "${group}.asm.ASMRPlugin"
-        attributes "FMLCorePluginContainsFMLMod": true
-    }
-    */
-
     from sourceSets.main.output
     from sourceSets.api.output
 }
