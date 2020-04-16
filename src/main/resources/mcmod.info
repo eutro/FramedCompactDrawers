@@ -1,17 +1,22 @@
 [
-{
-  "modid": "framedcompactdrawers",
-  "name": "Framed Compacting Drawers",
-  "description": "Adds a framed version of the Compacting Drawers from the Storage Drawers mod.",
-  "version": "1.0.0",
-  "mcversion": "1.12.2",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["Eutros"],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": [],
-  "requiredMods": ["storagedrawers", "chameleon"]
-}
+  {
+    "modid": "framedcompactdrawers",
+    "name": "Framed Compacting Drawers",
+    "description": "Adds a framed version of the Compacting Drawers from the Storage Drawers mod.",
+    "version": "1.0.0",
+    "mcversion": "1.12.2",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Eutros"
+    ],
+    "credits": "",
+    "logoFile": "logo.png",
+    "screenshots": [],
+    "dependencies": [],
+    "requiredMods": [
+      "storagedrawers",
+      "chameleon"
+    ]
+  }
 ]
