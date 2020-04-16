@@ -8,7 +8,7 @@ import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
-import eutros.fcd.FramedCompactDrawers;
+import eutros.fcd.FCDCreativeTab;
 import eutros.fcd.item.ItemCustomDrawersComp;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
@@ -48,7 +48,7 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "blockState");
         setDefaultState(blockState.getBaseState().withProperty(SLOTS, EnumCompDrawer.OPEN3).withProperty(FACING, EnumFacing.NORTH));
         setUnlocalizedName("framedcompactdrawers.framed_compact_drawer");
-        setCreativeTab(FramedCompactDrawers.tab);
+        setCreativeTab(FCDCreativeTab.tab);
     }
 
     @Nonnull
@@ -165,7 +165,6 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         return false; // again, super doing funky stuff
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public IBlockState getActualState (IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(world, pos);
@@ -210,7 +209,7 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         if (StorageDrawers.config.cache.keepContentsOnBreak) {
             for (int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
                 IDrawer drawer = tile.getGroup().getDrawer(i);
-                if (drawer != null && !drawer.isEmpty())
+                if (!drawer.isEmpty())
                     hasContents = true;
             }
             for (int i = 0; i < tile.upgrades().getSlotCount(); i++) {

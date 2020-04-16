@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
-version = "${mod_version}"
+version = "${major}.${minor}.${patch}"
 group = "eutros.fcd" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "${mod_id}"
 
@@ -41,6 +41,8 @@ minecraft {
     if (project.hasProperty("mc_username")) {
         clientRunArgs += ["--username", project.mc_username]
     }
+
+    replace "GRADLE:VERSION", project.version
 }
 
 repositories {
