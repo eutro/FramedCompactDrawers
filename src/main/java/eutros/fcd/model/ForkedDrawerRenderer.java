@@ -100,7 +100,7 @@ public class ForkedDrawerRenderer {
         end();
     }
 
-    public void renderOverlayPass(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite trimShadow, TextureAtlasSprite handle, TextureAtlasSprite faceShadow) {
+    public void renderOverlayPass(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing direction, TextureAtlasSprite trimShadow, TextureAtlasSprite handle, TextureAtlasSprite faceShadow, TextureAtlasSprite disabledSlots) {
         start(state, direction);
 
         panelRenderer.setTrimIcon(trimShadow);
@@ -112,15 +112,18 @@ public class ForkedDrawerRenderer {
         renderHelper.setRenderBounds(trimWidth, trimWidth, trimDepth, lessThanHalf, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
+        renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, disabledSlots);
 
         renderHelper.setRenderBounds(trimWidth, moreThanHalf, trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
+        renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, disabledSlots);
         // extended top panel
 
         renderHelper.setRenderBounds(moreThanHalf, trimWidth, trimDepth, 1 - trimWidth, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
+        renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, disabledSlots);
         // removed fourth panel
 
         renderHelper.setRenderBounds(trimWidth, lessThanHalf, trimDepth, lessThanHalf, moreThanHalf, 1);

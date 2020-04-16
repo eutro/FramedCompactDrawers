@@ -45,30 +45,28 @@ public class CustomDrawersCompModel extends ChamModel {
         public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_side");
 
         public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_0"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_1"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_3"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_1"),
         };
-        public static final ResourceLocation[] iconOverlayTrim = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_1"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_4"),
+
+        public static final ResourceLocation[] iconDisabledOverlay = new ResourceLocation[] {
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1"),
         };
-        public static final ResourceLocation[] iconOverlayBoldTrim = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_1"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_4"),
-        };
-        public static final ResourceLocation[] iconOverlayFace = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_1"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_4"),
-        };
-        public static final ResourceLocation[] iconOverlayHandle = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_1"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_4"),
-        };
+
+        public static final ResourceLocation iconOverlayTrim =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim");
+
+        public static final ResourceLocation iconOverlayBoldTrim =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_bold_trim");
+
+        public static final ResourceLocation iconOverlayFace =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face");
+
+        public static final ResourceLocation iconOverlayHandle =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle");
 
         public Register() {
             super(ModBlocks.framedCompactDrawer);
@@ -100,18 +98,17 @@ public class CustomDrawersCompModel extends ChamModel {
         @Override
         public List<ResourceLocation> getTextureResources() {
             List<ResourceLocation> resource = new ArrayList<>();
-            resource.add(iconDefaultSide);
             resource.addAll(Arrays.asList(iconDefaultFront));
-            resource.addAll(Arrays.asList(iconOverlayTrim));
-            resource.addAll(Arrays.asList(iconOverlayBoldTrim));
-            resource.addAll(Arrays.asList(iconOverlayFace));
-            resource.addAll(Arrays.asList(iconOverlayHandle));
+            resource.addAll(Arrays.asList(iconDisabledOverlay));
+            resource.add(iconDefaultSide);
+            resource.add(iconOverlayTrim);
+            resource.add(iconOverlayBoldTrim);
+            resource.add(iconOverlayFace);
+            resource.add(iconOverlayHandle);
             return resource;
         }
 
     }
-
-    private static final int[] iconIndex = new int[] {0, 0, 1, 0, 2};
 
     private TextureAtlasSprite iconParticle;
 
@@ -119,9 +116,9 @@ public class CustomDrawersCompModel extends ChamModel {
         if(!(state instanceof IExtendedBlockState))
             return new CustomDrawersCompModel(state, false);
 
-        IExtendedBlockState xstate = (IExtendedBlockState) state;
-        DrawerStateModelData stateModel = xstate.getValue(BlockDrawers.STATE_MODEL);
-        MaterialModelData matModel = xstate.getValue(BlockDrawersCustom.MAT_MODEL);
+        IExtendedBlockState xState = (IExtendedBlockState) state;
+        DrawerStateModelData stateModel = xState.getValue(BlockDrawers.STATE_MODEL);
+        MaterialModelData matModel = xState.getValue(BlockDrawersCustom.MAT_MODEL);
         if(stateModel == null || matModel == null)
             return new CustomDrawersCompModel(state, false);
 
@@ -178,8 +175,8 @@ public class CustomDrawersCompModel extends ChamModel {
 
     @Override
     protected void renderMippedLayer(ChamRender renderer, IBlockState state, Object... args) {
-        EnumCompDrawer info = state.getValue(CustomDrawersComp.SLOTS);
-        int index = iconIndex[info.getDrawerCount()];
+        EnumCompDrawer slots = state.getValue(CustomDrawersComp.SLOTS);
+        int index = 3 - slots.getOpenSlots();
 
         ItemStack itemFront = (ItemStack) args[0];
         ItemStack itemSide = (ItemStack) args[1];
@@ -209,11 +206,12 @@ public class CustomDrawersCompModel extends ChamModel {
 
     @Override
     protected void renderTransLayer(ChamRender renderer, IBlockState state, Object... args) {
-        EnumCompDrawer info = state.getValue(CustomDrawersComp.SLOTS);
-        int index = iconIndex[info.getDrawerCount()];
+        EnumCompDrawer slots = state.getValue(CustomDrawersComp.SLOTS);
+        int index = 3 - slots.getOpenSlots();
 
-        TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace[index]);
-        TextureAtlasSprite iconOverlayHandle = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayHandle[index]);
+        TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
+        TextureAtlasSprite iconOverlayHandle = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayHandle);
+        TextureAtlasSprite iconOverlayDisabled = Chameleon.instance.iconRegistry.getIcon(Register.iconDisabledOverlay[index]);
 
         ItemStack itemTrim = (ItemStack) args[5];
 
@@ -221,12 +219,12 @@ public class CustomDrawersCompModel extends ChamModel {
         TextureAtlasSprite iconOverlayTrim;
 
         if(iconTrim == null)
-            iconOverlayTrim = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayBoldTrim[index]);
+            iconOverlayTrim = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayBoldTrim);
         else
-            iconOverlayTrim = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayTrim[index]);
+            iconOverlayTrim = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayTrim);
 
         ForkedDrawerRenderer drawerRenderer = new ForkedDrawerRenderer(renderer);
-        drawerRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconOverlayTrim, iconOverlayHandle, iconOverlayFace);
+        drawerRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconOverlayTrim, iconOverlayHandle, iconOverlayFace, iconOverlayDisabled);
     }
 
     @Override
@@ -252,8 +250,8 @@ public class CustomDrawersCompModel extends ChamModel {
                 if(!(state instanceof IExtendedBlockState))
                     return mainModel;
 
-                IExtendedBlockState xstate = (IExtendedBlockState) state;
-                DrawerStateModelData stateModel = xstate.getValue(BlockDrawers.STATE_MODEL);
+                IExtendedBlockState xState = (IExtendedBlockState) state;
+                DrawerStateModelData stateModel = xState.getValue(BlockDrawers.STATE_MODEL);
 
                 try {
                     if(!DrawerDecoratorModel.shouldHandleState(stateModel))
@@ -262,7 +260,7 @@ public class CustomDrawersCompModel extends ChamModel {
                     EnumCompDrawer drawer = state.getValue(CustomDrawersComp.SLOTS);
                     EnumFacing dir = state.getValue(BlockDrawers.FACING);
 
-                    DrawerDecoratorModel decModel = new DrawerDecoratorModel(mainModel, xstate, drawer, dir, stateModel);
+                    DrawerDecoratorModel decModel = new DrawerDecoratorModel(mainModel, xState, drawer, dir, stateModel);
                     decModel.addBaseRenderLayer(BlockRenderLayer.TRANSLUCENT);
                     return decModel;
                 } catch(Throwable t) {
@@ -274,11 +272,6 @@ public class CustomDrawersCompModel extends ChamModel {
         }
 
         @Override
-        public TextureAtlasSprite getParticleTexture() {
-            return null;
-        }
-
-        @Override
         public ItemOverrideList getOverrides() {
             return itemHandler;
         }
@@ -287,9 +280,9 @@ public class CustomDrawersCompModel extends ChamModel {
         public List<Object> getKey(IBlockState state) {
             try {
                 List<Object> key = new ArrayList<>();
-                IExtendedBlockState xstate = (IExtendedBlockState) state;
-                key.add(xstate.getValue(BlockDrawers.STATE_MODEL));
-                key.add(xstate.getValue(BlockDrawersCustom.MAT_MODEL));
+                IExtendedBlockState xState = (IExtendedBlockState) state;
+                key.add(xState.getValue(BlockDrawers.STATE_MODEL));
+                key.add(xState.getValue(BlockDrawersCustom.MAT_MODEL));
 
                 return key;
             } catch(Throwable t) {
