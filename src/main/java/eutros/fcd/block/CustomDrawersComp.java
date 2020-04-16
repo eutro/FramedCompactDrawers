@@ -12,7 +12,6 @@ import eutros.fcd.FramedCompactDrawers;
 import eutros.fcd.item.ItemCustomDrawersComp;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -40,7 +39,6 @@ import javax.annotation.Nullable;
 
 public class CustomDrawersComp extends BlockDrawersCustom implements INetworked {
 
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyEnum<EnumCompDrawer> SLOTS = PropertyEnum.create("slots", EnumCompDrawer.class);
     private StatusModelData statusInfo;
 

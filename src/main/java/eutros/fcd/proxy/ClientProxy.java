@@ -1,5 +1,7 @@
 package eutros.fcd.proxy;
 
+import com.jaquadro.minecraft.chameleon.Chameleon;
+import com.jaquadro.minecraft.storagedrawers.client.model.CustomTrimModel;
 import eutros.fcd.registry.ModBlocks;
 import eutros.fcd.utils.Reference;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -23,5 +25,7 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(ModBlocks.framedCompactDrawer), stack -> new ModelResourceLocation(Reference.MOD_ID + ":framed_compact_drawer", "inventory"));
 
         ModBlocks.framedCompactDrawer.initDynamic();
+
+        Chameleon.instance.modelRegistry.registerModel(new CustomTrimModel.Register());
     }
 }
