@@ -21,5 +21,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(ModBlocks.framedCompactDrawer), stack -> new ModelResourceLocation(Reference.MOD_ID + ":framed_compact_drawer", "inventory"));
+
+        ModBlocks.framedCompactDrawer.initDynamic();
     }
 }

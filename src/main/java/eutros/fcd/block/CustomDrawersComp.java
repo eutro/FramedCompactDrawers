@@ -1,19 +1,30 @@
 package eutros.fcd.block;
 
+import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
 import com.jaquadro.minecraft.storagedrawers.api.storage.INetworked;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
 import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
+import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
+import eutros.fcd.FramedCompactDrawers;
+import eutros.fcd.item.ItemCustomDrawersComp;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -31,12 +42,15 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
 
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyEnum<EnumCompDrawer> SLOTS = PropertyEnum.create("slots", EnumCompDrawer.class);
+    private StatusModelData statusInfo;
 
     public CustomDrawersComp() {
         super("framedcompactdrawers:framed_compact_drawer", "framedcompactdrawers.framed_compact_drawer");
         // I can't be bothered to make an AT.
         ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "blockState");
         setDefaultState(blockState.getBaseState().withProperty(SLOTS, EnumCompDrawer.OPEN3).withProperty(FACING, EnumFacing.NORTH));
+        setUnlocalizedName("framedcompactdrawers.framed_compact_drawer");
+        setCreativeTab(FramedCompactDrawers.tab);
     }
 
     @Nonnull
@@ -73,6 +87,37 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
             return 1;
         else
             return 2;
+    }
+
+    @Override
+    public int getDrawerCount(IBlockState state) {
+        return 3;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void initDynamic () {
+        ResourceLocation location = new ResourceLocation(StorageDrawers.MOD_ID + ":models/dynamic/compDrawers.json");
+        statusInfo = new StatusModelData(3, location);
+    }
+
+    @Override
+    public StatusModelData getStatusInfo (IBlockState state) {
+        return statusInfo;
+    }
+
+    @Override
+    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+        list.add(new ItemStack(this));
+    }
+
+    @Override
+    public boolean onBlockActivated (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileEntityDrawers tile = getTileEntity(world, pos);
+        if (tile != null && tile.material().getSide().isEmpty())
+            return false;
+
+        return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
     /**
@@ -117,6 +162,11 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         return !blockAccess.getBlockState(pos.offset(side)).doesSideBlockRendering(blockAccess, pos.offset(side), side.getOpposite());
     }
 
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        return false; // again, super doing funky stuff
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public IBlockState getActualState (IBlockState state, IBlockAccess world, BlockPos pos) {
@@ -141,6 +191,44 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
     @Override
     public TileEntityDrawers createNewTileEntity(World worldIn, int meta) {
         return new TileEntityDrawersComp();
+    }
+
+    @Override
+    @Nonnull
+    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+        TileEntityDrawers tile = getTileEntity(world, pos);
+        if (tile == null)
+            return ItemCustomDrawersComp.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
+
+        ItemStack drop = ItemCustomDrawersComp.makeItemStack(state, 1, tile.material().getSide(), tile.material().getTrim(), tile.material().getFront());
+        if (drop.isEmpty())
+            return ItemStack.EMPTY;
+
+        NBTTagCompound data = drop.getTagCompound();
+        if (data == null)
+            data = new NBTTagCompound();
+
+        boolean hasContents = false;
+        if (StorageDrawers.config.cache.keepContentsOnBreak) {
+            for (int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
+                IDrawer drawer = tile.getGroup().getDrawer(i);
+                if (drawer != null && !drawer.isEmpty())
+                    hasContents = true;
+            }
+            for (int i = 0; i < tile.upgrades().getSlotCount(); i++) {
+                if (!tile.upgrades().getUpgrade(i).isEmpty())
+                    hasContents = true;
+            }
+        }
+
+        if (tile.isSealed() || (StorageDrawers.config.cache.keepContentsOnBreak && hasContents)) {
+            NBTTagCompound tiledata = new NBTTagCompound();
+            tile.writeToNBT(tiledata);
+            data.setTag("tile", tiledata);
+        }
+
+        drop.setTagCompound(data);
+        return drop;
     }
 
 }

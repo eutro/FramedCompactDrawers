@@ -2,6 +2,7 @@ package eutros.fcd;
 
 import eutros.fcd.proxy.CommonProxy;
 import eutros.fcd.utils.Reference;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -30,6 +31,8 @@ public class FramedCompactDrawers {
 
 	@Instance(Reference.MOD_ID)
 	public static FramedCompactDrawers instance;
+
+	public static final CreativeTabs tab = new FCDCreativeTab("framed_compacting_drawers");
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
