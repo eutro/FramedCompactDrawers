@@ -53,8 +53,6 @@ repositories {
 dependencies {
     deobfCompile "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
     deobfCompile "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
-    runtime "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
-    runtime "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
 }
 
 processResources {

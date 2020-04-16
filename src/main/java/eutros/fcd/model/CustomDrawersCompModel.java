@@ -8,7 +8,6 @@ import com.jaquadro.minecraft.chameleon.model.ProxyBuilderModel;
 import com.jaquadro.minecraft.chameleon.render.ChamRender;
 import com.jaquadro.minecraft.chameleon.resources.IconUtil;
 import com.jaquadro.minecraft.chameleon.resources.register.DefaultRegister;
-import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
 import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
@@ -16,9 +15,9 @@ import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelDat
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.MaterialModelData;
 import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerDecoratorModel;
 import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerSealedModel;
-import com.jaquadro.minecraft.storagedrawers.client.model.dynamic.CommonDrawerRenderer;
 import eutros.fcd.block.CustomDrawersComp;
 import eutros.fcd.registry.ModBlocks;
+import eutros.fcd.utils.Reference;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
@@ -41,38 +40,34 @@ import java.util.List;
 
 public class CustomDrawersCompModel extends ChamModel {
 
-    public CustomDrawersCompModel(IBlockState state, boolean mergeLayers, Object... args) {
-        super(state, mergeLayers, args);
-    }
-
     public static class Register extends DefaultRegister<CustomDrawersComp> {
 
-        public static final ResourceLocation iconDefaultSide = new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_side");
+        public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_side");
 
         public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_1"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_2"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/drawers_raw_front_4"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_0"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_1"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_front_2"),
         };
         public static final ResourceLocation[] iconOverlayTrim = new ResourceLocation[] {
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_1"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_2"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_trim_4"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_1"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim_4"),
         };
         public static final ResourceLocation[] iconOverlayBoldTrim = new ResourceLocation[] {
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_1"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_2"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_boldtrim_4"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_1"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_boldtrim_4"),
         };
         public static final ResourceLocation[] iconOverlayFace = new ResourceLocation[] {
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_1"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_2"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/shading_face_4"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_1"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face_4"),
         };
         public static final ResourceLocation[] iconOverlayHandle = new ResourceLocation[] {
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_1"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_2"),
-                new ResourceLocation(StorageDrawers.MOD_ID + ":blocks/overlay/handle_4"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_1"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle_4"),
         };
 
         public Register() {
@@ -83,8 +78,11 @@ public class CustomDrawersCompModel extends ChamModel {
         public List<IBlockState> getBlockStates() {
             List<IBlockState> states = new ArrayList<>();
 
-            for(EnumFacing dir : EnumFacing.HORIZONTALS)
-                states.add(ModBlocks.framedCompactDrawer.getDefaultState().withProperty(BlockDrawers.FACING, dir));
+            for(EnumCompDrawer drawer : EnumCompDrawer.values())
+                for(EnumFacing dir : EnumFacing.HORIZONTALS)
+                    states.add(ModBlocks.framedCompactDrawer.getDefaultState()
+                            .withProperty(CustomDrawersComp.SLOTS, drawer)
+                            .withProperty(BlockDrawers.FACING, dir));
 
             return states;
         }
@@ -205,7 +203,7 @@ public class CustomDrawersCompModel extends ChamModel {
 
         iconParticle = iconSide;
 
-        CommonDrawerRenderer drawerRenderer = new CommonDrawerRenderer(renderer);
+        ForkedDrawerRenderer drawerRenderer = new ForkedDrawerRenderer(renderer);
         drawerRenderer.renderBasePass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconSide, iconTrim, iconFront);
     }
 
@@ -227,7 +225,7 @@ public class CustomDrawersCompModel extends ChamModel {
         else
             iconOverlayTrim = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayTrim[index]);
 
-        CommonDrawerRenderer drawerRenderer = new CommonDrawerRenderer(renderer);
+        ForkedDrawerRenderer drawerRenderer = new ForkedDrawerRenderer(renderer);
         drawerRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconOverlayTrim, iconOverlayHandle, iconOverlayFace);
     }
 
