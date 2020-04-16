@@ -44,7 +44,7 @@ public class BlockDrawersCustomComp extends BlockDrawersCustom implements INetwo
     public BlockDrawersCustomComp() {
         super("framedcompactdrawers:framed_compact_drawer", "framedcompactdrawers.framed_compact_drawer");
         // I can't be bothered to make an AT.
-        ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "blockState");
+        ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "field_176227_L"); // blockState
         setDefaultState(blockState.getBaseState().withProperty(SLOTS, EnumCompDrawer.OPEN3).withProperty(FACING, EnumFacing.NORTH));
         setUnlocalizedName("framedcompactdrawers.framed_compact_drawer");
         setCreativeTab(FCDCreativeTab.tab);
