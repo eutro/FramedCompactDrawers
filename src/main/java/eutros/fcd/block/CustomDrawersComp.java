@@ -78,10 +78,10 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
 
     @Override
     protected int getDrawerSlot(int drawerCount, int side, float hitX, float hitY, float hitZ) {
-        if (hitTop(hitY))
+        if(hitTop(hitY))
             return 0;
 
-        if (hitLeft(side, hitX, hitZ))
+        if(hitLeft(side, hitX, hitZ))
             return 1;
         else
             return 2;
@@ -94,25 +94,25 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void initDynamic () {
+    public void initDynamic() {
         ResourceLocation location = new ResourceLocation(StorageDrawers.MOD_ID + ":models/dynamic/compDrawers.json");
         statusInfo = new StatusModelData(3, location);
     }
 
     @Override
-    public StatusModelData getStatusInfo (IBlockState state) {
+    public StatusModelData getStatusInfo(IBlockState state) {
         return statusInfo;
     }
 
     @Override
-    public void getSubBlocks (CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         list.add(new ItemStack(this));
     }
 
     @Override
-    public boolean onBlockActivated (World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntityDrawers tile = getTileEntity(world, pos);
-        if (tile != null && tile.material().getSide().isEmpty())
+        if(tile != null && tile.material().getSide().isEmpty())
             return false;
 
         return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
@@ -127,32 +127,32 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         AxisAlignedBB axisalignedbb = blockState.getBoundingBox(blockAccess, pos);
         switch(side) {
             case DOWN:
-                if (axisalignedbb.minY > 0.0D) {
+                if(axisalignedbb.minY > 0.0D) {
                     return true;
                 }
                 break;
             case UP:
-                if (axisalignedbb.maxY < 1.0D) {
+                if(axisalignedbb.maxY < 1.0D) {
                     return true;
                 }
                 break;
             case NORTH:
-                if (axisalignedbb.minZ > 0.0D) {
+                if(axisalignedbb.minZ > 0.0D) {
                     return true;
                 }
                 break;
             case SOUTH:
-                if (axisalignedbb.maxZ < 1.0D) {
+                if(axisalignedbb.maxZ < 1.0D) {
                     return true;
                 }
                 break;
             case WEST:
-                if (axisalignedbb.minX > 0.0D) {
+                if(axisalignedbb.minX > 0.0D) {
                     return true;
                 }
                 break;
             case EAST:
-                if (axisalignedbb.maxX < 1.0D) {
+                if(axisalignedbb.maxX < 1.0D) {
                     return true;
                 }
         }
@@ -166,19 +166,19 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
     }
 
     @Override
-    public IBlockState getActualState (IBlockState state, IBlockAccess world, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntityDrawers tile = getTileEntity(world, pos);
-        if (tile == null)
+        if(tile == null)
             return state;
 
         EnumCompDrawer slots = EnumCompDrawer.OPEN1;
-        if (tile.getGroup().getDrawer(1).isEnabled())
+        if(tile.getGroup().getDrawer(1).isEnabled())
             slots = EnumCompDrawer.OPEN2;
-        if (tile.getGroup().getDrawer(2).isEnabled())
+        if(tile.getGroup().getDrawer(2).isEnabled())
             slots = EnumCompDrawer.OPEN3;
 
         EnumFacing facing = EnumFacing.getFront(tile.getDirection());
-        if (facing.getAxis() == EnumFacing.Axis.Y)
+        if(facing.getAxis() == EnumFacing.Axis.Y)
             facing = EnumFacing.NORTH;
 
         return state.withProperty(SLOTS, slots).withProperty(FACING, facing);
@@ -192,33 +192,40 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
 
     @Override
     @Nonnull
-    protected ItemStack getMainDrop (IBlockAccess world, BlockPos pos, IBlockState state) {
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         TileEntityDrawers tile = getTileEntity(world, pos);
-        if (tile == null)
+        if(tile == null)
             return ItemCustomDrawersComp.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
 
         ItemStack drop = ItemCustomDrawersComp.makeItemStack(state, 1, tile.material().getSide(), tile.material().getTrim(), tile.material().getFront());
-        if (drop.isEmpty())
+        if(drop.isEmpty())
             return ItemStack.EMPTY;
 
         NBTTagCompound data = drop.getTagCompound();
-        if (data == null)
+        if(data == null)
             data = new NBTTagCompound();
 
         boolean hasContents = false;
-        if (StorageDrawers.config.cache.keepContentsOnBreak) {
-            for (int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
-                IDrawer drawer = tile.getGroup().getDrawer(i);
-                if (!drawer.isEmpty())
-                    hasContents = true;
-            }
-            for (int i = 0; i < tile.upgrades().getSlotCount(); i++) {
-                if (!tile.upgrades().getUpgrade(i).isEmpty())
-                    hasContents = true;
+        withContents:
+        {
+            if(StorageDrawers.config.cache.keepContentsOnBreak) {
+                for(int i = 0; i < tile.getGroup().getDrawerCount(); i++) {
+                    IDrawer drawer = tile.getGroup().getDrawer(i);
+                    if(!drawer.isEmpty()) {
+                        hasContents = true;
+                        break withContents;
+                    }
+                }
+                for(int i = 0; i < tile.upgrades().getSlotCount(); i++) {
+                    if(!tile.upgrades().getUpgrade(i).isEmpty()) {
+                        hasContents = true;
+                        break withContents;
+                    }
+                }
             }
         }
 
-        if (tile.isSealed() || (StorageDrawers.config.cache.keepContentsOnBreak && hasContents)) {
+        if(tile.isSealed() || (StorageDrawers.config.cache.keepContentsOnBreak && hasContents)) {
             NBTTagCompound tiledata = new NBTTagCompound();
             tile.writeToNBT(tiledata);
             data.setTag("tile", tiledata);
