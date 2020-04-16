@@ -4,6 +4,6 @@ import net.minecraft.item.ItemStack;
 
 public interface IFrameable {
 
-    ItemStack framed(ItemStack frameable, ItemStack trim, ItemStack front, ItemStack side);
+    ItemStack framed(ItemStack frameable, ItemStack matSide, ItemStack matTrim, ItemStack matFront);
 
 }
