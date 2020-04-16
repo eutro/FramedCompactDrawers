@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
-public class ItemCustomDrawersComp extends ItemCustomDrawers {
+public class ItemDrawersCustomComp extends ItemCustomDrawers {
 
-    public ItemCustomDrawersComp(Block block) {
+    public ItemDrawersCustomComp(Block block) {
         super(block);
         setHasSubtypes(false);
     }

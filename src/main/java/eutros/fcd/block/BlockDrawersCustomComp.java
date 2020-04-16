@@ -9,7 +9,7 @@ import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
 import eutros.fcd.FCDCreativeTab;
-import eutros.fcd.item.ItemCustomDrawersComp;
+import eutros.fcd.item.ItemDrawersCustomComp;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -24,7 +24,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -37,12 +36,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CustomDrawersComp extends BlockDrawersCustom implements INetworked {
+public class BlockDrawersCustomComp extends BlockDrawersCustom implements INetworked {
 
     public static final PropertyEnum<EnumCompDrawer> SLOTS = PropertyEnum.create("slots", EnumCompDrawer.class);
     private StatusModelData statusInfo;
 
-    public CustomDrawersComp() {
+    public BlockDrawersCustomComp() {
         super("framedcompactdrawers:framed_compact_drawer", "framedcompactdrawers.framed_compact_drawer");
         // I can't be bothered to make an AT.
         ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "blockState");
@@ -106,6 +105,7 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
 
     @Override
     public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+        // default implementation
         list.add(new ItemStack(this));
     }
 
@@ -118,51 +118,17 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
         return super.onBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
     }
 
-    /**
-     * Copy paste of default implementation because {@link super#shouldSideBeRendered(IBlockState, IBlockAccess, BlockPos, EnumFacing)} does stupid stuff.
-     */
     @Deprecated
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-        AxisAlignedBB axisalignedbb = blockState.getBoundingBox(blockAccess, pos);
-        switch(side) {
-            case DOWN:
-                if(axisalignedbb.minY > 0.0D) {
-                    return true;
-                }
-                break;
-            case UP:
-                if(axisalignedbb.maxY < 1.0D) {
-                    return true;
-                }
-                break;
-            case NORTH:
-                if(axisalignedbb.minZ > 0.0D) {
-                    return true;
-                }
-                break;
-            case SOUTH:
-                if(axisalignedbb.maxZ < 1.0D) {
-                    return true;
-                }
-                break;
-            case WEST:
-                if(axisalignedbb.minX > 0.0D) {
-                    return true;
-                }
-                break;
-            case EAST:
-                if(axisalignedbb.maxX < 1.0D) {
-                    return true;
-                }
-        }
-
+        // simplified default implementation, super does funky stuff
         return !blockAccess.getBlockState(pos.offset(side)).doesSideBlockRendering(blockAccess, pos.offset(side), side.getOpposite());
     }
 
     @Override
     public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return false; // again, super doing funky stuff
+        // again, super does funky stuff
+        return false;
     }
 
     @Override
@@ -195,9 +161,9 @@ public class CustomDrawersComp extends BlockDrawersCustom implements INetworked 
     protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         TileEntityDrawers tile = getTileEntity(world, pos);
         if(tile == null)
-            return ItemCustomDrawersComp.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
+            return ItemDrawersCustomComp.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
 
-        ItemStack drop = ItemCustomDrawersComp.makeItemStack(state, 1, tile.material().getSide(), tile.material().getTrim(), tile.material().getFront());
+        ItemStack drop = ItemDrawersCustomComp.makeItemStack(state, 1, tile.material().getSide(), tile.material().getTrim(), tile.material().getFront());
         if(drop.isEmpty())
             return ItemStack.EMPTY;
 

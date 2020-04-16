@@ -15,7 +15,7 @@ import com.jaquadro.minecraft.storagedrawers.block.modeldata.DrawerStateModelDat
 import com.jaquadro.minecraft.storagedrawers.block.modeldata.MaterialModelData;
 import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerDecoratorModel;
 import com.jaquadro.minecraft.storagedrawers.client.model.component.DrawerSealedModel;
-import eutros.fcd.block.CustomDrawersComp;
+import eutros.fcd.block.BlockDrawersCustomComp;
 import eutros.fcd.registry.ModBlocks;
 import eutros.fcd.utils.Reference;
 import net.minecraft.block.state.IBlockState;
@@ -40,77 +40,18 @@ import java.util.List;
 
 public class CustomDrawersCompModel extends ChamModel {
 
-    public static class Register extends DefaultRegister<CustomDrawersComp> {
+    private static final ItemHandler itemHandler = new ItemHandler();
+    private TextureAtlasSprite iconParticle;
 
-        public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_side");
-
-        public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_3"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_1"),
-        };
-
-        public static final ResourceLocation[] iconDisabledOverlay = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1"),
-        };
-
-        public static final ResourceLocation iconOverlayTrim =
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim");
-
-        public static final ResourceLocation iconOverlayBoldTrim =
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_bold_trim");
-
-        public static final ResourceLocation iconOverlayFace =
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face");
-
-        public static final ResourceLocation iconOverlayHandle =
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle");
-
-        public Register() {
-            super(ModBlocks.framedCompactDrawer);
-        }
-
-        @Override
-        public List<IBlockState> getBlockStates() {
-            List<IBlockState> states = new ArrayList<>();
-
-            for(EnumCompDrawer drawer : EnumCompDrawer.values())
-                for(EnumFacing dir : EnumFacing.HORIZONTALS)
-                    states.add(ModBlocks.framedCompactDrawer.getDefaultState()
-                            .withProperty(CustomDrawersComp.SLOTS, drawer)
-                            .withProperty(BlockDrawers.FACING, dir));
-
-            return states;
-        }
-
-        @Override
-        public IBakedModel getModel(IBlockState state, IBakedModel existingModel) {
-            return new CachedBuilderModel(new Model());
-        }
-
-        @Override
-        public IBakedModel getModel(ItemStack stack, IBakedModel existingModel) {
-            return new CachedBuilderModel(new Model());
-        }
-
-        @Override
-        public List<ResourceLocation> getTextureResources() {
-            List<ResourceLocation> resource = new ArrayList<>();
-            resource.addAll(Arrays.asList(iconDefaultFront));
-            resource.addAll(Arrays.asList(iconDisabledOverlay));
-            resource.add(iconDefaultSide);
-            resource.add(iconOverlayTrim);
-            resource.add(iconOverlayBoldTrim);
-            resource.add(iconOverlayFace);
-            resource.add(iconOverlayHandle);
-            return resource;
-        }
-
+    private CustomDrawersCompModel(IBlockState state, boolean mergeLayers) {
+        this(state, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
+                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, mergeLayers);
     }
 
-    private TextureAtlasSprite iconParticle;
+    private CustomDrawersCompModel(IBlockState state, @Nonnull ItemStack effMatFront, @Nonnull ItemStack effMatSide, @Nonnull ItemStack effMatTrim,
+                                   @Nonnull ItemStack matFront, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, boolean mergeLayers) {
+        super(state, mergeLayers, effMatFront, effMatSide, effMatTrim, matFront, matSide, matTrim);
+    }
 
     public static IBakedModel fromBlock(IBlockState state) {
         if(!(state instanceof IExtendedBlockState))
@@ -163,19 +104,9 @@ public class CustomDrawersCompModel extends ChamModel {
         return new DrawerSealedModel(model, state, true);
     }
 
-    private CustomDrawersCompModel(IBlockState state, boolean mergeLayers) {
-        this(state, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY, mergeLayers);
-    }
-
-    private CustomDrawersCompModel(IBlockState state, @Nonnull ItemStack effMatFront, @Nonnull ItemStack effMatSide, @Nonnull ItemStack effMatTrim,
-                                   @Nonnull ItemStack matFront, @Nonnull ItemStack matSide, @Nonnull ItemStack matTrim, boolean mergeLayers) {
-        super(state, mergeLayers, effMatFront, effMatSide, effMatTrim, matFront, matSide, matTrim);
-    }
-
     @Override
     protected void renderMippedLayer(ChamRender renderer, IBlockState state, Object... args) {
-        EnumCompDrawer slots = state.getValue(CustomDrawersComp.SLOTS);
+        EnumCompDrawer slots = state.getValue(BlockDrawersCustomComp.SLOTS);
         int index = 3 - slots.getOpenSlots();
 
         ItemStack itemFront = (ItemStack) args[0];
@@ -206,7 +137,7 @@ public class CustomDrawersCompModel extends ChamModel {
 
     @Override
     protected void renderTransLayer(ChamRender renderer, IBlockState state, Object... args) {
-        EnumCompDrawer slots = state.getValue(CustomDrawersComp.SLOTS);
+        EnumCompDrawer slots = state.getValue(BlockDrawersCustomComp.SLOTS);
         int index = 3 - slots.getOpenSlots();
 
         TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
@@ -237,6 +168,76 @@ public class CustomDrawersCompModel extends ChamModel {
         return null;
     }
 
+    public static class Register extends DefaultRegister<BlockDrawersCustomComp> {
+
+        public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_side");
+
+        public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_3"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_1"),
+        };
+
+        public static final ResourceLocation[] iconDisabledOverlay = new ResourceLocation[] {
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1"),
+        };
+
+        public static final ResourceLocation iconOverlayTrim =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_trim");
+
+        public static final ResourceLocation iconOverlayBoldTrim =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_bold_trim");
+
+        public static final ResourceLocation iconOverlayFace =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/shading_face");
+
+        public static final ResourceLocation iconOverlayHandle =
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/handle");
+
+        public Register() {
+            super(ModBlocks.framedCompactDrawer);
+        }
+
+        @Override
+        public List<IBlockState> getBlockStates() {
+            List<IBlockState> states = new ArrayList<>();
+
+            for(EnumCompDrawer drawer : EnumCompDrawer.values())
+                for(EnumFacing dir : EnumFacing.HORIZONTALS)
+                    states.add(ModBlocks.framedCompactDrawer.getDefaultState()
+                            .withProperty(BlockDrawersCustomComp.SLOTS, drawer)
+                            .withProperty(BlockDrawers.FACING, dir));
+
+            return states;
+        }
+
+        @Override
+        public IBakedModel getModel(IBlockState state, IBakedModel existingModel) {
+            return new CachedBuilderModel(new Model());
+        }
+
+        @Override
+        public IBakedModel getModel(ItemStack stack, IBakedModel existingModel) {
+            return new CachedBuilderModel(new Model());
+        }
+
+        @Override
+        public List<ResourceLocation> getTextureResources() {
+            List<ResourceLocation> resource = new ArrayList<>();
+            resource.addAll(Arrays.asList(iconDefaultFront));
+            resource.addAll(Arrays.asList(iconDisabledOverlay));
+            resource.add(iconDefaultSide);
+            resource.add(iconOverlayTrim);
+            resource.add(iconOverlayBoldTrim);
+            resource.add(iconOverlayFace);
+            resource.add(iconOverlayHandle);
+            return resource;
+        }
+
+    }
+
     public static class Model extends ProxyBuilderModel {
 
         public Model() {
@@ -257,7 +258,7 @@ public class CustomDrawersCompModel extends ChamModel {
                     if(!DrawerDecoratorModel.shouldHandleState(stateModel))
                         return mainModel;
 
-                    EnumCompDrawer drawer = state.getValue(CustomDrawersComp.SLOTS);
+                    EnumCompDrawer drawer = state.getValue(BlockDrawersCustomComp.SLOTS);
                     EnumFacing dir = state.getValue(BlockDrawers.FACING);
 
                     DrawerDecoratorModel decModel = new DrawerDecoratorModel(mainModel, xState, drawer, dir, stateModel);
@@ -304,7 +305,5 @@ public class CustomDrawersCompModel extends ChamModel {
         }
 
     }
-
-    private static final ItemHandler itemHandler = new ItemHandler();
 
 }

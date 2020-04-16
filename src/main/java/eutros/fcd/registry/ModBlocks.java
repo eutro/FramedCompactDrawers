@@ -1,7 +1,7 @@
 package eutros.fcd.registry;
 
-import eutros.fcd.block.CustomDrawersComp;
-import eutros.fcd.item.ItemCustomDrawersComp;
+import eutros.fcd.block.BlockDrawersCustomComp;
+import eutros.fcd.item.ItemDrawersCustomComp;
 import eutros.fcd.utils.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -16,22 +16,22 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ModBlocks {
 
-	@ObjectHolder(Reference.MOD_ID + ":framed_compact_drawer")
-	public static CustomDrawersComp framedCompactDrawer;
+    @ObjectHolder(Reference.MOD_ID + ":framed_compact_drawer")
+    public static BlockDrawersCustomComp framedCompactDrawer;
 
-	@SubscribeEvent
-	public static void registerBlocks (RegistryEvent.Register<Block> event) {
-		IForgeRegistry<Block> r = event.getRegistry();
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        IForgeRegistry<Block> r = event.getRegistry();
 
-		r.register(new CustomDrawersComp());
-	}
+        r.register(new BlockDrawersCustomComp());
+    }
 
-	@SubscribeEvent
-	public static void registerItems(RegistryEvent.Register<Item> event) {
-		IForgeRegistry<Item> r = event.getRegistry();
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        IForgeRegistry<Item> r = event.getRegistry();
 
-		r.register(new ItemCustomDrawersComp(framedCompactDrawer)
-				.setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName())));
-	}
+        r.register(new ItemDrawersCustomComp(framedCompactDrawer)
+                .setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName())));
+    }
 
 }

@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = Reference.MOD_ID)
-public class ModModels {
+public class ModelRegistry {
 
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {

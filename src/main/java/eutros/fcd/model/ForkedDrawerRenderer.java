@@ -12,17 +12,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * Fork of {@link com.jaquadro.minecraft.storagedrawers.client.model.dynamic.CommonDrawerRenderer} to render properly.
+ */
 @SuppressWarnings("SuspiciousNameCombination")
 public class ForkedDrawerRenderer {
 
-    private final ChamRender renderHelper;
-    private final PanelBoxRenderer panelRenderer;
-
-    private double trimWidth;
-    private double trimDepth;
-
     private static double lessThanHalf = 0.4375;
     private static double moreThanHalf = 0.5625;
+    private final ChamRender renderHelper;
+    private final PanelBoxRenderer panelRenderer;
+    private double trimWidth;
+    private double trimDepth;
 
     public ForkedDrawerRenderer(ChamRender renderer) {
         this.renderHelper = renderer;
@@ -78,20 +79,25 @@ public class ForkedDrawerRenderer {
         renderHelper.state.autoFlipTexture = true;
         renderHelper.setRenderBounds(trimWidth, trimWidth, trimDepth, lessThanHalf, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconFront);
+
         renderHelper.setRenderBounds(trimWidth, moreThanHalf, trimDepth, 1 - trimWidth, 1 - trimWidth, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconFront);
         // extended top panel
+
         renderHelper.setRenderBounds(moreThanHalf, trimWidth, trimDepth, 1 - trimWidth, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconFront);
         // removed fourth panel
 
         renderHelper.setRenderBounds(trimWidth, lessThanHalf, trimDepth, lessThanHalf, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconTrim);
+
         renderHelper.setRenderBounds(moreThanHalf, lessThanHalf, trimDepth, 1 - trimWidth, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconTrim);
+
         renderHelper.setRenderBounds(lessThanHalf, trimWidth, trimDepth, moreThanHalf, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconTrim);
         // excluded the third branch
+
         renderHelper.setRenderBounds(lessThanHalf, lessThanHalf, trimDepth, moreThanHalf, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, iconTrim);
         renderHelper.state.autoFlipTexture = false;
@@ -128,11 +134,14 @@ public class ForkedDrawerRenderer {
 
         renderHelper.setRenderBounds(trimWidth, lessThanHalf, trimDepth, lessThanHalf, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
+
         renderHelper.setRenderBounds(moreThanHalf, lessThanHalf, trimDepth, 1 - trimWidth, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
+
         renderHelper.setRenderBounds(lessThanHalf, trimWidth, trimDepth, moreThanHalf, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
         // excluded the third branch
+
         renderHelper.setRenderBounds(lessThanHalf, lessThanHalf, trimDepth, moreThanHalf, moreThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
 
