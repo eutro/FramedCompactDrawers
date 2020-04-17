@@ -294,9 +294,17 @@ public class BlockControllerCustom extends AbstractBlockDrawersCustom {
     protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
         TileControllerCustom tile = getTrueTileEntity(world, pos);
         if(tile == null)
-            return ItemCustomDrawers.makeItemStack(state, 1, ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY);
+            return ItemCustomDrawers.makeItemStack(state.withProperty(FACING, EnumFacing.NORTH), // keeping metadata 0
+                    1,
+                    ItemStack.EMPTY,
+                    ItemStack.EMPTY,
+                    ItemStack.EMPTY);
 
-        return ItemCustomDrawers.makeItemStack(state, 1, tile.material().getSide(), tile.material().getTrim(), tile.material().getFront());
+        return ItemCustomDrawers.makeItemStack(state.withProperty(FACING, EnumFacing.NORTH), // keeping metadata 0
+                1,
+                tile.material().getSide(),
+                tile.material().getTrim(),
+                tile.material().getFront());
     }
 
 }

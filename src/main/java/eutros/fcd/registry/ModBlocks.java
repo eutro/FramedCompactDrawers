@@ -8,10 +8,10 @@ import eutros.fcd.item.ItemDrawersCustomComp;
 import eutros.fcd.utils.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -35,8 +35,8 @@ public class ModBlocks {
         BlockControllerCustom controllerCustom = new BlockControllerCustom();
         r.register(controllerCustom);
 
-        GameRegistry.registerTileEntity(TileControllerCustom.class,
-                Objects.requireNonNull(controllerCustom.getRegistryName()).toString());
+        TileEntity.register(Objects.requireNonNull(controllerCustom.getRegistryName()).toString(),
+                TileControllerCustom.class);
     }
 
     @SubscribeEvent

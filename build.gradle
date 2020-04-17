@@ -50,11 +50,16 @@ repositories {
         name = "storagedrawers"
         url = "https://dl.bintray.com/jaquadro/dev/"
     }
+    maven {
+        name = "hwyla"
+        url = "http://tehnut.info/maven"
+    }
 }
 
 dependencies {
     deobfCompile "com.jaquadro.minecraft.storagedrawers:StorageDrawers:${mc_version}-${storagedrawers_version}"
     deobfCompile "com.jaquadro.minecraft.chameleon:Chameleon:${mc_base_version}-${chamelion_version}"
+    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}_${mc_version}"
 }
 
 processResources {
@@ -67,7 +72,7 @@ processResources {
         include 'mcmod.info'
 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
     // copy everything else except the mcmod.info
