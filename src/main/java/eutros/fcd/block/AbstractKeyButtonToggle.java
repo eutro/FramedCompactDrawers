@@ -36,7 +36,7 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
     /**
      * If applicable, completely replace the execution of {@link BlockKeyButton#onBlockActivated(World, BlockPos, IBlockState, EntityPlayer, EnumHand, EnumFacing, float, float, float)}.
      *
-     * This is applicable whenever
+     * This is applicable whenever a button is pressed that is attached to a Controller Slave of any kind, or the Framed Controller. The original controller gets a pass.
      */
     @SubscribeEvent
     public void playerRightClick(PlayerInteractEvent.RightClickBlock event) {
