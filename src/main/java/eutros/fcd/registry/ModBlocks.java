@@ -11,10 +11,10 @@ import eutros.fcd.item.ItemSlaveCustom;
 import eutros.fcd.utils.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -30,7 +30,7 @@ public class ModBlocks {
     public static BlockControllerCustom framedDrawerController;
 
     @ObjectHolder(Reference.MOD_ID + ":framed_slave")
-    public static BlockControllerCustom framedSlave;
+    public static BlockSlaveCustom framedSlave;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -41,14 +41,14 @@ public class ModBlocks {
         BlockControllerCustom controllerCustom = new BlockControllerCustom();
         r.register(controllerCustom);
 
-        GameRegistry.registerTileEntity(TileControllerCustom.class,
-                Objects.requireNonNull(controllerCustom.getRegistryName()).toString());
+        TileEntity.register(Objects.requireNonNull(controllerCustom.getRegistryName()).toString(),
+                TileControllerCustom.class);
 
         BlockSlaveCustom slaveCustom = new BlockSlaveCustom();
         r.register(slaveCustom);
 
-        GameRegistry.registerTileEntity(TileSlaveCustom.class,
-                Objects.requireNonNull(slaveCustom.getRegistryName()).toString());
+        TileEntity.register(Objects.requireNonNull(slaveCustom.getRegistryName()).toString(),
+                TileSlaveCustom.class);
     }
 
     @SubscribeEvent
