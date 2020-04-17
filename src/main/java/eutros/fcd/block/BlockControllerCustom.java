@@ -187,6 +187,7 @@ public class BlockControllerCustom extends AbstractKeyButtonToggle {
         return true;
     }
 
+    @Override
     public void toggle(World world, BlockPos pos, EntityPlayer player, EnumKeyType keyType) {
         if(world.isRemote)
             return;
@@ -234,7 +235,7 @@ public class BlockControllerCustom extends AbstractKeyButtonToggle {
     }
 
     @Override
-    public boolean isSideSolid (IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+    public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return state.getValue(FACING) != side;
     }
 
