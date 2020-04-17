@@ -6,17 +6,13 @@ import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute
 import com.jaquadro.minecraft.storagedrawers.block.EnumKeyType;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.core.ModItems;
-import com.jaquadro.minecraft.storagedrawers.item.ItemCustomDrawers;
-import eutros.fcd.block.tile.MaterialModelCarrier;
 import eutros.fcd.block.tile.TileControllerCustom;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -25,11 +21,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Random;
 
-public class BlockControllerCustom extends AbstractBlockDrawersCustom {
+public class BlockControllerCustom extends AbstractKeyButtonToggle {
 
     private static final ThreadLocal<Boolean> inTileLookup = ThreadLocal.withInitial(() -> false);
     private StatusModelData statusInfo;
@@ -151,11 +145,6 @@ public class BlockControllerCustom extends AbstractBlockDrawersCustom {
     }
 
     @Override
-    public boolean canProvidePower(IBlockState state) {
-        return false;
-    }
-
-    @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         EnumFacing blockDir = state.getValue(FACING);
         TileControllerCustom tile = getTrueTileEntitySafe(world, pos);
@@ -226,26 +215,6 @@ public class BlockControllerCustom extends AbstractBlockDrawersCustom {
     }
 
     @Override
-    public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
-        return false;
-    }
-
-    @Override
-    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
-    }
-
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        worldIn.removeTileEntity(pos);
-    }
-
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-        if(willHarvest)
-            return true;
-        this.onBlockHarvested(world, pos, state, player);
-        return world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
-    }
-
-    @Override
     public IBlockState getStateFromMeta(int meta) {
         EnumFacing facing = EnumFacing.getFront(meta + 2); // ensure that 0 maps to north
         if(facing.getAxis() == EnumFacing.Axis.Y)
@@ -260,34 +229,8 @@ public class BlockControllerCustom extends AbstractBlockDrawersCustom {
     }
 
     @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-        state = super.getActualState(state, world, pos);
-        if(!(state instanceof IExtendedBlockState))
-            return state;
-
-        TileControllerCustom tile = getTrueTileEntity(world, pos);
-        if(tile == null)
-            return state;
-
-        return ((IExtendedBlockState) state).withProperty(MAT_MODEL, MaterialModelCarrier.materialFrom(tile));
-    }
-
-    @Override
-    @Nonnull
-    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
-        TileControllerCustom tile = getTrueTileEntity(world, pos);
-        if(tile == null)
-            return ItemCustomDrawers.makeItemStack(state.withProperty(FACING, EnumFacing.NORTH), // keeping metadata 0
-                    1,
-                    ItemStack.EMPTY,
-                    ItemStack.EMPTY,
-                    ItemStack.EMPTY);
-
-        return ItemCustomDrawers.makeItemStack(state.withProperty(FACING, EnumFacing.NORTH), // keeping metadata 0
-                1,
-                tile.material().getSide(),
-                tile.material().getTrim(),
-                tile.material().getFront());
+    protected IBlockState droppedStateMorph(IBlockState state) {
+        return state.withProperty(FACING, EnumFacing.NORTH);
     }
 
 }
