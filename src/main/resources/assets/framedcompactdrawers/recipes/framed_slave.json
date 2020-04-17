@@ -1,0 +1,17 @@
+{
+  "conditions": [{
+    "type": "minecraft:item_exists",
+    "item": "storagedrawers:controllerslave"
+  }],
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "///",
+    "/X/",
+    "///"
+  ],
+  "key": {
+    "/": { "ore": "stickWood", "type": "forge:ore_dict" },
+    "X": { "item": "storagedrawers:controllerslave" }
+  },
+  "result": { "item": "framedcompactdrawers:framed_slave", "data": 0, "count": 1 }
+}
