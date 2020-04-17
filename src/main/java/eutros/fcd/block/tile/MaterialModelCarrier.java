@@ -7,13 +7,13 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.MaterialData;
 
 public class MaterialModelCarrier extends TileEntityDrawers {
 
-    private final TileControllerCustom tile;
+    private final IMaterialDataCarrier tile;
 
-    private MaterialModelCarrier(TileControllerCustom tile) {
+    private MaterialModelCarrier(IMaterialDataCarrier tile) {
         this.tile = tile;
     }
 
-    public static MaterialModelData materialFrom(TileControllerCustom te) {
+    public static MaterialModelData materialFrom(IMaterialDataCarrier te) {
         return new MaterialModelData(new MaterialModelCarrier(te));
     }
 
@@ -25,6 +25,12 @@ public class MaterialModelCarrier extends TileEntityDrawers {
     @Override
     public MaterialData material() {
         return tile.material();
+    }
+
+    public interface IMaterialDataCarrier {
+
+        MaterialData material();
+
     }
 
 }

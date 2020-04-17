@@ -5,13 +5,9 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.MaterialData;
 import eutros.fcd.registry.ModBlocks;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileControllerCustom extends TileEntityController {
+public class TileControllerCustom extends TileEntityController implements MaterialModelCarrier.IMaterialDataCarrier {
 
     private final MaterialData materialData = new MaterialData();
-
-    public TileControllerCustom() {
-        super();
-    }
 
     public MaterialData material() {
         return materialData;
