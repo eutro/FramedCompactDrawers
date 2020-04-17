@@ -8,4 +8,7 @@ public interface IProxy {
     default void postInit() {
     }
 
+    default void preInit() {
+    }
+
 }

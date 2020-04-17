@@ -7,12 +7,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(
         modid = Reference.MOD_ID,
         name = Reference.NAME,
         version = Reference.VERSION,
-        dependencies = "required-before:storagedrawers;required-after:chameleon;"
+        dependencies = "required-after:storagedrawers;required-after:chameleon;"
 )
 public class FramedCompactDrawers {
 
@@ -20,6 +21,11 @@ public class FramedCompactDrawers {
 
     @SidedProxy(modId = Reference.MOD_ID, clientSide = Reference.CLIENT_PROXY, serverSide = Reference.SERVER_PROXY)
     public static IProxy proxy;
+
+    @Mod.EventHandler
+    public static void preInit(FMLPreInitializationEvent evt) {
+        proxy.preInit();
+    }
 
     @Mod.EventHandler
     public static void init(FMLInitializationEvent evt) {
