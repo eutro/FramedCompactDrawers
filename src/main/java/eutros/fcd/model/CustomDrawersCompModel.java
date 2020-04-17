@@ -170,7 +170,7 @@ public class CustomDrawersCompModel extends ChamModel {
 
     public static class Register extends DefaultRegister<BlockDrawersCustomComp> {
 
-        public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_side");
+        public static final ResourceLocation iconDefaultSide = new ResourceLocation(Reference.MOD_ID + ":blocks/raw_side");
 
         public static final ResourceLocation[] iconDefaultFront = new ResourceLocation[] {
                 new ResourceLocation(Reference.MOD_ID + ":blocks/drawers_comp_raw_open_3"),

@@ -1,12 +1,23 @@
 package eutros.fcd.block;
 
+import com.jaquadro.minecraft.storagedrawers.item.ItemCustomDrawers;
 import eutros.fcd.block.tile.MaterialModelCarrier;
 import eutros.fcd.block.tile.TileSlaveCustom;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -32,7 +43,7 @@ public class BlockSlaveCustom extends AbstractBlockDrawersCustom {
 
     @Override
     protected void replaceDefaultState() {
-        blockState.getBaseState();
+        setDefaultState(blockState.getBaseState());
     }
 
     @Override
@@ -46,6 +57,14 @@ public class BlockSlaveCustom extends AbstractBlockDrawersCustom {
             return state;
 
         return ((IExtendedBlockState) state).withProperty(MAT_MODEL, MaterialModelCarrier.materialFrom(tile));
+    }
+
+    @Override
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
     }
 
     @Override
@@ -64,14 +83,57 @@ public class BlockSlaveCustom extends AbstractBlockDrawersCustom {
         return (tile instanceof TileSlaveCustom) ? (TileSlaveCustom) tile : null;
     }
 
-    public TileSlaveCustom getTrueTileEntitySafe(World world, BlockPos pos) {
-        TileSlaveCustom tile = getTrueTileEntity(world, pos);
-        if(tile == null) {
-            tile = createTileEntity(world, null);
-            world.setTileEntity(pos, tile);
-        }
+    @Override
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+        list.add(new ItemStack(this));
+    }
 
-        return tile;
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        return false;
+    }
+
+    @Override
+    public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
+        return false;
+    }
+
+    @Override
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn) {
+    }
+
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        worldIn.removeTileEntity(pos);
+    }
+
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        if(willHarvest)
+            return true;
+        this.onBlockHarvested(world, pos, state, player);
+        return world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+        return getDefaultState();
+    }
+
+    @Nonnull
+    @Override
+    protected ItemStack getMainDrop(IBlockAccess world, BlockPos pos, IBlockState state) {
+        TileSlaveCustom tile = getTrueTileEntity(world, pos);
+        if(tile == null)
+            return ItemCustomDrawers.makeItemStack(state,
+                    1,
+                    ItemStack.EMPTY,
+                    ItemStack.EMPTY,
+                    ItemStack.EMPTY);
+
+        return ItemCustomDrawers.makeItemStack(state,
+                1,
+                tile.material().getSide(),
+                tile.material().getTrim(),
+                tile.material().getFront());
     }
 
 }

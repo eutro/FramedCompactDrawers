@@ -3,6 +3,7 @@ package eutros.fcd.registry;
 import com.jaquadro.minecraft.chameleon.Chameleon;
 import eutros.fcd.model.CustomControllerModel;
 import eutros.fcd.model.CustomDrawersCompModel;
+import eutros.fcd.model.CustomSlaveModel;
 import eutros.fcd.utils.Reference;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +20,7 @@ public class ModelRegistry {
 
         Chameleon.instance.modelRegistry.registerModel(new CustomDrawersCompModel.Register());
         Chameleon.instance.modelRegistry.registerModel(new CustomControllerModel.Register());
+        Chameleon.instance.modelRegistry.registerModel(new CustomSlaveModel.Register());
     }
 
 }

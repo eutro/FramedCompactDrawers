@@ -92,8 +92,6 @@ public class ControllerRenderer {
 
         boolean shadeFace = faceShadow != null;
 
-        panelRenderer.setTrimIcon(trimShadow);
-
         renderHelper.setRenderBounds(trimWidth, trimWidth, trimDepth, 1 - trimWidth, lessThanHalf, 1);
         renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, handle);
         if(shadeFace) renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
@@ -103,7 +101,7 @@ public class ControllerRenderer {
         if(shadeFace) renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, faceShadow);
 
         renderHelper.setRenderBounds(trimWidth, lessThanHalf, trimDepth, 1 - trimWidth, moreThanHalf, 1);
-        if(shadeFace) renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
+        renderHelper.renderFace(ChamRender.FACE_ZNEG, world, state, pos, trimShadow);
 
         end();
     }
