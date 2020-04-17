@@ -52,18 +52,18 @@ public class ItemDrawersCustomComp extends ItemCustomDrawers {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation (@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
+    public void addInformation(@Nonnull ItemStack itemStack, @Nullable World world, List<String> list, ITooltipFlag advanced) {
         NBTTagCompound cmp = itemStack.getTagCompound();
         boolean hasCompound = itemStack.hasTagCompound() && cmp != null;
 
-        if (hasCompound && cmp.hasKey("material")) {
+        if(hasCompound && cmp.hasKey("material")) {
             String key = cmp.getString("material");
             list.add(I18n.format("storagedrawers.material", I18n.format("storagedrawers.material." + key)));
         }
 
         list.add(I18n.format("storagedrawers.drawers.description", StorageDrawers.config.getBlockBaseStorage("compdrawers")));
 
-        if (hasCompound && cmp.hasKey("tile"))
+        if(hasCompound && cmp.hasKey("tile"))
             list.add(ChatFormatting.YELLOW + I18n.format("storagedrawers.drawers.sealed"));
     }
 
