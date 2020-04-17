@@ -233,4 +233,9 @@ public class BlockControllerCustom extends AbstractKeyButtonToggle {
         return state.withProperty(FACING, EnumFacing.NORTH);
     }
 
+    @Override
+    public boolean isSideSolid (IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return state.getValue(FACING) != side;
+    }
+
 }
