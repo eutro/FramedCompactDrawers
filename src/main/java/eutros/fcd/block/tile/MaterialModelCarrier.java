@@ -13,6 +13,10 @@ public class MaterialModelCarrier extends TileEntityDrawers {
         this.tile = tile;
     }
 
+    public static MaterialModelData materialFrom(TileControllerCustom te) {
+        return new MaterialModelData(new MaterialModelCarrier(te));
+    }
+
     @Override
     public IDrawerGroup getGroup() {
         return null;
@@ -21,10 +25,6 @@ public class MaterialModelCarrier extends TileEntityDrawers {
     @Override
     public MaterialData material() {
         return tile.material();
-    }
-
-    public static MaterialModelData materialFrom(TileControllerCustom te) {
-        return new MaterialModelData(new MaterialModelCarrier(te));
     }
 
 }

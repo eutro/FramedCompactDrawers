@@ -44,12 +44,12 @@ public class ItemControllerCustom extends ItemCustomDrawers {
 
         TileControllerCustom tile = (TileControllerCustom) world.getTileEntity(pos);
         boolean hasCompound = stack.hasTagCompound() && stack.getTagCompound() != null;
-        if (tile != null && hasCompound && !stack.getTagCompound().hasKey("tile")) {
-            if (stack.getTagCompound().hasKey("MatS"))
+        if(tile != null && hasCompound && !stack.getTagCompound().hasKey("tile")) {
+            if(stack.getTagCompound().hasKey("MatS"))
                 tile.material().setSide(new ItemStack(stack.getTagCompound().getCompoundTag("MatS")));
-            if (stack.getTagCompound().hasKey("MatT"))
+            if(stack.getTagCompound().hasKey("MatT"))
                 tile.material().setTrim(new ItemStack(stack.getTagCompound().getCompoundTag("MatT")));
-            if (stack.getTagCompound().hasKey("MatF"))
+            if(stack.getTagCompound().hasKey("MatF"))
                 tile.material().setFront(new ItemStack(stack.getTagCompound().getCompoundTag("MatF")));
         }
 

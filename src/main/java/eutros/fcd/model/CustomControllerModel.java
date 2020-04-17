@@ -134,7 +134,9 @@ public class CustomControllerModel extends ChamModel {
         ItemStack matFront = (ItemStack) args[0];
         ItemStack itemTrim = (ItemStack) args[5];
 
-        TextureAtlasSprite iconOverlayFace = matFront.isEmpty() ? null : Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
+        TextureAtlasSprite iconOverlayFace = matFront.isEmpty() ?
+                                             null :
+                                             Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
         TextureAtlasSprite iconTrim = !itemTrim.isEmpty() ? IconUtil.getIconFromStack(itemTrim) : null;
         TextureAtlasSprite iconOverlayTrim;
 

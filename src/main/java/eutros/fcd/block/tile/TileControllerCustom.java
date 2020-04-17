@@ -7,13 +7,13 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class TileControllerCustom extends TileEntityController {
 
+    private final MaterialData materialData = new MaterialData();
+
     public TileControllerCustom() {
         super();
     }
 
-    private final MaterialData materialData = new MaterialData();
-
-    public MaterialData material () {
+    public MaterialData material() {
         return materialData;
     }
 
@@ -33,7 +33,7 @@ public class TileControllerCustom extends TileEntityController {
     public void validate() {
         super.validate();
 
-        if (!getWorld().isUpdateScheduled(getPos(), ModBlocks.framedDrawerController))
+        if(!getWorld().isUpdateScheduled(getPos(), ModBlocks.framedDrawerController))
             getWorld().scheduleBlockUpdate(getPos(), ModBlocks.framedDrawerController, 1, 0);
     }
 

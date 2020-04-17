@@ -43,9 +43,8 @@ import java.util.Random;
 
 public class BlockControllerCustom extends AbstractBlockDrawersCustom {
 
-    private StatusModelData statusInfo;
-
     private static final ThreadLocal<Boolean> inTileLookup = ThreadLocal.withInitial(() -> false);
+    private StatusModelData statusInfo;
 
     public BlockControllerCustom() {
         super("framedcompactdrawers:framed_drawer_controller", "framedcompactdrawers.framed_drawer_controller");
@@ -264,16 +263,16 @@ public class BlockControllerCustom extends AbstractBlockDrawersCustom {
     }
 
     @Override
-    public IBlockState getStateFromMeta (int meta) {
+    public IBlockState getStateFromMeta(int meta) {
         EnumFacing facing = EnumFacing.getFront(meta + 2); // ensure that 0 maps to north
-        if (facing.getAxis() == EnumFacing.Axis.Y)
+        if(facing.getAxis() == EnumFacing.Axis.Y)
             facing = EnumFacing.NORTH;
 
         return getDefaultState().withProperty(FACING, facing);
     }
 
     @Override
-    public int getMetaFromState (IBlockState state) {
+    public int getMetaFromState(IBlockState state) {
         return ((state.getValue(FACING)).getIndex() + 4) % 6; // ensure that north maps to 0, required so item metadata remains 0
     }
 
