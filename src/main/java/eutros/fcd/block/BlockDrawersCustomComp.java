@@ -2,6 +2,7 @@ package eutros.fcd.block;
 
 import com.jaquadro.minecraft.storagedrawers.StorageDrawers;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawer;
+import com.jaquadro.minecraft.storagedrawers.block.BlockCompDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.dynamic.StatusModelData;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
@@ -32,7 +33,8 @@ import javax.annotation.Nullable;
 
 public class BlockDrawersCustomComp extends AbstractBlockDrawersCustom {
 
-    public static final PropertyEnum<EnumCompDrawer> SLOTS = PropertyEnum.create("slots", EnumCompDrawer.class);
+    @SuppressWarnings("unchecked")
+    public static final PropertyEnum<EnumCompDrawer> SLOTS = BlockCompDrawers.SLOTS;
     private StatusModelData statusInfo;
 
     public BlockDrawersCustomComp() {
