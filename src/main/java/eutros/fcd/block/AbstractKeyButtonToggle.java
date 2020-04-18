@@ -8,14 +8,17 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashSet;
@@ -40,8 +43,11 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
          * <p>
          * This is applicable whenever a button is pressed that is attached to a Controller Slave of any kind, or the Framed Controller. The original controller gets a pass.
          */
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.LOWEST)
         public void playerRightClick(PlayerInteractEvent.RightClickBlock event) {
+            if(event.getResult() == Event.Result.DENY)
+                return;
+
             BlockPos pos = event.getPos();
             World world = event.getWorld();
             IBlockState state = world.getBlockState(pos);
@@ -56,9 +62,30 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
             }
 
             EntityPlayer player = event.getEntityPlayer();
-            event.setResult(Event.Result.DENY);
+            Vec3d hitVec = event.getHitVec();
 
-            if(fakeButtonPress(world, state, pos, player, event.getHand()))
+            // I wonder if anyone relies on these being called after onItemUseFirst...
+            boolean bypass = player.getHeldItemMainhand().doesSneakBypassUse(world, pos, player) && player.getHeldItemOffhand().doesSneakBypassUse(world, pos, player);
+
+            if(player.isSneaking() && !bypass && event.getUseBlock() != Event.Result.ALLOW)
+                return;
+
+            if(event.getUseItem() != net.minecraftforge.fml.common.eventhandler.Event.Result.DENY) {
+                //noinspection ConstantConditions
+                EnumActionResult result = event.getItemStack().onItemUseFirst(player, world, pos, event.getHand(), event.getFace(), (float) hitVec.x, (float) hitVec.y, (float) hitVec.z);
+                if(result != EnumActionResult.PASS) {
+                    event.setResult(Event.Result.DENY);
+                    event.setCanceled(true);
+                    event.setCancellationResult(result);
+                    return;
+                }
+            }
+
+            event.setResult(Event.Result.DENY);
+            event.setCanceled(true);
+            event.setCancellationResult(EnumActionResult.SUCCESS);
+
+            if(fakeButtonPress(world, state, pos, player))
                 toggle(world, targetPos, player, state.getValue(BlockKeyButton.VARIANT));
         }
 
@@ -66,14 +93,14 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
 
     /**
      * Pretty much just a copy paste of {@link BlockKeyButton#onBlockActivated(World, BlockPos, IBlockState, EntityPlayer, EnumHand, EnumFacing, float, float, float)}.
+     *
      * @return true if the button was not already pressed
      */
-    private boolean fakeButtonPress(World world, IBlockState state, BlockPos pos, EntityPlayer player, EnumHand hand) {
+    private boolean fakeButtonPress(World world, IBlockState state, BlockPos pos, EntityPlayer player) {
         state = state.getActualState(world, pos);
         TileEntity tile = world.getTileEntity(pos);
 
         if(state.getValue(BlockKeyButton.POWERED)) {
-            player.swingArm(hand);
             return false;
         }
 
@@ -89,8 +116,6 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
         world.notifyNeighborsOfStateChange(pos, button, false);
         world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockKeyButton.FACING).getOpposite()), button, false);
         world.scheduleUpdate(pos, button, button.tickRate(world));
-
-        player.swingArm(hand);
 
         return true;
     }
