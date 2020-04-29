@@ -2,6 +2,7 @@ package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemCustomDrawers;
 import eutros.framedcompactdrawers.block.tile.MaterialModelCarrier;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,14 +15,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.block.Block;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import javax.annotation.Nonnull;
 
 abstract public class AbstractBlockCustomNonDrawer extends AbstractBlockDrawersCustom {
 
+    private final Block blockDelegate;
+
     public AbstractBlockCustomNonDrawer(String registryName, String blockName) {
         super(registryName, blockName);
+        blockDelegate = new Block(Material.WOOD);
     }
 
     @Override
@@ -98,5 +103,10 @@ abstract public class AbstractBlockCustomNonDrawer extends AbstractBlockDrawersC
     }
 
     protected abstract MaterialModelCarrier.IMaterialDataCarrier getTrueTileEntity(IBlockAccess world, BlockPos pos);
+
+    @Override
+    public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis) {
+        return blockDelegate.rotateBlock(world, pos, axis);
+    }
 
 }
