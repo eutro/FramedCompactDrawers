@@ -23,6 +23,9 @@ compileJava {
 jar {
     from sourceSets.main.output
     from sourceSets.api.output
+    manifest {
+        attributes 'FMLAT': 'accesstransformer.cfg'
+    }
 }
 
 minecraft {
@@ -43,6 +46,7 @@ minecraft {
     }
 
     replace "GRADLE:VERSION", project.version
+    accessTransformer "src/main/resources/META_INF/accesstransformer.cfg"
 }
 
 repositories {

@@ -2,13 +2,11 @@ package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawersCustom;
 import eutros.framedcompactdrawers.FCDCreativeTab;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -18,8 +16,7 @@ public abstract class AbstractBlockDrawersCustom extends BlockDrawersCustom {
 
     public AbstractBlockDrawersCustom(String registryName, String blockName) {
         super(registryName, blockName);
-        // I can't be bothered to make an AT.
-        ObfuscationReflectionHelper.setPrivateValue(Block.class, this, createTrueBlockState(), "field_176227_L"); // blockState
+        blockState = createTrueBlockState();
         replaceDefaultState();
         setCreativeTab(FCDCreativeTab.tab);
     }
