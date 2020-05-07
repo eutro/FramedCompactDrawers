@@ -24,7 +24,7 @@ jar {
     from sourceSets.main.output
     from sourceSets.api.output
     manifest {
-        attributes 'FMLAT': 'accesstransformer.cfg'
+        attributes 'FMLAT': 'framedcompactingdrawers_at.cfg'
     }
 }
 
@@ -46,7 +46,7 @@ minecraft {
     }
 
     replace "GRADLE:VERSION", project.version
-    accessTransformer "src/main/resources/META_INF/accesstransformer.cfg"
+    accessTransformer "src/main/resources/META_INF/framedcompactingdrawers_at.cfg"
 }
 
 repositories {
