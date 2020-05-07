@@ -46,7 +46,7 @@ minecraft {
     }
 
     replace "GRADLE:VERSION", project.version
-    accessTransformer "src/main/resources/META_INF/framedcompactingdrawers_at.cfg"
+    accessTransformer "src/main/resources/META-INF/framedcompactingdrawers_at.cfg"
 }
 
 repositories {
