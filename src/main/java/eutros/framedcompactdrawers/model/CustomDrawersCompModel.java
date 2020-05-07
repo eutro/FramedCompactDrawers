@@ -34,9 +34,7 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CustomDrawersCompModel extends ChamModel {
 
@@ -140,9 +138,13 @@ public class CustomDrawersCompModel extends ChamModel {
         EnumCompDrawer slots = state.getValue(BlockDrawersCustomComp.SLOTS);
         int index = 3 - slots.getOpenSlots();
 
+        boolean flipped = state.getValue(BlockDrawers.FACING) == EnumFacing.NORTH ||
+                state.getValue(BlockDrawers.FACING) == EnumFacing.EAST;
+
         TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
         TextureAtlasSprite iconOverlayHandle = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayHandle);
-        TextureAtlasSprite iconOverlayDisabled = Chameleon.instance.iconRegistry.getIcon(Register.iconDisabledOverlay[index]);
+        TextureAtlasSprite iconOverlayDisabled = Chameleon.instance.iconRegistry
+                .getIcon((flipped ? Register.iconDisabledOverlayFlipped : Register.iconDisabledOverlay)[index]);
 
         ItemStack itemTrim = (ItemStack) args[5];
 
@@ -182,6 +184,12 @@ public class CustomDrawersCompModel extends ChamModel {
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3"),
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2"),
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1"),
+        };
+
+        public static final ResourceLocation[] iconDisabledOverlayFlipped = new ResourceLocation[] {
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3_f"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2_f"),
+                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1_f"),
         };
 
         public static final ResourceLocation iconOverlayTrim =
@@ -228,6 +236,7 @@ public class CustomDrawersCompModel extends ChamModel {
             List<ResourceLocation> resource = new ArrayList<>();
             resource.addAll(Arrays.asList(iconDefaultFront));
             resource.addAll(Arrays.asList(iconDisabledOverlay));
+            resource.addAll(Arrays.asList(iconDisabledOverlayFlipped));
             resource.add(iconDefaultSide);
             resource.add(iconOverlayTrim);
             resource.add(iconOverlayBoldTrim);
