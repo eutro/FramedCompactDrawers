@@ -149,6 +149,7 @@ public class CustomControllerModel extends ChamModel {
         controllerRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconOverlayTrim, iconOverlayHandle, iconOverlayFace);
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture() {
         return iconParticle;
@@ -258,8 +259,9 @@ public class CustomControllerModel extends ChamModel {
             super(ImmutableList.of());
         }
 
+        @Nonnull
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
             return fromItem(stack);
         }
 

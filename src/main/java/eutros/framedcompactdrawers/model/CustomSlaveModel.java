@@ -132,6 +132,7 @@ public class CustomSlaveModel extends ChamModel {
         slaveRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, iconOverlaySide);
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture() {
         return iconParticle;
@@ -222,8 +223,9 @@ public class CustomSlaveModel extends ChamModel {
             super(ImmutableList.of());
         }
 
+        @Nonnull
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
             return fromItem(stack);
         }
 

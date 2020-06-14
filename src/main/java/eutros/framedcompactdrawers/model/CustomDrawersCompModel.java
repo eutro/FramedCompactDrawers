@@ -34,7 +34,9 @@ import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CustomDrawersCompModel extends ChamModel {
 
@@ -143,8 +145,17 @@ public class CustomDrawersCompModel extends ChamModel {
 
         TextureAtlasSprite iconOverlayFace = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayFace);
         TextureAtlasSprite iconOverlayHandle = Chameleon.instance.iconRegistry.getIcon(Register.iconOverlayHandle);
-        TextureAtlasSprite iconOverlayDisabled = Chameleon.instance.iconRegistry
-                .getIcon((flipped ? Register.iconDisabledOverlayFlipped : Register.iconDisabledOverlay)[index]);
+        TextureAtlasSprite iconOverlayDisabled = Chameleon.instance.iconRegistry.getIcon(Register.iconDisabledOverlay[index]);
+
+        if(flipped) {
+            setUV(
+                    iconOverlayDisabled,
+                    iconOverlayDisabled.maxU,
+                    iconOverlayDisabled.minU,
+                    iconOverlayDisabled.minV,
+                    iconOverlayDisabled.maxV
+            );
+        }
 
         ItemStack itemTrim = (ItemStack) args[5];
 
@@ -158,8 +169,26 @@ public class CustomDrawersCompModel extends ChamModel {
 
         ForkedDrawerRenderer drawerRenderer = new ForkedDrawerRenderer(renderer);
         drawerRenderer.renderOverlayPass(null, state, BlockPos.ORIGIN, state.getValue(BlockDrawers.FACING), iconOverlayTrim, iconOverlayHandle, iconOverlayFace, iconOverlayDisabled);
+
+        if(flipped) { // flip it back
+            setUV(
+                    iconOverlayDisabled,
+                    iconOverlayDisabled.maxU,
+                    iconOverlayDisabled.minU,
+                    iconOverlayDisabled.minV,
+                    iconOverlayDisabled.maxV
+            );
+        }
     }
 
+    private void setUV(TextureAtlasSprite sprite, float minU, float maxU, float minV, float maxV) {
+        sprite.minU = minU;
+        sprite.maxU = maxU;
+        sprite.minV = minV;
+        sprite.maxV = maxV;
+    }
+
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleTexture() {
         return iconParticle;
@@ -184,12 +213,6 @@ public class CustomDrawersCompModel extends ChamModel {
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3"),
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2"),
                 new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1"),
-        };
-
-        public static final ResourceLocation[] iconDisabledOverlayFlipped = new ResourceLocation[] {
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_3_f"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_2_f"),
-                new ResourceLocation(Reference.MOD_ID + ":blocks/overlay/open_1_f"),
         };
 
         public static final ResourceLocation iconOverlayTrim =
@@ -236,7 +259,6 @@ public class CustomDrawersCompModel extends ChamModel {
             List<ResourceLocation> resource = new ArrayList<>();
             resource.addAll(Arrays.asList(iconDefaultFront));
             resource.addAll(Arrays.asList(iconDisabledOverlay));
-            resource.addAll(Arrays.asList(iconDisabledOverlayFlipped));
             resource.add(iconDefaultSide);
             resource.add(iconOverlayTrim);
             resource.add(iconOverlayBoldTrim);
@@ -308,8 +330,9 @@ public class CustomDrawersCompModel extends ChamModel {
             super(ImmutableList.of());
         }
 
+        @Nonnull
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel handleItemState(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, World world, EntityLivingBase entity) {
             return fromItem(stack);
         }
 

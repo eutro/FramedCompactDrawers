@@ -62,24 +62,12 @@ public abstract class AbstractKeyButtonToggle extends AbstractBlockCustomNonDraw
             }
 
             EntityPlayer player = event.getEntityPlayer();
-            Vec3d hitVec = event.getHitVec();
 
             // I wonder if anyone relies on these being called after onItemUseFirst...
             boolean bypass = player.getHeldItemMainhand().doesSneakBypassUse(world, pos, player) && player.getHeldItemOffhand().doesSneakBypassUse(world, pos, player);
 
             if(player.isSneaking() && !bypass && event.getUseBlock() != Event.Result.ALLOW)
                 return;
-
-            if(event.getUseItem() != net.minecraftforge.fml.common.eventhandler.Event.Result.DENY) {
-                //noinspection ConstantConditions
-                EnumActionResult result = event.getItemStack().onItemUseFirst(player, world, pos, event.getHand(), event.getFace(), (float) hitVec.x, (float) hitVec.y, (float) hitVec.z);
-                if(result != EnumActionResult.PASS) {
-                    event.setResult(Event.Result.DENY);
-                    event.setCanceled(true);
-                    event.setCancellationResult(result);
-                    return;
-                }
-            }
 
             event.setResult(Event.Result.DENY);
             event.setCanceled(true);
