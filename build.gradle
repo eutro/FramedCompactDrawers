@@ -56,7 +56,7 @@ repositories {
     }
     maven {
         name = "hwyla"
-        url = "http://tehnut.info/maven"
+        url = "https://github.com/TehNut/temporary-maven-thing/raw/master/maven"
     }
 }
 

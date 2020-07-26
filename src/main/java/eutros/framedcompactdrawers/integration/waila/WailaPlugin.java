@@ -51,6 +51,7 @@ public class WailaPlugin implements IIntegrationPlugin {
     public static class OverwrittenWailaDrawer extends Waila.WailaDrawer {
 
         @Override
+        @Nonnull
         public List<String> getWailaBody(@Nonnull ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
             TileEntity te = accessor.getTileEntity();
             if(!(te instanceof TileEntityDrawers))
