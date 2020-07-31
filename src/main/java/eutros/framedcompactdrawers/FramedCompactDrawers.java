@@ -33,9 +33,9 @@ public class FramedCompactDrawers {
         eb.addGenericListener(Item.class, ModBlocks::registerItems);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(FramedCompactDrawers.MOD_ID, "frameable"), new FrameableModelLoader());
         eb.addListener((FMLClientSetupEvent evt) -> ModBlocks.setRenderLayers());
-        eb.addGenericListener(IRecipeSerializer.class, (RegistryEvent.Register<IRecipeSerializer<?>> evt) -> {
-            evt.getRegistry().register(FramingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(MOD_ID, "framing")));
-        });
+        eb.addGenericListener(IRecipeSerializer.class, (RegistryEvent.Register<IRecipeSerializer<?>> evt) ->
+                evt.getRegistry().register(FramingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(MOD_ID, "framing"))));
+        eb.register(new ModBlocks.Tile());
     }
 
 }

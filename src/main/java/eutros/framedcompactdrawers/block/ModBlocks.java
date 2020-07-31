@@ -1,7 +1,9 @@
 package eutros.framedcompactdrawers.block;
 
-import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
+import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRenderer;
 import eutros.framedcompactdrawers.FramedCompactDrawers;
+import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
+import eutros.framedcompactdrawers.item.ItemCompDrawersCustom;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -9,7 +11,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Objects;
@@ -43,7 +51,7 @@ public class ModBlocks {
         Item.Properties properties = new Item.Properties()
                 .group(FramedCompactDrawers.CREATIVE_TAB);
 
-        r.register(new ItemDrawers(framedCompactDrawer, properties)
+        r.register(new ItemCompDrawersCustom(framedCompactDrawer, properties)
                 .setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName())));
 
         r.register(new BlockItem(framedDrawerController, properties)
@@ -57,6 +65,30 @@ public class ModBlocks {
         RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(framedDrawerController, RenderType.getTranslucent());
         RenderTypeLookup.setRenderLayer(framedSlave, RenderType.getTranslucent());
+    }
+
+    public static class Tile {
+
+        public static TileEntityType<TileCompDrawersCustom.Slot3> fractionalDrawers3;
+
+        @SuppressWarnings("ConstantConditions")
+        @SubscribeEvent
+        public void registerTiles(RegistryEvent.Register<TileEntityType<?>> evt) {
+            IForgeRegistry<TileEntityType<?>> r = evt.getRegistry();
+
+            fractionalDrawers3 = TileEntityType.Builder
+                    .create(TileCompDrawersCustom.Slot3::new, framedCompactDrawer)
+                    .build(null);
+            fractionalDrawers3.setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName()));
+            r.register(fractionalDrawers3);
+        }
+
+        @SubscribeEvent
+        @OnlyIn(Dist.CLIENT)
+        public void registerTers(ModelBakeEvent evt) {
+            ClientRegistry.bindTileEntityRenderer(fractionalDrawers3, TileEntityDrawersRenderer::new);
+        }
+
     }
 
 }
