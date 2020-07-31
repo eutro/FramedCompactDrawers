@@ -1,7 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_side": "framedcompactdrawers:blocks/raw_side"
+    "raw_side": "framedcompactdrawers:blocks/raw_side",
+    "shading_face": "framedcompactdrawers:blocks/overlay/shading_face",
+    "shading_trim": "framedcompactdrawers:blocks/overlay/shading_trim"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -220,6 +222,26 @@
           "end": [15, 15, 1],
           "face": "north",
           "texture": "#raw_front"
+        }
+      ],
+      "overlay": [
+        {
+          "start": [1, 1, 1],
+          "end": [15, 15, 1],
+          "face": "north",
+          "texture": "#overlay"
+        },
+        {
+          "start": [1, 1, 1],
+          "end": [15, 15, 1],
+          "face": "north",
+          "texture": "#shading_face"
+        },
+        {
+          "start": [1, 1, 1],
+          "end": [15, 15, 1],
+          "face": "north",
+          "texture": "#shading_trim"
         }
       ]
     }

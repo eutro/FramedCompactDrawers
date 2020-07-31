@@ -2,12 +2,15 @@ package eutros.framedcompactdrawers;
 
 import eutros.framedcompactdrawers.block.ModBlocks;
 import eutros.framedcompactdrawers.model.FrameableModelLoader;
+import eutros.framedcompactdrawers.recipe.FramingRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -30,6 +33,9 @@ public class FramedCompactDrawers {
         eb.addGenericListener(Item.class, ModBlocks::registerItems);
         ModelLoaderRegistry.registerLoader(new ResourceLocation(FramedCompactDrawers.MOD_ID, "frameable"), new FrameableModelLoader());
         eb.addListener((FMLClientSetupEvent evt) -> ModBlocks.setRenderLayers());
+        eb.addGenericListener(IRecipeSerializer.class, (RegistryEvent.Register<IRecipeSerializer<?>> evt) -> {
+            evt.getRegistry().register(FramingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(MOD_ID, "framing")));
+        });
     }
 
 }

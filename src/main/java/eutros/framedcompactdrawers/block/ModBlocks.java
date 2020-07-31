@@ -54,9 +54,9 @@ public class ModBlocks {
     }
 
     public static void setRenderLayers() {
-        RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(framedDrawerController, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(framedSlave, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(framedDrawerController, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(framedSlave, RenderType.getTranslucent());
     }
 
 }

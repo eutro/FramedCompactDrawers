@@ -1,6 +1,5 @@
 package eutros.framedcompactdrawers.model;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -10,23 +9,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -41,6 +39,14 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         OVERLAY;
 
         public final ModelProperty<ItemStack> property = new ModelProperty<>();
+
+        @Nullable
+        public String getKey() {
+            if(this != OVERLAY) {
+                return "Mat" + name().charAt(0);
+            }
+            return null;
+        }
     }
 
     public static class FramingCandidate {
@@ -62,13 +68,18 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         public class Baked {
 
+            private final Function<TextureAtlasSprite, BakedQuad> quadSupplier;
+            private final Map<TextureAtlasSprite, BakedQuad> quadCache = new HashMap<>();
             public RenderMaterial rawMaterial;
-            public Supplier<BakedQuad> defaultQuad;
+
+            public FramingCandidate getEnclosing() {
+                return FramingCandidate.this;
+            }
 
             private Baked(IModelConfiguration owner, IModelTransform transform, ResourceLocation modelLocation) {
                 rawMaterial = owner.resolveTexture(face.texture);
                 face.blockFaceUV.setUvs(getFaceUvs(direction));
-                defaultQuad = Suppliers.memoize(() -> FACE_BAKERY.bakeQuad(start, end, face, rawMaterial.getSprite(), direction, transform, null, true, modelLocation));
+                quadSupplier = sprite -> FACE_BAKERY.bakeQuad(start, end, face, sprite, direction, transform, null, true, modelLocation);
             }
 
             /**
@@ -93,12 +104,10 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             }
 
             public BakedQuad getQuad(ItemStack stack) {
-                BakedQuad base = defaultQuad.get();
-                if(stack == null || stack.isEmpty()) {
-                    return base;
-                }
-
-                return new BakedQuad(base.getVertexData(), base.getTintIndex(), base.getFace(), getSprite(stack), base.func_239287_f_());
+                return quadCache.computeIfAbsent(stack == null || stack.isEmpty() ?
+                                                 rawMaterial.getSprite() :
+                                                 getSprite(stack),
+                        quadSupplier);
             }
 
             private TextureAtlasSprite getSprite(ItemStack stack) {
@@ -128,32 +137,59 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 parent = bakery.getBakedModel(parentLoc, modelTransform, spriteGetter);
             }
         }
-        return new Baked(owner,
-                modelTransform,
-                modelLocation,
-                parent);
+        return new Baked(parent,
+                materials.entries()
+                        .stream()
+                        .collect(Collector.of(HashMultimap::create,
+                                (map, entry) ->
+                                        map.put(entry.getKey(),
+                                                entry.getValue()
+                                                        .baked(owner, modelTransform, modelLocation)),
+                                (first, second) -> {
+                                    first.putAll(second);
+                                    return first;
+                                },
+                                Collector.Characteristics.UNORDERED)));
     }
 
-    private class Baked implements IDynamicBakedModel {
+    private static class Baked implements IDynamicBakedModel {
 
         private final Multimap<MaterialSide, FramingCandidate.Baked> bakedSides;
         @Nullable
         private final IBakedModel parent;
+        private final ItemOverrideList overrides;
 
-        public Baked(IModelConfiguration owner, IModelTransform modelTransform, ResourceLocation modelLocation, @Nullable IBakedModel parent) {
-            bakedSides = materials.entries()
-                    .stream()
-                    .collect(Collector.of(HashMultimap::create,
-                            (map, entry) ->
-                                    map.put(entry.getKey(),
-                                            entry.getValue()
-                                                    .baked(owner, modelTransform, modelLocation)),
-                            (first, second) -> {
-                                first.putAll(second);
-                                return first;
-                            },
-                            Collector.Characteristics.UNORDERED));
+        public Baked(@Nullable IBakedModel parent, Multimap<MaterialSide, FramingCandidate.Baked> bakedSides) {
+            this.bakedSides = bakedSides;
             this.parent = parent;
+            overrides = new ItemOverrideList() {
+                @Nonnull
+                @Override
+                public IBakedModel func_239290_a_(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+                    return new Baked(parent, bakedSides) {
+                        @Nonnull
+                        @Override
+                        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+                            if(stack.hasTag()) {
+                                CompoundNBT tag = Objects.requireNonNull(stack.getTag());
+                                ModelDataMap.Builder builder = new ModelDataMap.Builder();
+                                for(MaterialSide material : MaterialSide.values()) {
+                                    String key = material.getKey();
+                                    if(key != null && tag.contains(key))
+                                        builder.withInitial(material.property, ItemStack.read(tag.getCompound(key)));
+                                }
+                                extraData = builder.build();
+                            }
+                            return super.getQuads(state, side, rand, extraData);
+                        }
+
+                        @Override
+                        public ItemOverrideList getOverrides() {
+                            return EMPTY;
+                        }
+                    };
+                }
+            };
         }
 
         @Nonnull
@@ -162,10 +198,22 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             List<BakedQuad> quads = new ArrayList<>();
             for(MaterialSide material : MaterialSide.values()) {
                 for(FramingCandidate.Baked baked : bakedSides.get(material)) {
-                    quads.add(baked.getQuad(extraData.getData(material.property)));
+                    if(baked.getEnclosing().direction == side)
+                        quads.add(baked.getQuad(resolve(extraData, material)));
                 }
             }
             return quads;
+        }
+
+        private ItemStack resolve(IModelData data, MaterialSide material) {
+            if(material == MaterialSide.OVERLAY) {
+                return null;
+            }
+            ItemStack stack = data.getData(material.property);
+            if(material != MaterialSide.SIDE && (stack == null || stack.isEmpty())) {
+                return resolve(data, MaterialSide.SIDE);
+            }
+            return stack;
         }
 
         @Override
@@ -203,7 +251,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         @Override
         public ItemOverrideList getOverrides() {
-            return parent == null ? ItemOverrideList.EMPTY : parent.getOverrides();
+            return overrides;
         }
 
         @Override
