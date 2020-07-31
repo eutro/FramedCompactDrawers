@@ -1,13 +1,12 @@
-package eutros.framedcompactdrawers.registry;
+package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
 import eutros.framedcompactdrawers.FramedCompactDrawers;
-import eutros.framedcompactdrawers.block.BlockCompDrawersCustom;
-import eutros.framedcompactdrawers.block.BlockControllerCustom;
-import eutros.framedcompactdrawers.block.BlockSlaveCustom;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -52,6 +51,12 @@ public class ModBlocks {
 
         r.register(new BlockItem(framedSlave, properties)
                 .setRegistryName(Objects.requireNonNull(framedSlave.getRegistryName())));
+    }
+
+    public static void setRenderLayers() {
+        RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(framedDrawerController, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(framedSlave, RenderType.getCutout());
     }
 
 }
