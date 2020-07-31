@@ -1,11 +1,10 @@
 package eutros.framedcompactdrawers.registry;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
-import eutros.framedcompactdrawers.FCDCreativeTab;
+import eutros.framedcompactdrawers.FramedCompactDrawers;
+import eutros.framedcompactdrawers.block.BlockCompDrawersCustom;
 import eutros.framedcompactdrawers.block.BlockControllerCustom;
-import eutros.framedcompactdrawers.block.BlockDrawersCustomComp;
 import eutros.framedcompactdrawers.block.BlockSlaveCustom;
-import eutros.framedcompactdrawers.utils.Reference;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -18,7 +17,7 @@ import java.util.Objects;
 
 public class ModBlocks {
 
-    public static BlockDrawersCustomComp framedCompactDrawer;
+    public static BlockCompDrawersCustom framedCompactDrawer;
     public static BlockControllerCustom framedDrawerController;
     public static BlockSlaveCustom framedSlave;
 
@@ -26,24 +25,24 @@ public class ModBlocks {
         IForgeRegistry<Block> r = event.getRegistry();
 
         AbstractBlock.Properties properties = AbstractBlock.Properties.create(Material.WOOD);
-        framedCompactDrawer = new BlockDrawersCustomComp(properties);
+        framedCompactDrawer = new BlockCompDrawersCustom(properties);
         r.register(framedCompactDrawer
-                .setRegistryName(Reference.MOD_ID, "framed_compact_drawer"));
+                .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"));
 
         framedDrawerController = new BlockControllerCustom(properties);
         r.register(framedDrawerController
-                .setRegistryName(Reference.MOD_ID, "framed_drawer_controller"));
+                .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_drawer_controller"));
 
         framedSlave = new BlockSlaveCustom(properties);
         r.register(framedSlave
-                .setRegistryName(Reference.MOD_ID, "framed_slave"));
+                .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_slave"));
     }
 
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> r = event.getRegistry();
 
         Item.Properties properties = new Item.Properties()
-                .group(FCDCreativeTab.tab);
+                .group(FramedCompactDrawers.CREATIVE_TAB);
 
         r.register(new ItemDrawers(framedCompactDrawer, properties)
                 .setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName())));
