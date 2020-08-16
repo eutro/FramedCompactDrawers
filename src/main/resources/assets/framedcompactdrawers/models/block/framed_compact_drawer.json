@@ -214,11 +214,36 @@
           "end": [16, 15, 16],
           "face": "east",
           "texture": "#raw_side"
+        },
+
+        {
+          "start": [1, 7, 1],
+          "end": [15, 9, 1],
+          "face": "north",
+          "texture": "#raw_side"
+        },
+        {
+          "start": [7, 1, 1],
+          "end": [9, 7, 1],
+          "face": "north",
+          "texture": "#raw_side"
         }
       ],
       "front": [
         {
           "start": [1, 1, 1],
+          "end": [7, 7, 1],
+          "face": "north",
+          "texture": "#raw_front"
+        },
+        {
+          "start": [9, 1, 1],
+          "end": [15, 7, 1],
+          "face": "north",
+          "texture": "#raw_front"
+        },
+        {
+          "start": [1, 9, 1],
           "end": [15, 15, 1],
           "face": "north",
           "texture": "#raw_front"
