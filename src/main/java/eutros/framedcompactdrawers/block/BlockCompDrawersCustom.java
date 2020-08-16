@@ -9,12 +9,12 @@ import net.minecraft.world.IBlockReader;
 public class BlockCompDrawersCustom extends BlockCompDrawers {
 
     public BlockCompDrawersCustom(Properties properties) {
-        super(32, properties);
+        super(properties);
     }
 
     @Override
     public TileEntityDrawers createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCompDrawersCustom();
+        return new TileCompDrawersCustom.Slot3();
     }
 
 }

@@ -28,18 +28,20 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(MaterialSide.class, (JsonDeserializer<MaterialSide>) (json, typeOfT, context) -> {
-                JsonPrimitive primitive = json.getAsJsonPrimitive();
-                if(!primitive.isString()) {
+                if(!json.isJsonPrimitive() ||
+                        !json.getAsJsonPrimitive()
+                                .isString()) {
                     throw new JsonSyntaxException("Not a string!");
                 }
-                return MaterialSide.valueOf(primitive.getAsString().toUpperCase());
+                return MaterialSide.valueOf(json.getAsString().toUpperCase());
             })
             .registerTypeAdapter(Direction.class, (JsonDeserializer<Direction>) (json, typeOfT, context) -> {
-                JsonPrimitive primitive = json.getAsJsonPrimitive();
-                if(!primitive.isString()) {
+                if(!json.isJsonPrimitive() ||
+                        !json.getAsJsonPrimitive()
+                                .isString()) {
                     throw new JsonSyntaxException("Not a string!");
                 }
-                return Direction.valueOf(primitive.getAsString().toUpperCase());
+                return Direction.valueOf(json.getAsString().toUpperCase());
             })
             .registerTypeAdapter(Multimap.class, (JsonDeserializer<Multimap<?, ?>>) (json, typeOfT, context) -> {
                 if(!json.isJsonObject()) {

@@ -198,7 +198,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             List<BakedQuad> quads = new ArrayList<>();
             for(MaterialSide material : MaterialSide.values()) {
                 for(FramingCandidate.Baked baked : bakedSides.get(material)) {
-                    if(baked.getEnclosing().direction == side)
+                    if(baked.getEnclosing().face.cullFace == side)
                         quads.add(baked.getQuad(resolve(extraData, material)));
                 }
             }

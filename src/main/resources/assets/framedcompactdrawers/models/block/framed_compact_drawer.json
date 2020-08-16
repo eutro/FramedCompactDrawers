@@ -44,25 +44,25 @@
         {
           "start": [1, 1, 0],
           "end": [15, 1, 1],
-          "face": "north",
+          "face": "up",
           "texture": "#raw_side"
         },
         {
           "start": [1, 15, 0],
           "end": [15, 15, 1],
-          "face": "north",
+          "face": "down",
           "texture": "#raw_side"
         },
         {
           "start": [15, 1, 0],
           "end": [15, 15, 1],
-          "face": "north",
+          "face": "west",
           "texture": "#raw_side"
         },
         {
           "start": [1, 1, 0],
           "end": [1, 15, 1],
-          "face": "north",
+          "face": "east",
           "texture": "#raw_side"
         },
 

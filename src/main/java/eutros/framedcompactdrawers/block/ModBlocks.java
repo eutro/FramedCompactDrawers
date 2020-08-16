@@ -31,7 +31,7 @@ public class ModBlocks {
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> r = event.getRegistry();
 
-        AbstractBlock.Properties properties = AbstractBlock.Properties.create(Material.WOOD);
+        AbstractBlock.Properties properties = AbstractBlock.Properties.create(Material.WOOD).notSolid();
         framedCompactDrawer = new BlockCompDrawersCustom(properties);
         r.register(framedCompactDrawer
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"));

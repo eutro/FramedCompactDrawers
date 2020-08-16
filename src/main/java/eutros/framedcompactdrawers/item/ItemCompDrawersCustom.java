@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers.item;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
-import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
+import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,24 +25,23 @@ public class ItemCompDrawersCustom extends ItemDrawers {
         super.onBlockPlaced(pos, worldIn, player, stack, state);
 
         TileEntity tile = worldIn.getTileEntity(pos);
-        if(!(tile instanceof TileCompDrawersCustom)) {
+        if(!(tile instanceof IFramingHolder)) {
             return false;
         }
-
-        TileCompDrawersCustom drawers = (TileCompDrawersCustom) tile;
 
         if(!stack.hasTag()) {
             return true;
         }
 
+        IFramingHolder frameable = (IFramingHolder) tile;
         CompoundNBT tag = Objects.requireNonNull(stack.getTag());
 
         if(tag.contains("MatS"))
-            drawers.side = ItemStack.read(tag.getCompound("MatS"));
+            frameable.setSide(ItemStack.read(tag.getCompound("MatS")));
         if(tag.contains("MatT"))
-            drawers.trim = ItemStack.read(tag.getCompound("MatT"));
+            frameable.setTrim(ItemStack.read(tag.getCompound("MatT")));
         if(tag.contains("MatF"))
-            drawers.front = ItemStack.read(tag.getCompound("MatF"));
+            frameable.setFront(ItemStack.read(tag.getCompound("MatF")));
 
         return true;
     }
