@@ -14,7 +14,7 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
 
     @Override
     public TileEntityDrawers createTileEntity(BlockState state, IBlockReader world) {
-        return new TileCompDrawersCustom.Slot3();
+        return new TileCompDrawersCustom();
     }
 
 }

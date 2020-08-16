@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "framedcompactdrawers.refmap.json",
+  "package": "eutros.framedcompactdrawers.mixin",
+  "mixins": [
+    "AccessorTileEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
