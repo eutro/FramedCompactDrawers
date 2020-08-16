@@ -1,10 +1,10 @@
-package eutros.framedcompactdrawers.model;
+package eutros.framedcompactdrawers.render.model;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
-import eutros.framedcompactdrawers.model.FrameableModel.FramingCandidate;
-import eutros.framedcompactdrawers.model.FrameableModel.MaterialSide;
+import eutros.framedcompactdrawers.render.model.FrameableModel.FramingCandidate;
+import eutros.framedcompactdrawers.render.model.FrameableModel.MaterialSide;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.renderer.model.BlockPartFace;

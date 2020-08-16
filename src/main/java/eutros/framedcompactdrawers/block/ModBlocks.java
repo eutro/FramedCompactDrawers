@@ -4,10 +4,10 @@ import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRe
 import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemCompDrawersCustom;
+import eutros.framedcompactdrawers.render.RenderHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -62,9 +62,9 @@ public class ModBlocks {
     }
 
     public static void setRenderLayers() {
-        RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(framedDrawerController, RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(framedSlave, RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderHelper::canRenderFrameable);
+        RenderTypeLookup.setRenderLayer(framedDrawerController, RenderHelper::canRenderFrameable);
+        RenderTypeLookup.setRenderLayer(framedSlave, RenderHelper::canRenderFrameable);
     }
 
     public static class Tile {

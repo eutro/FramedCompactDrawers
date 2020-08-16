@@ -2,7 +2,7 @@ package eutros.framedcompactdrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.ChamTileEntity;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.TileDataShim;
-import eutros.framedcompactdrawers.model.FrameableModel;
+import eutros.framedcompactdrawers.render.model.FrameableModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.client.model.data.EmptyModelData;

@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers;
 
 import eutros.framedcompactdrawers.block.ModBlocks;
-import eutros.framedcompactdrawers.model.FrameableModelLoader;
+import eutros.framedcompactdrawers.render.model.FrameableModelLoader;
 import eutros.framedcompactdrawers.recipe.FramingRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

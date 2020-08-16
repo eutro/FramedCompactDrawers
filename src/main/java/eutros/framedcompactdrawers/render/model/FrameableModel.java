@@ -1,4 +1,4 @@
-package eutros.framedcompactdrawers.model;
+package eutros.framedcompactdrawers.render.model;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -33,12 +35,17 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
     public Multimap<MaterialSide, FramingCandidate> materials;
 
     public enum MaterialSide {
-        SIDE,
-        FRONT,
-        TRIM,
-        OVERLAY;
+        SIDE(RenderType.getCutout()),
+        FRONT(RenderType.getCutout()),
+        TRIM(RenderType.getCutout()),
+        OVERLAY(RenderType.getTranslucent());
 
         public final ModelProperty<ItemStack> property = new ModelProperty<>();
+        private final RenderType type;
+
+        MaterialSide(RenderType type) {
+            this.type = type;
+        }
 
         @Nullable
         public String getKey() {
@@ -196,7 +203,9 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
             List<BakedQuad> quads = new ArrayList<>();
+            RenderType layer = MinecraftForgeClient.getRenderLayer();
             for(MaterialSide material : MaterialSide.values()) {
+                if(layer != null && material.type != layer) continue;
                 for(FramingCandidate.Baked baked : bakedSides.get(material)) {
                     if(baked.getEnclosing().face.cullFace == side)
                         quads.add(baked.getQuad(resolve(extraData, material)));

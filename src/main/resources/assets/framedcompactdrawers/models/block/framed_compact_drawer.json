@@ -251,20 +251,20 @@
       ],
       "overlay": [
         {
-          "start": [1, 1, 1],
-          "end": [15, 15, 1],
+          "start": [1, 1, 0.99],
+          "end": [15, 15, 0.99],
           "face": "north",
           "texture": "#overlay"
         },
         {
-          "start": [1, 1, 1],
-          "end": [15, 15, 1],
+          "start": [1, 1, 0.99],
+          "end": [15, 15, 0.99],
           "face": "north",
           "texture": "#shading_face"
         },
         {
-          "start": [1, 1, 1],
-          "end": [15, 15, 1],
+          "start": [1, 1, 0.99],
+          "end": [15, 15, 0.99],
           "face": "north",
           "texture": "#shading_trim"
         }
