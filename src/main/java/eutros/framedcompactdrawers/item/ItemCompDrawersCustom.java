@@ -23,7 +23,10 @@ public class ItemCompDrawersCustom extends ItemDrawers {
     @Override
     protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
         super.onBlockPlaced(pos, worldIn, player, stack, state);
+        return setFrame(pos, worldIn, stack);
+    }
 
+    public static boolean setFrame(BlockPos pos, World worldIn, ItemStack stack) {
         TileEntity tile = worldIn.getTileEntity(pos);
         if(!(tile instanceof IFramingHolder)) {
             return false;
