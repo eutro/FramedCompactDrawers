@@ -1,8 +1,8 @@
 package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockCompDrawers;
-import com.jaquadro.minecraft.storagedrawers.block.EnumCompDrawer;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
 import net.minecraft.block.BlockState;
@@ -19,7 +19,6 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
 
     public BlockCompDrawersCustom(Properties properties) {
         super(properties);
-        setDefaultState(getDefaultState().with(SLOTS, EnumCompDrawer.OPEN3));
     }
 
     @Override
@@ -34,6 +33,12 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
             return super.onBlockActivated(state, world, pos, player, hand, hit);
         }
         return ActionResultType.PASS;
+    }
+
+    public void setGeometryData() {
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.countGeometry, 0, countGeometry, 0, countGeometry.length);
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.labelGeometry, 0, labelGeometry, 0, labelGeometry.length);
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.slotGeometry, 0, slotGeometry, 0, slotGeometry.length);
     }
 
 }

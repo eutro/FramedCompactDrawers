@@ -65,6 +65,8 @@ public class ModBlocks {
         RenderTypeLookup.setRenderLayer(framedCompactDrawer, RenderHelper::canRenderFrameable);
         RenderTypeLookup.setRenderLayer(framedDrawerController, RenderHelper::canRenderFrameable);
         RenderTypeLookup.setRenderLayer(framedSlave, RenderHelper::canRenderFrameable);
+
+        framedCompactDrawer.setGeometryData();
     }
 
     public static class Tile {
