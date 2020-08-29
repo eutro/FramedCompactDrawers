@@ -3,7 +3,8 @@
   "textures": {
     "raw_side": "framedcompactdrawers:blocks/raw_side",
     "shading_face": "framedcompactdrawers:blocks/overlay/shading_face",
-    "shading_trim": "framedcompactdrawers:blocks/overlay/shading_trim"
+    "shading_trim": "framedcompactdrawers:blocks/overlay/shading_trim",
+    "handle": "framedcompactdrawers:blocks/overlay/handle"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -267,6 +268,12 @@
           "end": [15, 15, 0.99],
           "face": "north",
           "texture": "#shading_trim"
+        },
+        {
+          "start": [1, 1, 0.99],
+          "end": [15, 15, 0.99],
+          "face": "north",
+          "texture": "#handle"
         }
       ]
     }

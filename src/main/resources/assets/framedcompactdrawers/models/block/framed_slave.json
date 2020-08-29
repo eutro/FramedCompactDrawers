@@ -1,7 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_side": "framedcompactdrawers:blocks/raw_side"
+    "raw_side": "framedcompactdrawers:blocks/raw_side",
+    "raw_top_bottom": "framedcompactdrawers:blocks/slave_raw_top_bottom",
+    "overlay": "framedcompactdrawers:blocks/overlay/shading_side"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -188,16 +190,41 @@
           "start": [1, 0, 1],
           "end": [15, 0, 15],
           "face": "down",
-          "texture": "#raw_side"
+          "texture": "#raw_top_bottom"
         },
         {
           "start": [1, 16, 1],
           "end": [15, 16, 15],
           "face": "up",
-          "texture": "#raw_side"
+          "texture": "#raw_top_bottom"
         }
       ],
-      "overlay": []
+      "overlay": [
+        {
+          "start": [-0.01, 0, 0],
+          "end": [-0.01, 16, 16],
+          "face": "west",
+          "texture": "#overlay"
+        },
+        {
+          "start": [16.01, 0, 0],
+          "end": [16.01, 16, 16],
+          "face": "east",
+          "texture": "#overlay"
+        },
+        {
+          "start": [0, 0, -0.01],
+          "end": [16, 16, -0.01],
+          "face": "north",
+          "texture": "#overlay"
+        },
+        {
+          "start": [0, 0, 16.01],
+          "end": [16, 16, 16.01],
+          "face": "south",
+          "texture": "#overlay"
+        }
+      ]
     }
   }
 }

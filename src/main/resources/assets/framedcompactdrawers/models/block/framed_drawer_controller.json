@@ -5,7 +5,7 @@
     "raw_front": "framedcompactdrawers:blocks/drawer_controller_raw_front",
     "shading_face": "framedcompactdrawers:blocks/overlay/shading_controller_face",
     "shading_front_trim": "framedcompactdrawers:blocks/overlay/shading_controller_trim",
-    "shading_trim": "framedcompactdrawers:blocks/overlay/shading_trim"
+    "handle": "framedcompactdrawers:blocks/overlay/handle"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -243,7 +243,7 @@
           "start": [1, 1, 0.99],
           "end": [15, 15, 0.99],
           "face": "north",
-          "texture": "#shading_trim"
+          "texture": "#handle"
         }
       ]
     }
