@@ -4,6 +4,7 @@ import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRe
 import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
 import eutros.framedcompactdrawers.block.tile.TileControllerCustom;
+import eutros.framedcompactdrawers.block.tile.TileSlaveCustom;
 import eutros.framedcompactdrawers.item.ItemCompDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
 import eutros.framedcompactdrawers.render.RenderHelper;
@@ -11,7 +12,6 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -61,7 +61,7 @@ public class ModBlocks {
         r.register(new ItemOtherCustom(framedDrawerController, properties)
                 .setRegistryName(Objects.requireNonNull(framedDrawerController.getRegistryName())));
 
-        r.register(new BlockItem(framedSlave, properties)
+        r.register(new ItemOtherCustom(framedSlave, properties)
                 .setRegistryName(Objects.requireNonNull(framedSlave.getRegistryName())));
     }
 
@@ -77,6 +77,7 @@ public class ModBlocks {
 
         public static TileEntityType<TileCompDrawersCustom.Slot3> fractionalDrawers3;
         public static TileEntityType<TileControllerCustom> controllerCustom;
+        public static TileEntityType<TileSlaveCustom> slaveCustom;
 
         @SubscribeEvent
         public void registerTiles(RegistryEvent.Register<TileEntityType<?>> evt) {
@@ -84,6 +85,7 @@ public class ModBlocks {
 
             fractionalDrawers3 = registerTile(r, TileCompDrawersCustom.Slot3::new, framedCompactDrawer);
             controllerCustom = registerTile(r, TileControllerCustom::new, framedDrawerController);
+            slaveCustom = registerTile(r, TileSlaveCustom::new, framedSlave);
         }
 
         private <T extends TileEntity> TileEntityType<T> registerTile(IForgeRegistry<TileEntityType<?>> registry,

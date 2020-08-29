@@ -1,34 +1,21 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntitySlave;
 import eutros.framedcompactdrawers.block.ModBlocks;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.ITickList;
-import net.minecraft.world.TickPriority;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 
-public class TileControllerCustom extends TileEntityController implements IFramingHolder {
+public class TileSlaveCustom extends TileEntitySlave implements IFramingHolder {
 
     private ItemStack side = ItemStack.EMPTY;
     private ItemStack trim = ItemStack.EMPTY;
     private ItemStack front = ItemStack.EMPTY;
 
-    public TileControllerCustom() {
-        super(ModBlocks.Tile.controllerCustom);
+    public TileSlaveCustom() {
+        super(ModBlocks.Tile.slaveCustom);
         injectCustomData(this, this);
-    }
-
-    public void validate() {
-        super.validate();
-        if (world != null) {
-            ITickList<Block> pendingTicks = world.getPendingBlockTicks();
-            if(!pendingTicks.isTickScheduled(pos, ModBlocks.framedDrawerController)) {
-                pendingTicks.scheduleTick(pos, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
-            }
-        }
     }
 
     @Nonnull
