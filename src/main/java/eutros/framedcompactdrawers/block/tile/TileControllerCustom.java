@@ -2,7 +2,10 @@ package eutros.framedcompactdrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import eutros.framedcompactdrawers.block.ModBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.ITickList;
+import net.minecraft.world.TickPriority;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -15,6 +18,16 @@ public class TileControllerCustom extends TileEntityController implements IFrami
 
     public TileControllerCustom() {
         super(ModBlocks.Tile.controllerCustom);
+    }
+
+    public void validate() {
+        super.validate();
+        if (world != null) {
+            ITickList<Block> pendingTicks = world.getPendingBlockTicks();
+            if(!pendingTicks.isTickScheduled(pos, ModBlocks.framedDrawerController)) {
+                pendingTicks.scheduleTick(pos, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
+            }
+        }
     }
 
     @Nonnull
