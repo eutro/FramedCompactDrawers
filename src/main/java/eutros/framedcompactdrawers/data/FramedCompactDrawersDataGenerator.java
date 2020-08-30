@@ -1,6 +1,7 @@
 package eutros.framedcompactdrawers.data;
 
 import eutros.framedcompactdrawers.FramedCompactDrawers;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
@@ -10,7 +11,9 @@ public class FramedCompactDrawersDataGenerator {
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent evt) {
-        evt.getGenerator().addProvider(new FCDLootTableProvider(evt.getGenerator()));
+        DataGenerator gen = evt.getGenerator();
+        gen.addProvider(new FCDLootTableProvider(gen));
+        gen.addProvider(new FCDRecipeProvider(gen));
     }
 
 }

@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  */
 public class FramingRecipe extends SpecialRecipe {
 
-    public static final IRecipeSerializer<FramingRecipe> SERIALIZER = new SpecialRecipeSerializer<>(FramingRecipe::new);
+    public static final SpecialRecipeSerializer<FramingRecipe> SERIALIZER = new SpecialRecipeSerializer<>(FramingRecipe::new);
 
     public FramingRecipe(ResourceLocation idIn) {
         super(idIn);
