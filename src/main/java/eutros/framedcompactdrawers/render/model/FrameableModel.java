@@ -2,6 +2,9 @@ package eutros.framedcompactdrawers.render.model;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
+import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
@@ -27,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -64,6 +68,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         public Vector3f end;
         public Direction direction;
         public BlockPartFace face;
+        public Condition condition = Condition.ALWAYS;
 
         public String getRaw() {
             return face.texture;
@@ -121,6 +126,27 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 return Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, null, null).getParticleTexture(EmptyModelData.INSTANCE);
             }
 
+        }
+
+        public enum Condition implements Predicate<IModelData> {
+            LOCKED(data -> {
+                IDrawerAttributes attr = data.getData(TileEntityDrawers.ATTRIBUTES);
+                return attr != null &&
+                        (attr.isItemLocked(LockAttribute.LOCK_EMPTY) ||
+                                attr.isItemLocked(LockAttribute.LOCK_POPULATED));
+            }),
+            ALWAYS(data -> true);
+
+            private final Predicate<IModelData> predicate;
+
+            Condition(Predicate<IModelData> predicate) {
+                this.predicate = predicate;
+            }
+
+            @Override
+            public boolean test(IModelData data) {
+                return predicate.test(data);
+            }
         }
 
     }
@@ -207,7 +233,8 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             for(MaterialSide material : MaterialSide.values()) {
                 if(layer != null && material.type != layer) continue;
                 for(FramingCandidate.Baked baked : bakedSides.get(material)) {
-                    if(baked.getEnclosing().face.cullFace == side)
+                    if(baked.getEnclosing().face.cullFace == side &&
+                            baked.getEnclosing().condition.test(extraData))
                         quads.add(baked.getQuad(resolve(extraData, material)));
                 }
             }

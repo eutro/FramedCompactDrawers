@@ -4,7 +4,8 @@
     "raw_side": "framedcompactdrawers:blocks/raw_side",
     "shading_face": "framedcompactdrawers:blocks/overlay/shading_face",
     "shading_trim": "framedcompactdrawers:blocks/overlay/shading_trim",
-    "handle": "framedcompactdrawers:blocks/overlay/handle"
+    "handle": "framedcompactdrawers:blocks/overlay/handle",
+    "lock": "storagedrawers:blocks/indicator/lock_icon"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -274,6 +275,14 @@
           "end": [15, 15, 0.99],
           "face": "north",
           "texture": "#handle"
+        },
+        {
+          "condition": "locked",
+          "start": [7.5, 15, -0.01],
+          "end": [8.5, 16, -0.01],
+          "uv": [0, 0, 16, 16],
+          "face": "north",
+          "texture": "lock"
         }
       ]
     }

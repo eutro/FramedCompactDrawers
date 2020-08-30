@@ -4,12 +4,13 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
 import eutros.framedcompactdrawers.render.model.FrameableModel.FramingCandidate;
-import eutros.framedcompactdrawers.render.model.FrameableModel.MaterialSide;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
+import net.minecraft.client.renderer.model.BlockFaceUV;
 import net.minecraft.client.renderer.model.BlockPartFace;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
+import net.minecraft.util.EnumTypeAdapterFactory;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.IModelLoader;
 
@@ -27,22 +28,7 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
     }
 
     private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(MaterialSide.class, (JsonDeserializer<MaterialSide>) (json, typeOfT, context) -> {
-                if(!json.isJsonPrimitive() ||
-                        !json.getAsJsonPrimitive()
-                                .isString()) {
-                    throw new JsonSyntaxException("Not a string!");
-                }
-                return MaterialSide.valueOf(json.getAsString().toUpperCase());
-            })
-            .registerTypeAdapter(Direction.class, (JsonDeserializer<Direction>) (json, typeOfT, context) -> {
-                if(!json.isJsonPrimitive() ||
-                        !json.getAsJsonPrimitive()
-                                .isString()) {
-                    throw new JsonSyntaxException("Not a string!");
-                }
-                return Direction.valueOf(json.getAsString().toUpperCase());
-            })
+            .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
             .registerTypeAdapter(Multimap.class, (JsonDeserializer<Multimap<?, ?>>) (json, typeOfT, context) -> {
                 if(!json.isJsonObject()) {
                     throw new JsonSyntaxException("Not an object: " + json);
@@ -91,12 +77,16 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
                 );
             })
             .registerTypeAdapter(BlockPartFace.class, new BlockPartFace.Deserializer())
+            .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
             .registerTypeAdapter(FramingCandidate.class, (JsonDeserializer<FramingCandidate>) (json, typeOfT, context) -> {
                 if(!json.isJsonObject()) {
                     throw new JsonSyntaxException("Not an object: " + json.toString());
                 }
                 JsonObject obj = json.getAsJsonObject();
                 FramingCandidate candidate = new FramingCandidate();
+                FramingCandidate.Condition condition = context.deserialize(obj.get("condition"), FramingCandidate.Condition.class);
+                if(condition != null)
+                    candidate.condition = condition;
                 candidate.face = context.deserialize(json, BlockPartFace.class);
                 candidate.direction = context.deserialize(obj.get("face"), Direction.class);
                 candidate.start = context.deserialize(obj.get("start"), Vector3f.class);
