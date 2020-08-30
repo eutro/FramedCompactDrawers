@@ -1,14 +1,15 @@
 package eutros.framedcompactdrawers;
 
 import eutros.framedcompactdrawers.block.ModBlocks;
-import eutros.framedcompactdrawers.render.model.FrameableModelLoader;
 import eutros.framedcompactdrawers.recipe.FramingRecipe;
+import eutros.framedcompactdrawers.render.model.FrameableModelLoader;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -31,7 +32,7 @@ public class FramedCompactDrawers {
         IEventBus eb = FMLJavaModLoadingContext.get().getModEventBus();
         eb.addGenericListener(Block.class, ModBlocks::registerBlocks);
         eb.addGenericListener(Item.class, ModBlocks::registerItems);
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(FramedCompactDrawers.MOD_ID, "frameable"), new FrameableModelLoader());
+        eb.addListener((ModelRegistryEvent evt) -> ModelLoaderRegistry.registerLoader(new ResourceLocation(FramedCompactDrawers.MOD_ID, "frameable"), new FrameableModelLoader()));
         eb.addListener((FMLClientSetupEvent evt) -> ModBlocks.setRenderLayers());
         eb.addGenericListener(IRecipeSerializer.class, (RegistryEvent.Register<IRecipeSerializer<?>> evt) ->
                 evt.getRegistry().register(FramingRecipe.SERIALIZER.setRegistryName(new ResourceLocation(MOD_ID, "framing"))));

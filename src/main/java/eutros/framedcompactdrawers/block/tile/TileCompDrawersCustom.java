@@ -19,7 +19,7 @@ public abstract class TileCompDrawersCustom {
         public Slot3() {
             super();
             ((AccessorTileEntity) this).setType(ModBlocks.Tile.fractionalDrawers3);
-            injectCustomData(this, this);
+            injectCustomData(this);
         }
 
         @Nonnull

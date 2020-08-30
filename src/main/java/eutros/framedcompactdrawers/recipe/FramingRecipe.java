@@ -79,12 +79,8 @@ public class FramingRecipe extends SpecialRecipe {
         out.setCount(1);
         CompoundNBT tag = out.getOrCreateTag();
         tag.put("MatS", sideStack.write(new CompoundNBT()));
-
-        if(!trimStack.isEmpty())
-            tag.put("MatT", trimStack.write(new CompoundNBT()));
-
-        if(!frontStack.isEmpty())
-            tag.put("MatF", frontStack.write(new CompoundNBT()));
+        tag.put("MatT", trimStack.write(new CompoundNBT()));
+        tag.put("MatF", frontStack.write(new CompoundNBT()));
 
         return out;
     }

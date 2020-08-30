@@ -18,7 +18,7 @@ public class TileControllerCustom extends TileEntityController implements IFrami
 
     public TileControllerCustom() {
         super(ModBlocks.Tile.controllerCustom);
-        injectCustomData(this, this);
+        injectCustomData(this);
     }
 
     public void validate() {

@@ -15,7 +15,7 @@ public class TileSlaveCustom extends TileEntitySlave implements IFramingHolder {
 
     public TileSlaveCustom() {
         super(ModBlocks.Tile.slaveCustom);
-        injectCustomData(this, this);
+        injectCustomData(this);
     }
 
     @Nonnull

@@ -17,6 +17,10 @@ mixin {
     add sourceSets.main, "framedcompactdrawers.refmap.json"
 }
 
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
 apply plugin: 'eclipse'
 
 version = "${mc_version}-${major}.${minor}.${patch}"

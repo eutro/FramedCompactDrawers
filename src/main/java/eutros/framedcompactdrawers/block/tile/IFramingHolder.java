@@ -11,23 +11,31 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 
 public interface IFramingHolder {
 
-    default void injectCustomData(ChamTileEntity tile, IFramingHolder holder) {
+    default void injectCustomData(ChamTileEntity tile) {
         tile.injectData(new TileDataShim() {
             @Override
             public void read(CompoundNBT compoundNBT) {
-                holder.setSide(ItemStack.read(compoundNBT.getCompound("MatS")));
-                holder.setTrim(ItemStack.read(compoundNBT.getCompound("MatS")));
-                holder.setFront(ItemStack.read(compoundNBT.getCompound("MatS")));
+                readFromTag(compoundNBT);
             }
 
             @Override
             public CompoundNBT write(CompoundNBT compoundNBT) {
-                compoundNBT.put("MatS", holder.getSide().write(new CompoundNBT()));
-                compoundNBT.put("MatT", holder.getTrim().write(new CompoundNBT()));
-                compoundNBT.put("MatF", holder.getFront().write(new CompoundNBT()));
-                return compoundNBT;
+                return writeToTag(compoundNBT);
             }
         });
+    }
+
+    default void readFromTag(CompoundNBT compoundNBT) {
+        setSide(ItemStack.read(compoundNBT.getCompound("MatS")));
+        setTrim(ItemStack.read(compoundNBT.getCompound("MatT")));
+        setFront(ItemStack.read(compoundNBT.getCompound("MatF")));
+    }
+
+    default CompoundNBT writeToTag(CompoundNBT compoundNBT) {
+        compoundNBT.put("MatS", getSide().write(new CompoundNBT()));
+        compoundNBT.put("MatT", getTrim().write(new CompoundNBT()));
+        compoundNBT.put("MatF", getFront().write(new CompoundNBT()));
+        return compoundNBT;
     }
 
     default IModelData getCustomModelData(IModelData data, IFramingHolder holder) {
