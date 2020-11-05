@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.model.BlockPartFace;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumTypeAdapterFactory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.IModelLoader;
 
@@ -98,6 +99,7 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
                 }
                 return candidate;
             })
+            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
             .create();
 
     @Override

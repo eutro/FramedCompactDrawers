@@ -35,7 +35,13 @@ public class FCDLootTableProvider extends ForgeLootTableProvider {
             for(Block block : new Block[] {
                     ModBlocks.framedCompactDrawer,
                     ModBlocks.framedDrawerController,
-                    ModBlocks.framedSlave
+                    ModBlocks.framedSlave,
+                    ModBlocks.framedFullOne,
+                    ModBlocks.framedFullTwo,
+                    ModBlocks.framedFullFour,
+                    ModBlocks.framedHalfOne,
+                    ModBlocks.framedHalfTwo,
+                    ModBlocks.framedHalfFour,
             }) {
                 consumer.accept(block.getLootTable(),
                         dropping(block)

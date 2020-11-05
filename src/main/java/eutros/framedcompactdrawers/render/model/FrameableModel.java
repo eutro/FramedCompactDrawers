@@ -1,5 +1,7 @@
 package eutros.framedcompactdrawers.render.model;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
@@ -25,10 +27,14 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
@@ -36,7 +42,10 @@ import java.util.stream.Collectors;
 
 public class FrameableModel implements IModelGeometry<FrameableModel> {
 
+    public static final Logger LOGGER = LogManager.getLogger();
+
     public Multimap<MaterialSide, FramingCandidate> materials;
+    public List<ResourceLocation> inherits = Collections.emptyList();
 
     public enum MaterialSide {
         SIDE(RenderType.getCutout()),
@@ -81,7 +90,10 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         public class Baked {
 
             private final Function<TextureAtlasSprite, BakedQuad> quadSupplier;
-            private final Map<TextureAtlasSprite, BakedQuad> quadCache = new HashMap<>();
+            private final Cache<TextureAtlasSprite, BakedQuad> quadCache =
+                    CacheBuilder.newBuilder()
+                            .expireAfterAccess(60, TimeUnit.SECONDS)
+                            .build();
             public RenderMaterial rawMaterial;
 
             public FramingCandidate getEnclosing() {
@@ -116,10 +128,14 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             }
 
             public BakedQuad getQuad(ItemStack stack) {
-                return quadCache.computeIfAbsent(stack == null || stack.isEmpty() ?
-                                                 rawMaterial.getSprite() :
-                                                 getSprite(stack),
-                        quadSupplier);
+                TextureAtlasSprite sprite = stack == null || stack.isEmpty() ?
+                                            rawMaterial.getSprite() :
+                                            getSprite(stack);
+                try {
+                    return quadCache.get(sprite, () -> quadSupplier.apply(sprite));
+                } catch(ExecutionException e) {
+                    return quadSupplier.apply(sprite);
+                }
             }
 
             private TextureAtlasSprite getSprite(ItemStack stack) {
@@ -128,6 +144,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         }
 
+        @SuppressWarnings("unused")
         public enum Condition implements Predicate<IModelData> {
             LOCKED(data -> {
                 IDrawerAttributes attr = data.getData(TileEntityDrawers.ATTRIBUTES);
@@ -170,24 +187,36 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 parent = bakery.getBakedModel(parentLoc, modelTransform, spriteGetter);
             }
         }
-        return new Baked(parent,
-                materials.entries()
-                        .stream()
-                        .collect(Collector.of(HashMultimap::create,
-                                (map, entry) ->
-                                        map.put(entry.getKey(),
-                                                entry.getValue()
-                                                        .baked(owner, modelTransform, modelLocation)),
-                                (first, second) -> {
-                                    first.putAll(second);
-                                    return first;
-                                },
-                                Collector.Characteristics.UNORDERED)));
+        HashMultimap<MaterialSide, FramingCandidate.Baked> bakedSides = materials.entries()
+                .stream()
+                .collect(Collector.of(HashMultimap::create,
+                        (map, entry) ->
+                                map.put(entry.getKey(),
+                                        entry.getValue()
+                                                .baked(owner, modelTransform, modelLocation)),
+                        (first, second) -> {
+                            first.putAll(second);
+                            return first;
+                        },
+                        Collector.Characteristics.UNORDERED));
+        for(ResourceLocation rl : inherits) {
+            IBakedModel baked = bakery.getBakedModel(rl, modelTransform, spriteGetter);
+            if(baked instanceof Baked) {
+                for(Map.Entry<MaterialSide, FramingCandidate.Baked> entry : ((Baked) baked).bakedSides.entries()) {
+                    bakedSides.put(entry.getKey(), entry.getValue());
+                }
+            } else {
+                LOGGER.warn("Inherited model must be a frameable model! Got: " + (baked == null ?
+                                                                                  "null" :
+                                                                                  baked.getClass()));
+            }
+        }
+        return new Baked(parent, bakedSides);
     }
 
     private static class Baked implements IDynamicBakedModel {
 
-        private final Multimap<MaterialSide, FramingCandidate.Baked> bakedSides;
+        final Multimap<MaterialSide, FramingCandidate.Baked> bakedSides;
         @Nullable
         private final IBakedModel parent;
         private final ItemOverrideList overrides;

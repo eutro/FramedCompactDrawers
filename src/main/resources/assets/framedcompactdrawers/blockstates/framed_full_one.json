@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "framedcompactdrawers:block/framed_full_one" },
+    "facing=south": { "model": "framedcompactdrawers:block/framed_full_one", "y": 180 },
+    "facing=west": { "model": "framedcompactdrawers:block/framed_full_one", "y": 270 },
+    "facing=east": { "model": "framedcompactdrawers:block/framed_full_one", "y": 90 }
+  }
+}

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-import static eutros.framedcompactdrawers.item.ItemCompDrawersCustom.setFrame;
+import static eutros.framedcompactdrawers.item.ItemDrawersCustom.setFrame;
 
 public class ItemOtherCustom extends BlockItem {
 

@@ -1,0 +1,23 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "raw_side": "framedcompactdrawers:blocks/raw_side",
+    "raw_front": "framedcompactdrawers:blocks/drawers_raw_front_1"
+  },
+  "loader": "framedcompactdrawers:frameable",
+  "frameable": {
+    "inherits": [
+      "framedcompactdrawers:block/framed_full"
+    ],
+    "materials": {
+      "front": [
+        {
+          "start": [1, 1, 1],
+          "end": [15, 15, 1],
+          "face": "north",
+          "texture": "#raw_front"
+        }
+      ]
+    }
+  }
+}

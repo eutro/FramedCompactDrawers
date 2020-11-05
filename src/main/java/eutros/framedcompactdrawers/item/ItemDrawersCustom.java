@@ -14,9 +14,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class ItemCompDrawersCustom extends ItemDrawers {
+public class ItemDrawersCustom extends ItemDrawers {
 
-    public ItemCompDrawersCustom(Block block, Properties properties) {
+    public ItemDrawersCustom(Block block, Properties properties) {
         super(block, properties);
     }
 
