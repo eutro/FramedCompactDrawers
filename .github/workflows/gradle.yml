@@ -1,0 +1,47 @@
+name: Java CI
+
+on:
+  push:
+    paths:
+      - 'gradle.properties'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('build.gradle') }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build --no-daemon
+
+      - name: Get file name
+        run: echo "::set-output name=file_path::$(ls build/libs/*)"
+        id: var
+
+      - name: Upload to CurseForge
+        uses: itsmeow/curseforge-upload@v2
+        with:
+          token: ${{ secrets.CURSEFORGE_TOKEN }}
+          project_id: 376351
+          game_endpoint: minecraft
+          file_path: ${{ steps.var.outputs.file_path }}
+          changelog: See recent commits [here](https://github.com/eutropius225/FramedCompactDrawers/commits/${{ github.sha }}).
+          changelog_type: markdown
+          # 1.16.1, 1.16.2, 1.16.3, 1.16.4, Java 8
+          game_versions: 7892,8010,8056,8134,4458
+          release_type: release
+          relations: storage-drawers:requiredDependency
