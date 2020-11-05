@@ -1,0 +1,55 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "raw_side": "framedcompactdrawers:blocks/raw_side",
+    "raw_front": "framedcompactdrawers:blocks/drawers_raw_front_4"
+  },
+  "loader": "framedcompactdrawers:frameable",
+  "frameable": {
+    "inherits": [
+      "framedcompactdrawers:block/framed_half"
+    ],
+    "materials": {
+      "trim": [
+        {
+          "start": [1, 7, 9],
+          "end": [15, 9, 9],
+          "face": "north",
+          "texture": "#raw_side"
+        },
+        {
+          "start": [7, 1, 9],
+          "end": [9, 15, 9],
+          "face": "north",
+          "texture": "#raw_side"
+        }
+      ],
+      "front": [
+        {
+          "start": [1, 1, 9],
+          "end": [7, 7, 9],
+          "face": "north",
+          "texture": "#raw_front"
+        },
+        {
+          "start": [1, 9, 9],
+          "end": [7, 15, 9],
+          "face": "north",
+          "texture": "#raw_front"
+        },
+        {
+          "start": [9, 1, 9],
+          "end": [15, 7, 9],
+          "face": "north",
+          "texture": "#raw_front"
+        },
+        {
+          "start": [9, 9, 9],
+          "end": [15, 15, 9],
+          "face": "north",
+          "texture": "#raw_front"
+        }
+      ]
+    }
+  }
+}

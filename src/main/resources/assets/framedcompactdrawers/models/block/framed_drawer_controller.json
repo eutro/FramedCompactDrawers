@@ -9,8 +9,7 @@
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
     "inherits": [
-      "framedcompactdrawers:block/drawer_full_trim",
-      "framedcompactdrawers:block/drawer_sides"
+      "framedcompactdrawers:block/framed_full"
     ],
     "materials": {
       "front": [

@@ -140,19 +140,19 @@ public class ModBlocks {
             controllerCustom = registerTile(r, TileControllerCustom::new, framedDrawerController);
             slaveCustom = registerTile(r, TileSlaveCustom::new, framedSlave);
 
-            standardDrawers1 = registerTile(r, TileDrawersStandardCustom.Slot1::new, framedFullOne);
-            standardDrawers2 = registerTile(r, TileDrawersStandardCustom.Slot2::new, framedFullTwo);
-            standardDrawers4 = registerTile(r, TileDrawersStandardCustom.Slot4::new, framedFullFour);
+            standardDrawers1 = registerTile(r, TileDrawersStandardCustom.Slot1::new, framedFullOne, framedHalfOne);
+            standardDrawers2 = registerTile(r, TileDrawersStandardCustom.Slot2::new, framedFullTwo, framedHalfTwo);
+            standardDrawers4 = registerTile(r, TileDrawersStandardCustom.Slot4::new, framedFullFour, framedHalfFour);
         }
 
         private <T extends TileEntity> TileEntityType<T> registerTile(IForgeRegistry<TileEntityType<?>> registry,
                                                                       Supplier<T> supplier,
-                                                                      Block block) {
+                                                                      Block... blocks) {
             @SuppressWarnings("ConstantConditions")
             TileEntityType<T> type = TileEntityType.Builder
-                    .create(supplier, block)
+                    .create(supplier, blocks)
                     .build(null);
-            type.setRegistryName(Objects.requireNonNull(block.getRegistryName()));
+            type.setRegistryName(Objects.requireNonNull(blocks[0].getRegistryName()));
             registry.register(type);
             return type;
         }
