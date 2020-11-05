@@ -3,18 +3,18 @@
   "group": "framed_drawers",
   "pattern": [
     "///",
-    "/D/",
+    " C ",
     "///"
   ],
   "key": {
     "/": {
       "tag": "forge:rods/wooden"
     },
-    "D": {
-      "tag": "framedcompactdrawers:controller"
+    "C": {
+      "tag": "forge:chests/wooden"
     }
   },
   "result": {
-    "item": "framedcompactdrawers:framed_drawer_controller"
+    "item": "framedcompactdrawers:framed_full_one"
   }
 }

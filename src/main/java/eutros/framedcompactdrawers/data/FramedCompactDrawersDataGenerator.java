@@ -14,6 +14,7 @@ public class FramedCompactDrawersDataGenerator {
         DataGenerator gen = evt.getGenerator();
         gen.addProvider(new FCDLootTableProvider(gen));
         gen.addProvider(new FCDRecipeProvider(gen));
+        FCDTagProvider.register(gen);
     }
 
 }

@@ -1,3 +1,6 @@
 {
-  "type": "framedcompactdrawers:framing"
+  "type": "framedcompactdrawers:framing",
+  "ingredient": {
+    "tag": "framedcompactdrawers:frame_triple"
+  }
 }

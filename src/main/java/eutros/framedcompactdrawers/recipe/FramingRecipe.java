@@ -1,25 +1,29 @@
 package eutros.framedcompactdrawers.recipe;
 
-import eutros.framedcompactdrawers.FramedCompactDrawers;
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * Temporary recipe to frame drawers, until Storage Drawers catches up.
  */
 public class FramingRecipe extends SpecialRecipe {
 
-    public static final SpecialRecipeSerializer<FramingRecipe> SERIALIZER = new SpecialRecipeSerializer<>(FramingRecipe::new);
+    public static final IRecipeSerializer<FramingRecipe> SERIALIZER = new Serializer();
+    private final Ingredient ingredient;
 
-    public FramingRecipe(ResourceLocation idIn) {
+    public FramingRecipe(ResourceLocation idIn, Ingredient ingredient) {
         super(idIn);
+        this.ingredient = ingredient;
     }
 
     @Override
@@ -31,10 +35,9 @@ public class FramingRecipe extends SpecialRecipe {
     public ItemStack getCraftingResult(CraftingInventory inv) {
         int drawerIndex = -1;
         for(int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack stack = inv.getStackInSlot(i);
-            ResourceLocation rn = stack.getItem().getRegistryName();
-            if(rn != null && rn.getNamespace().equals(FramedCompactDrawers.MOD_ID)) {
-                drawerIndex = i;
+            if(ingredient.test(inv.getStackInSlot(i))) {
+                if(drawerIndex == -1) drawerIndex = i;
+                else return ItemStack.EMPTY;
             }
         }
 
@@ -93,6 +96,27 @@ public class FramingRecipe extends SpecialRecipe {
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return SERIALIZER;
+    }
+
+    public static class Serializer
+            extends ForgeRegistryEntry<IRecipeSerializer<?>>
+            implements IRecipeSerializer<FramingRecipe> {
+
+        @Override
+        public FramingRecipe read(ResourceLocation recipeId, JsonObject json) {
+            return new FramingRecipe(recipeId, Ingredient.deserialize(json.get("ingredient")));
+        }
+
+        @Override
+        public FramingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+            return new FramingRecipe(recipeId, Ingredient.read(buffer));
+        }
+
+        @Override
+        public void write(PacketBuffer buffer, FramingRecipe recipe) {
+            recipe.ingredient.write(buffer);
+        }
+
     }
 
 }
