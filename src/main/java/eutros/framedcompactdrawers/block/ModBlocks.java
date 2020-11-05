@@ -17,8 +17,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -169,6 +171,21 @@ public class ModBlocks {
                 ClientRegistry.bindTileEntityRenderer(drawer, TileEntityDrawersRenderer::new);
         }
 
+    }
+
+    public static void fill(NonNullList<ItemStack> items) {
+        for(Block block : new Block[] {
+                framedCompactDrawer,
+                framedDrawerController,
+                framedSlave,
+                framedFullOne,
+                framedFullTwo,
+                framedFullFour,
+                framedHalfOne,
+                framedHalfTwo,
+                framedHalfFour,
+        })
+            items.add(new ItemStack(block));
     }
 
 }

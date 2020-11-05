@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -25,6 +26,11 @@ public class FramedCompactDrawers {
         @Override
         public ItemStack createIcon() {
             return new ItemStack(ModBlocks.framedCompactDrawer);
+        }
+
+        @Override
+        public void fill(NonNullList<ItemStack> items) {
+            ModBlocks.fill(items);
         }
     };
 
