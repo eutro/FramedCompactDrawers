@@ -23,7 +23,7 @@ sourceSets.main.resources {
 
 apply plugin: 'eclipse'
 
-version = "${mc_version}-${major}.${minor}.${patch}"
+version = "${mc_part}-${major}.${minor}.${patch}"
 group = "eutros.framedcompactdrawers"
 archivesBaseName = "${mod_id}"
 
