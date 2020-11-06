@@ -47,6 +47,16 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
         return ActionResultType.PASS;
     }
 
+    @Override
+    protected ItemStack getMainDrop(BlockState state, TileEntityDrawers tile) {
+        // SD not using loot tables grumble grumble
+        ItemStack stack = super.getMainDrop(state, tile);
+        if(tile instanceof IFramingHolder) {
+            ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
+        }
+        return stack;
+    }
+
     public void setGeometryData() {
         System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.countGeometry, 0, countGeometry, 0, countGeometry.length);
         System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.labelGeometry, 0, labelGeometry, 0, labelGeometry.length);

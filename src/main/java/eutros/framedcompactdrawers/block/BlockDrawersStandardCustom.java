@@ -2,6 +2,7 @@ package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.BlockStandardDrawers;
+import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
@@ -79,6 +80,16 @@ public class BlockDrawersStandardCustom extends BlockStandardDrawers {
                     throw new IllegalArgumentException("Illegal drawer count.");
             }
         }
+    }
+
+    @Override
+    protected ItemStack getMainDrop(BlockState state, TileEntityDrawers tile) {
+        // SD not using loot tables grumble grumble
+        ItemStack stack = super.getMainDrop(state, tile);
+        if(tile instanceof IFramingHolder) {
+            ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
+        }
+        return stack;
     }
 
 }
