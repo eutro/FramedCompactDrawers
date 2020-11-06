@@ -24,6 +24,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -48,7 +49,11 @@ public class ModBlocks {
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> r = event.getRegistry();
-        AbstractBlock.Properties properties = AbstractBlock.Properties.create(Material.WOOD).notSolid();
+        AbstractBlock.Properties properties = AbstractBlock.Properties
+                .create(Material.WOOD)
+                .harvestTool(ToolType.AXE)
+                .hardnessAndResistance(5.0F)
+                .notSolid();
 
         r.register((framedCompactDrawer = new BlockCompDrawersCustom(properties))
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"));
