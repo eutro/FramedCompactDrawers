@@ -25,6 +25,7 @@ public class FCDTagProvider {
 
         @Override
         public void registerTags() {
+            getOrCreateBuilder(ModTags.Blocks.FRAME_DOUBLE).add(framedTrim);
             getOrCreateBuilder(ModTags.Blocks.FRAME_TRIPLE)
                     .add(
                             framedCompactDrawer,
@@ -52,6 +53,7 @@ public class FCDTagProvider {
 
         @Override
         public void registerTags() {
+            copy(ModTags.Blocks.FRAME_DOUBLE, ModTags.Items.FRAME_DOUBLE);
             copy(ModTags.Blocks.FRAME_TRIPLE, ModTags.Items.FRAME_TRIPLE);
             copy(ModTags.Blocks.COMPACTING, ModTags.Items.COMPACTING);
             copy(ModTags.Blocks.SLAVE, ModTags.Items.SLAVE);

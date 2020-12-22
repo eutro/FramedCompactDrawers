@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.client.renderer.TileEntityDrawersRenderer;
 import eutros.framedcompactdrawers.FramedCompactDrawers;
-import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
-import eutros.framedcompactdrawers.block.tile.TileControllerCustom;
-import eutros.framedcompactdrawers.block.tile.TileDrawersStandardCustom;
-import eutros.framedcompactdrawers.block.tile.TileSlaveCustom;
+import eutros.framedcompactdrawers.block.tile.*;
 import eutros.framedcompactdrawers.item.ItemDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
 import eutros.framedcompactdrawers.render.RenderHelper;
@@ -39,6 +36,7 @@ public class ModBlocks {
     public static BlockCompDrawersCustom framedCompactDrawer;
     public static BlockControllerCustom framedDrawerController;
     public static BlockSlaveCustom framedSlave;
+    public static BlockTrimCustom framedTrim;
 
     public static BlockDrawersStandardCustom framedFullOne;
     public static BlockDrawersStandardCustom framedFullTwo;
@@ -61,6 +59,8 @@ public class ModBlocks {
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_drawer_controller"));
         r.register((framedSlave = new BlockSlaveCustom(properties))
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_slave"));
+        r.register((framedTrim = new BlockTrimCustom(properties))
+                .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_trim"));
 
         r.register((framedFullOne = new BlockDrawersStandardCustom(1, false, properties))
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_full_one"));
@@ -87,6 +87,8 @@ public class ModBlocks {
                 .setRegistryName(Objects.requireNonNull(framedDrawerController.getRegistryName())));
         r.register(new ItemOtherCustom(framedSlave, properties)
                 .setRegistryName(Objects.requireNonNull(framedSlave.getRegistryName())));
+        r.register(new ItemOtherCustom(framedTrim, properties)
+                .setRegistryName(Objects.requireNonNull(framedTrim.getRegistryName())));
 
         r.register(new ItemDrawersCustom(framedFullOne, properties)
                 .setRegistryName(Objects.requireNonNull(framedFullOne.getRegistryName())));
@@ -104,10 +106,11 @@ public class ModBlocks {
 
     public static void setRenderLayers() {
         Predicate<RenderType> crf = RenderHelper::canRenderFrameable;
-        for(Block b : new Block[] {
+        for (Block b : new Block[]{
                 framedCompactDrawer,
                 framedDrawerController,
                 framedSlave,
+                framedTrim,
                 framedFullOne,
                 framedFullTwo,
                 framedFullFour,
@@ -118,7 +121,7 @@ public class ModBlocks {
             RenderTypeLookup.setRenderLayer(b, crf);
 
         framedCompactDrawer.setGeometryData();
-        for(BlockDrawersStandardCustom bdsc : new BlockDrawersStandardCustom[] {
+        for (BlockDrawersStandardCustom bdsc : new BlockDrawersStandardCustom[]{
                 framedFullOne,
                 framedFullTwo,
                 framedFullFour,
@@ -134,6 +137,7 @@ public class ModBlocks {
         public static TileEntityType<TileCompDrawersCustom.Slot3> fractionalDrawers3;
         public static TileEntityType<TileControllerCustom> controllerCustom;
         public static TileEntityType<TileSlaveCustom> slaveCustom;
+        public static TileEntityType<TileTrimCustom> trimCustom;
 
         public static TileEntityType<TileDrawersStandardCustom.Slot1> standardDrawers1;
         public static TileEntityType<TileDrawersStandardCustom.Slot2> standardDrawers2;
@@ -146,6 +150,7 @@ public class ModBlocks {
             fractionalDrawers3 = registerTile(r, TileCompDrawersCustom.Slot3::new, framedCompactDrawer);
             controllerCustom = registerTile(r, TileControllerCustom::new, framedDrawerController);
             slaveCustom = registerTile(r, TileSlaveCustom::new, framedSlave);
+            trimCustom = registerTile(r, TileTrimCustom::new, framedTrim);
 
             standardDrawers1 = registerTile(r, TileDrawersStandardCustom.Slot1::new, framedFullOne, framedHalfOne);
             standardDrawers2 = registerTile(r, TileDrawersStandardCustom.Slot2::new, framedFullTwo, framedHalfTwo);
@@ -167,7 +172,7 @@ public class ModBlocks {
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public void registerTERs(ModelBakeEvent evt) {
-            for(TileEntityType<? extends TileEntityDrawers> drawer : ImmutableList.of(
+            for (TileEntityType<? extends TileEntityDrawers> drawer : ImmutableList.of(
                     fractionalDrawers3,
                     standardDrawers1,
                     standardDrawers2,
@@ -179,10 +184,11 @@ public class ModBlocks {
     }
 
     public static void fill(NonNullList<ItemStack> items) {
-        for(Block block : new Block[] {
+        for (Block block : new Block[]{
                 framedCompactDrawer,
                 framedDrawerController,
                 framedSlave,
+                framedTrim,
                 framedFullOne,
                 framedFullTwo,
                 framedFullFour,

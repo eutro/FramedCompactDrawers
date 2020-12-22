@@ -32,7 +32,7 @@ public class FCDRecipeProvider extends ForgeRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        for(Pair<? extends Block, Tags.IOptionalNamedTag<Item>> pair : ImmutableList.of(
+        for (Pair<? extends Block, Tags.IOptionalNamedTag<Item>> pair : ImmutableList.of(
                 Pair.of(ModBlocks.framedCompactDrawer, ModTags.Items.COMPACTING),
                 Pair.of(ModBlocks.framedDrawerController, ModTags.Items.CONTROLLER),
                 Pair.of(ModBlocks.framedSlave, ModTags.Items.SLAVE)
@@ -50,34 +50,45 @@ public class FCDRecipeProvider extends ForgeRecipeProvider {
                     .build(consumer);
         }
 
-        for(Triple<? extends Block, Integer, String[]> triple : ImmutableList.of(
-                Triple.of(ModBlocks.framedFullOne, 1, new String[] {
+        ShapedRecipeBuilder.shapedRecipe(ModBlocks.framedTrim, 4)
+                .patternLine("/X/")
+                .patternLine("X/X")
+                .patternLine("/X/")
+                .key('/', Tags.Items.RODS_WOODEN)
+                .key('X', ItemTags.PLANKS)
+                .addCriterion("has_sticks", hasItem(Tags.Items.RODS_WOODEN))
+                .addCriterion("has_planks", hasItem(ItemTags.PLANKS))
+                .setGroup("framed_drawers")
+                .build(consumer);
+
+        for (Triple<? extends Block, Integer, String[]> triple : ImmutableList.of(
+                Triple.of(ModBlocks.framedFullOne, 1, new String[]{
                         "///",
                         " C ",
                         "///"
                 }),
-                Triple.of(ModBlocks.framedFullTwo, 2, new String[] {
+                Triple.of(ModBlocks.framedFullTwo, 2, new String[]{
                         "/C/",
                         "///",
                         "/C/"
                 }),
-                Triple.of(ModBlocks.framedFullFour, 4, new String[] {
+                Triple.of(ModBlocks.framedFullFour, 4, new String[]{
                         "C/C",
                         "///",
                         "C/C"
                 }),
 
-                Triple.of(ModBlocks.framedHalfOne, 1, new String[] {
+                Triple.of(ModBlocks.framedHalfOne, 1, new String[]{
                         "/S/",
                         " C ",
                         "/S/"
                 }),
-                Triple.of(ModBlocks.framedHalfTwo, 2, new String[] {
+                Triple.of(ModBlocks.framedHalfTwo, 2, new String[]{
                         "/C/",
                         "/S/",
                         "/C/"
                 }),
-                Triple.of(ModBlocks.framedHalfFour, 4, new String[] {
+                Triple.of(ModBlocks.framedHalfFour, 4, new String[]{
                         "C/C",
                         "/S/",
                         "C/C"
@@ -94,7 +105,7 @@ public class FCDRecipeProvider extends ForgeRecipeProvider {
                     .addCriterion("has_sticks", hasItem(Tags.Items.RODS_WOODEN))
                     .setGroup("framed_drawers");
 
-            if(Arrays.stream(triple.getRight()).anyMatch(s -> s.contains("S"))) {
+            if (Arrays.stream(triple.getRight()).anyMatch(s -> s.contains("S"))) {
                 srb.key('S', ItemTags.WOODEN_SLABS)
                         .addCriterion("has_wooden_slabs", hasItem(ItemTags.WOODEN_SLABS));
             }
@@ -102,30 +113,46 @@ public class FCDRecipeProvider extends ForgeRecipeProvider {
             srb.build(consumer);
         }
 
-        consumer.accept(new IFinishedRecipe() {
-            @Override
-            public void serialize(JsonObject json) {
-                json.add("ingredient", new Ingredient.TagList(ModTags.Items.FRAME_TRIPLE).serialize());
-            }
+        consumer.accept(new FinishedFramingRecipe("frame_three", Ingredient.fromTag(ModTags.Items.FRAME_TRIPLE), true));
+        consumer.accept(new FinishedFramingRecipe("frame_two", Ingredient.fromTag(ModTags.Items.FRAME_DOUBLE), false));
+    }
 
-            @Override
-            public IRecipeSerializer<?> getSerializer() {
-                return FramingRecipe.SERIALIZER;
-            }
+    private static class FinishedFramingRecipe implements IFinishedRecipe {
 
-            public ResourceLocation getID() {
-                return new ResourceLocation(FramedCompactDrawers.MOD_ID, "framing");
-            }
+        private final String path;
+        private final Ingredient ingredient;
+        private final boolean includeFront;
 
-            @Nullable
-            public JsonObject getAdvancementJson() {
-                return null;
-            }
+        public FinishedFramingRecipe(String path, Ingredient ingredient, boolean includeFront) {
+            this.path = path;
+            this.ingredient = ingredient;
+            this.includeFront = includeFront;
+        }
 
-            public ResourceLocation getAdvancementID() {
-                return new ResourceLocation("");
-            }
-        });
+        @Override
+        public void serialize(JsonObject json) {
+            json.add("ingredient", ingredient.serialize());
+            json.addProperty("includeFront", includeFront);
+        }
+
+        @Override
+        public ResourceLocation getID() {
+            return new ResourceLocation(FramedCompactDrawers.MOD_ID, path);
+        }
+
+        @Override
+        public IRecipeSerializer<?> getSerializer() {
+            return FramingRecipe.SERIALIZER;
+        }
+
+        @Nullable
+        public JsonObject getAdvancementJson() {
+            return null;
+        }
+
+        public ResourceLocation getAdvancementID() {
+            return new ResourceLocation("");
+        }
     }
 
 }

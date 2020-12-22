@@ -32,10 +32,11 @@ public class FCDLootTableProvider extends ForgeLootTableProvider {
     protected static class FCDBlockLootTables extends BlockLootTables {
 
         static void getTables(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
-            for(Block block : new Block[] {
+            for (Block block : new Block[]{
                     ModBlocks.framedCompactDrawer,
                     ModBlocks.framedDrawerController,
                     ModBlocks.framedSlave,
+                    ModBlocks.framedTrim,
                     ModBlocks.framedFullOne,
                     ModBlocks.framedFullTwo,
                     ModBlocks.framedFullFour,

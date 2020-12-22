@@ -8,31 +8,33 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
-public class ModTags {
+public interface ModTags {
 
-    public static class Items {
+    interface Items {
 
-        public static Tags.IOptionalNamedTag<Item> FRAME_TRIPLE = tag("frame_triple");
+        Tags.IOptionalNamedTag<Item> FRAME_DOUBLE = tag("frame_double");
+        Tags.IOptionalNamedTag<Item> FRAME_TRIPLE = tag("frame_triple");
 
-        public static Tags.IOptionalNamedTag<Item> COMPACTING = tag("compacting");
-        public static Tags.IOptionalNamedTag<Item> SLAVE = tag("slave");
-        public static Tags.IOptionalNamedTag<Item> CONTROLLER = tag("controller");
+        Tags.IOptionalNamedTag<Item> COMPACTING = tag("compacting");
+        Tags.IOptionalNamedTag<Item> SLAVE = tag("slave");
+        Tags.IOptionalNamedTag<Item> CONTROLLER = tag("controller");
 
-        private static Tags.IOptionalNamedTag<Item> tag(String name) {
+        static Tags.IOptionalNamedTag<Item> tag(String name) {
             return ItemTags.createOptional(new ResourceLocation(FramedCompactDrawers.MOD_ID, name));
         }
 
     }
 
-    public static class Blocks {
+    interface Blocks {
 
-        public static Tags.IOptionalNamedTag<Block> FRAME_TRIPLE = tag("frame_triple");
+        Tags.IOptionalNamedTag<Block> FRAME_TRIPLE = tag("frame_triple");
+        Tags.IOptionalNamedTag<Block> FRAME_DOUBLE = tag("frame_double");
 
-        public static Tags.IOptionalNamedTag<Block> COMPACTING = tag("compacting");
-        public static Tags.IOptionalNamedTag<Block> SLAVE = tag("slave");
-        public static Tags.IOptionalNamedTag<Block> CONTROLLER = tag("controller");
+        Tags.IOptionalNamedTag<Block> COMPACTING = tag("compacting");
+        Tags.IOptionalNamedTag<Block> SLAVE = tag("slave");
+        Tags.IOptionalNamedTag<Block> CONTROLLER = tag("controller");
 
-        private static Tags.IOptionalNamedTag<Block> tag(String name) {
+        static Tags.IOptionalNamedTag<Block> tag(String name) {
             return BlockTags.createOptional(new ResourceLocation(FramedCompactDrawers.MOD_ID, name));
         }
 
