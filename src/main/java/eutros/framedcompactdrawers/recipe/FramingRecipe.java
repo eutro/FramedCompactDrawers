@@ -2,6 +2,7 @@ package eutros.framedcompactdrawers.recipe;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -13,9 +14,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * Temporary recipe to frame drawers, until Storage Drawers catches up.
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FramingRecipe extends SpecialRecipe {
 
     public static final IRecipeSerializer<FramingRecipe> SERIALIZER = new Serializer();
@@ -31,6 +36,14 @@ public class FramingRecipe extends SpecialRecipe {
     @Override
     public boolean matches(CraftingInventory inv, World worldIn) {
         return !getCraftingResult(inv).isEmpty();
+    }
+
+    private static CompoundNBT materialNbt(ItemStack stack) {
+        if (stack.getCount() != 1) {
+            stack = stack.copy();
+            stack.setCount(1);
+        }
+        return stack.write(new CompoundNBT());
     }
 
     @Override
@@ -82,9 +95,9 @@ public class FramingRecipe extends SpecialRecipe {
         ItemStack out = inv.getStackInSlot(drawerIndex).copy();
         out.setCount(1);
         CompoundNBT tag = out.getOrCreateTag();
-        tag.put("MatS", sideStack.write(new CompoundNBT()));
-        tag.put("MatT", trimStack.write(new CompoundNBT()));
-        if (includeFront) tag.put("MatF", frontStack.write(new CompoundNBT()));
+        tag.put("MatS", materialNbt(sideStack));
+        tag.put("MatT", materialNbt(trimStack));
+        if (includeFront) tag.put("MatF", materialNbt(frontStack));
 
         return out;
     }
