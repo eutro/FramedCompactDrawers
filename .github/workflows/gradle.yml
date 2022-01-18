@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'gradle.properties'
+      - '.github/workflows/gradle.yml'
 
 jobs:
   build:
