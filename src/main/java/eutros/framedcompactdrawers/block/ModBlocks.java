@@ -50,7 +50,9 @@ public class ModBlocks {
                 .strength(3.0F, 5.0F)
                 .sound(SoundType.WOOD)
                 .isSuffocating((_1, _2, _3) -> false)
-                .isRedstoneConductor((_1, _2, _3) -> false);
+                .isRedstoneConductor((_1, _2, _3) -> false)
+                // it should be possible to do occlusion conditionally, but I tried briefly and gave up
+                .noOcclusion();
 
         r.register((framedCompactDrawer = new BlockCompDrawersCustom(properties))
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"));

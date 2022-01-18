@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "framedcompactdrawers:framed_trim"
+    ]
+  },
+  "criteria": {
+    "has_sticks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/wooden"
+          }
+        ]
+      }
+    },
+    "has_planks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "minecraft:planks"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "framedcompactdrawers:framed_trim"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sticks",
+      "has_planks",
+      "has_the_recipe"
+    ]
+  ]
+}

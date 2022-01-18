@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "framedcompactdrawers:framed_compact_drawer"
+    ]
+  },
+  "criteria": {
+    "has_framedcompactdrawers": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "framedcompactdrawers:compacting"
+          }
+        ]
+      }
+    },
+    "has_sticks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/wooden"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "framedcompactdrawers:framed_compact_drawer"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_framedcompactdrawers",
+      "has_sticks",
+      "has_the_recipe"
+    ]
+  ]
+}

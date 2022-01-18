@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "framedcompactdrawers:framed_trim",
+    "framedcompactdrawers:framed_compact_drawer",
+    "framedcompactdrawers:framed_drawer_controller",
+    "framedcompactdrawers:framed_slave",
+    "framedcompactdrawers:framed_full_one",
+    "framedcompactdrawers:framed_full_two",
+    "framedcompactdrawers:framed_full_four",
+    "framedcompactdrawers:framed_half_one",
+    "framedcompactdrawers:framed_half_two",
+    "framedcompactdrawers:framed_half_four"
+  ]
+}

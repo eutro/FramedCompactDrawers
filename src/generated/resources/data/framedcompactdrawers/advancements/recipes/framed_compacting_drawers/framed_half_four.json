@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "framedcompactdrawers:framed_half_four"
+    ]
+  },
+  "criteria": {
+    "has_chests_wooden": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:chests/wooden"
+          }
+        ]
+      }
+    },
+    "has_sticks": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/wooden"
+          }
+        ]
+      }
+    },
+    "has_wooden_slabs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "minecraft:wooden_slabs"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "framedcompactdrawers:framed_half_four"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chests_wooden",
+      "has_sticks",
+      "has_wooden_slabs",
+      "has_the_recipe"
+    ]
+  ]
+}
