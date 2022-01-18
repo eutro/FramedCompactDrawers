@@ -2,8 +2,9 @@ package eutros.framedcompactdrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
 import eutros.framedcompactdrawers.block.ModBlocks;
-import eutros.framedcompactdrawers.mixin.AccessorTileEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -11,17 +12,13 @@ import javax.annotation.Nonnull;
 public abstract class TileDrawersStandardCustom {
 
     @Nonnull
-    public static TileEntityDrawersStandard createEntity(int drawerCount) {
-        switch(drawerCount) {
-            case 1:
-                return new Slot1();
-            case 2:
-                return new Slot2();
-            case 4:
-                return new Slot4();
-            default:
-                throw new IllegalArgumentException("Bad drawer count: " + drawerCount);
-        }
+    public static TileEntityDrawersStandard createEntity(int drawerCount, BlockPos pos, BlockState state) {
+        return switch (drawerCount) {
+            case 1 -> new Slot1(pos, state);
+            case 2 -> new Slot2(pos, state);
+            case 4 -> new Slot4(pos, state);
+            default -> throw new IllegalArgumentException("Bad drawer count: " + drawerCount);
+        };
     }
 
     public static class Slot4 extends TileEntityDrawersStandard.Slot4 implements IFramingHolder {
@@ -30,9 +27,9 @@ public abstract class TileDrawersStandardCustom {
         private ItemStack trim = ItemStack.EMPTY;
         private ItemStack front = ItemStack.EMPTY;
 
-        public Slot4() {
-            super();
-            ((AccessorTileEntity) this).setType(ModBlocks.Tile.standardDrawers4);
+        public Slot4(BlockPos pos, BlockState state) {
+            super(pos, state);
+            type = ModBlocks.Tile.standardDrawers4;
             injectCustomData(this);
         }
 
@@ -80,9 +77,9 @@ public abstract class TileDrawersStandardCustom {
         private ItemStack trim = ItemStack.EMPTY;
         private ItemStack front = ItemStack.EMPTY;
 
-        public Slot2() {
-            super();
-            ((AccessorTileEntity) this).setType(ModBlocks.Tile.standardDrawers2);
+        public Slot2(BlockPos pos, BlockState state) {
+            super(pos, state);
+            type = ModBlocks.Tile.standardDrawers2;
             injectCustomData(this);
         }
 
@@ -130,9 +127,9 @@ public abstract class TileDrawersStandardCustom {
         private ItemStack trim = ItemStack.EMPTY;
         private ItemStack front = ItemStack.EMPTY;
 
-        public Slot1() {
-            super();
-            ((AccessorTileEntity) this).setType(ModBlocks.Tile.standardDrawers1);
+        public Slot1(BlockPos pos, BlockState state) {
+            super(pos, state);
+            type = ModBlocks.Tile.standardDrawers1;
             injectCustomData(this);
         }
 

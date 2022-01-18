@@ -3,25 +3,28 @@ package eutros.framedcompactdrawers.block;
 import com.jaquadro.minecraft.storagedrawers.block.BlockTrim;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileTrimCustom;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class BlockTrimCustom extends BlockTrim {
+@ParametersAreNonnullByDefault
+public class BlockTrimCustom extends BlockTrim implements EntityBlock {
 
     public BlockTrimCustom(Properties properties) {
         super(properties);
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getTileEntity(pos);
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        BlockEntity tile = world.getBlockEntity(pos);
         ItemStack stack = super.getPickBlock(state, target, world, pos, player);
         if(tile instanceof IFramingHolder) {
             ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
@@ -29,15 +32,9 @@ public class BlockTrimCustom extends BlockTrim {
         return stack;
     }
 
-    @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
-    }
-
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new TileTrimCustom();
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new TileTrimCustom(pos, state);
     }
-
 }

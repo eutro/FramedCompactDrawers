@@ -4,17 +4,17 @@ import com.jaquadro.minecraft.storagedrawers.block.BlockController;
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileControllerCustom;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class BlockControllerCustom extends BlockController {
 
@@ -23,13 +23,13 @@ public class BlockControllerCustom extends BlockController {
     }
 
     @Override
-    public TileEntityController createTileEntity(BlockState state, IBlockReader world) {
-        return new TileControllerCustom();
+    public TileEntityController newBlockEntity(BlockPos pos, BlockState state) {
+        return new TileControllerCustom(pos, state);
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
-        TileEntity tile = world.getTileEntity(pos);
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        BlockEntity tile = world.getBlockEntity(pos);
         ItemStack stack = super.getPickBlock(state, target, world, pos, player);
         if(tile instanceof IFramingHolder) {
             ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
@@ -38,12 +38,12 @@ public class BlockControllerCustom extends BlockController {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntity tile = world.getTileEntity(pos);
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        BlockEntity tile = world.getBlockEntity(pos);
         if(tile instanceof IFramingHolder && !((IFramingHolder) tile).getSide().isEmpty()) {
-            return super.onBlockActivated(state, world, pos, player, hand, hit);
+            return super.use(state, world, pos, player, hand, hit);
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
 }

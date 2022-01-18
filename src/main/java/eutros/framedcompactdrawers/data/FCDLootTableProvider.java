@@ -3,35 +3,38 @@ package eutros.framedcompactdrawers.data;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import eutros.framedcompactdrawers.block.ModBlocks;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.loot.LootParameterSet;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.functions.CopyNbt;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.data.ForgeLootTableProvider;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class FCDLootTableProvider extends ForgeLootTableProvider {
+public class FCDLootTableProvider extends LootTableProvider {
 
     public FCDLootTableProvider(DataGenerator gen) {
         super(gen);
     }
 
+    @Nonnull
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
-        return ImmutableList.of(Pair.of(() -> FCDBlockLootTables::getTables, LootParameterSets.BLOCK));
+    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
+        return ImmutableList.of(Pair.of(() -> FCDBlockLootTables::getTables, LootContextParamSets.BLOCK));
     }
 
-    protected static class FCDBlockLootTables extends BlockLootTables {
+    protected static class FCDBlockLootTables extends BlockLoot {
 
-        static void getTables(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
+        public static void getTables(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
             for (Block block : new Block[]{
                     ModBlocks.framedCompactDrawer,
                     ModBlocks.framedDrawerController,
@@ -45,11 +48,11 @@ public class FCDLootTableProvider extends ForgeLootTableProvider {
                     ModBlocks.framedHalfFour,
             }) {
                 consumer.accept(block.getLootTable(),
-                        dropping(block)
-                                .acceptFunction(CopyNbt.builder(CopyNbt.Source.BLOCK_ENTITY)
-                                        .replaceOperation("MatS", "MatS")
-                                        .replaceOperation("MatF", "MatF")
-                                        .replaceOperation("MatT", "MatT")));
+                        createSingleItemTable(block)
+                                .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
+                                        .copy("MatS", "MatS")
+                                        .copy("MatF", "MatF")
+                                        .copy("MatT", "MatT")));
             }
         }
 

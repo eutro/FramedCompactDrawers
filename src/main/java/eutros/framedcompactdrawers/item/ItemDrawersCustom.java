@@ -2,18 +2,22 @@ package eutros.framedcompactdrawers.item;
 
 import com.jaquadro.minecraft.storagedrawers.item.ItemDrawers;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ItemDrawersCustom extends ItemDrawers {
 
     public ItemDrawersCustom(Block block, Properties properties) {
@@ -21,14 +25,14 @@ public class ItemDrawersCustom extends ItemDrawers {
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
-        super.onBlockPlaced(pos, worldIn, player, stack, state);
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level worldIn, @Nullable Player player,  ItemStack stack, BlockState state) {
+        super.updateCustomBlockEntityTag(pos, worldIn, player, stack, state);
         return setFrame(pos, worldIn, stack);
     }
 
-    public static boolean setFrame(BlockPos pos, World worldIn, ItemStack stack) {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if(!(tile instanceof IFramingHolder)) {
+    public static boolean setFrame(BlockPos pos, Level worldIn, ItemStack stack) {
+        BlockEntity tile = worldIn.getBlockEntity(pos);
+        if(!(tile instanceof IFramingHolder frameable)) {
             return false;
         }
 
@@ -36,15 +40,14 @@ public class ItemDrawersCustom extends ItemDrawers {
             return true;
         }
 
-        IFramingHolder frameable = (IFramingHolder) tile;
-        CompoundNBT tag = Objects.requireNonNull(stack.getTag());
+        CompoundTag tag = Objects.requireNonNull(stack.getTag());
 
         if(tag.contains("MatS"))
-            frameable.setSide(ItemStack.read(tag.getCompound("MatS")));
+            frameable.setSide(ItemStack.of(tag.getCompound("MatS")));
         if(tag.contains("MatT"))
-            frameable.setTrim(ItemStack.read(tag.getCompound("MatT")));
+            frameable.setTrim(ItemStack.of(tag.getCompound("MatT")));
         if(tag.contains("MatF"))
-            frameable.setFront(ItemStack.read(tag.getCompound("MatF")));
+            frameable.setFront(ItemStack.of(tag.getCompound("MatF")));
 
         return true;
     }

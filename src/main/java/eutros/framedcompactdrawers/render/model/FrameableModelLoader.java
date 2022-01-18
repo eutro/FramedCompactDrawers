@@ -3,18 +3,20 @@ package eutros.framedcompactdrawers.render.model;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
+import com.mojang.math.Vector3f;
 import eutros.framedcompactdrawers.render.model.FrameableModel.FramingCandidate;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
-import net.minecraft.client.renderer.model.BlockFaceUV;
-import net.minecraft.client.renderer.model.BlockPartFace;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EnumTypeAdapterFactory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.renderer.block.model.BlockElementFace;
+import net.minecraft.client.renderer.block.model.BlockFaceUV;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import net.minecraftforge.client.model.IModelLoader;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -22,14 +24,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FrameableModelLoader implements IModelLoader<FrameableModel> {
 
     @Override
-    public void onResourceManagerReload(IResourceManager resourceManager) {
+    public void onResourceManagerReload(ResourceManager resourceManager) {
     }
 
     private static final Gson gson = new GsonBuilder()
-            .registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+            .registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory())
             .registerTypeAdapter(Multimap.class, (JsonDeserializer<Multimap<?, ?>>) (json, typeOfT, context) -> {
                 if(!json.isJsonObject()) {
                     throw new JsonSyntaxException("Not an object: " + json);
@@ -69,7 +73,7 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
                         StreamSupport.stream(array.spliterator(), false)
                                 .mapToDouble(el -> {
                                     if(!el.isJsonPrimitive() || !el.getAsJsonPrimitive().isNumber()) {
-                                        throw new JsonSyntaxException("Not a number: " + json.toString());
+                                        throw new JsonSyntaxException("Not a number: " + json);
                                     }
                                     return el.getAsDouble();
                                 })
@@ -77,24 +81,24 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
                                 .toFloatArray()
                 );
             })
-            .registerTypeAdapter(BlockPartFace.class, new BlockPartFace.Deserializer())
+            .registerTypeAdapter(BlockElementFace.class, new BlockElementFace.Deserializer())
             .registerTypeAdapter(BlockFaceUV.class, new BlockFaceUV.Deserializer())
             .registerTypeAdapter(FramingCandidate.class, (JsonDeserializer<FramingCandidate>) (json, typeOfT, context) -> {
                 if(!json.isJsonObject()) {
-                    throw new JsonSyntaxException("Not an object: " + json.toString());
+                    throw new JsonSyntaxException("Not an object: " + json);
                 }
                 JsonObject obj = json.getAsJsonObject();
                 FramingCandidate candidate = new FramingCandidate();
                 FramingCandidate.Condition condition = context.deserialize(obj.get("condition"), FramingCandidate.Condition.class);
                 if(condition != null)
                     candidate.condition = condition;
-                candidate.face = context.deserialize(json, BlockPartFace.class);
+                candidate.face = context.deserialize(json, BlockElementFace.class);
                 candidate.direction = context.deserialize(obj.get("face"), Direction.class);
                 candidate.start = context.deserialize(obj.get("start"), Vector3f.class);
                 candidate.end = context.deserialize(obj.get("end"), Vector3f.class);
-                if(candidate.start.getX() != candidate.end.getX() &&
-                        candidate.start.getY() != candidate.end.getY() &&
-                        candidate.start.getZ() != candidate.end.getZ()) {
+                if(candidate.start.x() != candidate.end.x() &&
+                        candidate.start.y() != candidate.end.y() &&
+                        candidate.start.z() != candidate.end.z()) {
                     throw new JsonSyntaxException(String.format("Start and end points %s and %s aren't aligned on any axis!", candidate.start, candidate.end));
                 }
                 return candidate;

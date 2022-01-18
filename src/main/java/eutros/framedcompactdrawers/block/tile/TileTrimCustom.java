@@ -1,39 +1,44 @@
 package eutros.framedcompactdrawers.block.tile;
 
 import eutros.framedcompactdrawers.block.ModBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class TileTrimCustom extends TileEntity implements IFramingHolder {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class TileTrimCustom extends BlockEntity implements IFramingHolder {
 
     private ItemStack side = ItemStack.EMPTY;
     private ItemStack trim = ItemStack.EMPTY;
 
-    public TileTrimCustom() {
-        super(ModBlocks.Tile.trimCustom);
+    public TileTrimCustom(BlockPos pos, BlockState state) {
+        super(ModBlocks.Tile.trimCustom, pos, state);
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
-        super.read(state, nbt);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
         readFromTag(nbt);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        super.write(compound);
-        writeToTag(compound);
-        return compound;
+    public CompoundTag save(CompoundTag nbt) {
+        super.save(nbt);
+        writeToTag(nbt);
+        return nbt;
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return save(new CompoundTag());
     }
 
     @Nonnull

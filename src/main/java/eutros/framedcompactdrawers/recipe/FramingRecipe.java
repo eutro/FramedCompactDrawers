@@ -2,16 +2,16 @@ package eutros.framedcompactdrawers.recipe;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,9 +21,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FramingRecipe extends SpecialRecipe {
+public class FramingRecipe extends CustomRecipe {
 
-    public static final IRecipeSerializer<FramingRecipe> SERIALIZER = new Serializer();
+    public static final RecipeSerializer<FramingRecipe> SERIALIZER = new Serializer();
     final Ingredient ingredient;
     final boolean includeFront;
 
@@ -34,23 +34,23 @@ public class FramingRecipe extends SpecialRecipe {
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn) {
-        return !getCraftingResult(inv).isEmpty();
+    public boolean matches(CraftingContainer inv, Level worldIn) {
+        return !assemble(inv).isEmpty();
     }
 
-    private static CompoundNBT materialNbt(ItemStack stack) {
+    private static CompoundTag materialNbt(ItemStack stack) {
         if (stack.getCount() != 1) {
             stack = stack.copy();
             stack.setCount(1);
         }
-        return stack.write(new CompoundNBT());
+        return stack.save(new CompoundTag());
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingContainer inv) {
         int drawerIndex = -1;
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            if (ingredient.test(inv.getStackInSlot(i))) {
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (ingredient.test(inv.getItem(i))) {
                 if (drawerIndex == -1) drawerIndex = i;
                 else return ItemStack.EMPTY;
             }
@@ -78,23 +78,23 @@ public class FramingRecipe extends SpecialRecipe {
                 frontSlot
         });
 
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            if (!applicable.contains(i) && !inv.getStackInSlot(i).isEmpty()) {
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (!applicable.contains(i) && !inv.getItem(i).isEmpty()) {
                 return ItemStack.EMPTY;
             }
         }
 
-        ItemStack sideStack = inv.getStackInSlot(sideSlot);
+        ItemStack sideStack = inv.getItem(sideSlot);
         if (sideStack.isEmpty()) return ItemStack.EMPTY;
 
-        ItemStack frontStack = inv.getStackInSlot(frontSlot);
+        ItemStack frontStack = inv.getItem(frontSlot);
         if (!includeFront && !frontStack.isEmpty()) return ItemStack.EMPTY;
 
-        ItemStack trimStack = inv.getStackInSlot(trimSlot);
+        ItemStack trimStack = inv.getItem(trimSlot);
 
-        ItemStack out = inv.getStackInSlot(drawerIndex).copy();
+        ItemStack out = inv.getItem(drawerIndex).copy();
         out.setCount(1);
-        CompoundNBT tag = out.getOrCreateTag();
+        CompoundTag tag = out.getOrCreateTag();
         tag.put("MatS", materialNbt(sideStack));
         tag.put("MatT", materialNbt(trimStack));
         if (includeFront) tag.put("MatF", materialNbt(frontStack));
@@ -103,34 +103,34 @@ public class FramingRecipe extends SpecialRecipe {
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width >= 2 && height >= 2;
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
     }
 
     public static class Serializer
-            extends ForgeRegistryEntry<IRecipeSerializer<?>>
-            implements IRecipeSerializer<FramingRecipe> {
+            extends ForgeRegistryEntry<RecipeSerializer<?>>
+            implements RecipeSerializer<FramingRecipe> {
 
         @Override
-        public FramingRecipe read(ResourceLocation recipeId, JsonObject json) {
+        public FramingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             return new FramingRecipe(recipeId,
-                    Ingredient.deserialize(json.get("ingredient")),
+                    Ingredient.fromJson(json.get("ingredient")),
                     json.has("includeFront") && json.get("includeFront").getAsBoolean());
         }
 
         @Override
-        public FramingRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-            return new FramingRecipe(recipeId, Ingredient.read(buffer), buffer.readBoolean());
+        public FramingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+            return new FramingRecipe(recipeId, Ingredient.fromNetwork(buffer), buffer.readBoolean());
         }
 
         @Override
-        public void write(PacketBuffer buffer, FramingRecipe recipe) {
-            recipe.ingredient.write(buffer);
+        public void toNetwork(FriendlyByteBuf buffer, FramingRecipe recipe) {
+            recipe.ingredient.toNetwork(buffer);
             buffer.writeBoolean(recipe.includeFront);
         }
 

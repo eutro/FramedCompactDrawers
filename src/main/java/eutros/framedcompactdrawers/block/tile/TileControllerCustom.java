@@ -2,10 +2,12 @@ package eutros.framedcompactdrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import eutros.framedcompactdrawers.block.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.ITickList;
-import net.minecraft.world.TickPriority;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.TickList;
+import net.minecraft.world.level.TickPriority;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -16,17 +18,17 @@ public class TileControllerCustom extends TileEntityController implements IFrami
     private ItemStack trim = ItemStack.EMPTY;
     private ItemStack front = ItemStack.EMPTY;
 
-    public TileControllerCustom() {
-        super(ModBlocks.Tile.controllerCustom);
+    public TileControllerCustom(BlockPos pos, BlockState state) {
+        super(ModBlocks.Tile.controllerCustom, pos, state);
         injectCustomData(this);
     }
 
-    public void validate() {
-        super.validate();
-        if (world != null) {
-            ITickList<Block> pendingTicks = world.getPendingBlockTicks();
-            if(!pendingTicks.isTickScheduled(pos, ModBlocks.framedDrawerController)) {
-                pendingTicks.scheduleTick(pos, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
+    public void clearRemoved() {
+        super.clearRemoved();
+        if (level != null) {
+            TickList<Block> pendingTicks = level.getBlockTicks();
+            if(!pendingTicks.willTickThisTick(worldPosition, ModBlocks.framedDrawerController)) {
+                pendingTicks.scheduleTick(worldPosition, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
             }
         }
     }

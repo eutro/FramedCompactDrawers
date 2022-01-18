@@ -2,8 +2,9 @@ package eutros.framedcompactdrawers.block.tile;
 
 import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
 import eutros.framedcompactdrawers.block.ModBlocks;
-import eutros.framedcompactdrawers.mixin.AccessorTileEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -16,9 +17,9 @@ public abstract class TileCompDrawersCustom {
         private ItemStack trim = ItemStack.EMPTY;
         private ItemStack front = ItemStack.EMPTY;
 
-        public Slot3() {
-            super();
-            ((AccessorTileEntity) this).setType(ModBlocks.Tile.fractionalDrawers3);
+        public Slot3(BlockPos pos, BlockState state) {
+            super(pos, state);
+            type = ModBlocks.Tile.fractionalDrawers3;
             injectCustomData(this);
         }
 

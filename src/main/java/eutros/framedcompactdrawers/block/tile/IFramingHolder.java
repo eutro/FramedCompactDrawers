@@ -3,8 +3,8 @@ package eutros.framedcompactdrawers.block.tile;
 import com.jaquadro.minecraft.storagedrawers.block.tile.ChamTileEntity;
 import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.TileDataShim;
 import eutros.framedcompactdrawers.render.model.FrameableModel;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -14,27 +14,27 @@ public interface IFramingHolder {
     default void injectCustomData(ChamTileEntity tile) {
         tile.injectData(new TileDataShim() {
             @Override
-            public void read(CompoundNBT compoundNBT) {
+            public void read(CompoundTag compoundNBT) {
                 readFromTag(compoundNBT);
             }
 
             @Override
-            public CompoundNBT write(CompoundNBT compoundNBT) {
+            public CompoundTag write(CompoundTag compoundNBT) {
                 return writeToTag(compoundNBT);
             }
         });
     }
 
-    default void readFromTag(CompoundNBT compoundNBT) {
-        setSide(ItemStack.read(compoundNBT.getCompound("MatS")));
-        setTrim(ItemStack.read(compoundNBT.getCompound("MatT")));
-        setFront(ItemStack.read(compoundNBT.getCompound("MatF")));
+    default void readFromTag(CompoundTag compoundNBT) {
+        setSide(ItemStack.of(compoundNBT.getCompound("MatS")));
+        setTrim(ItemStack.of(compoundNBT.getCompound("MatT")));
+        setFront(ItemStack.of(compoundNBT.getCompound("MatF")));
     }
 
-    default CompoundNBT writeToTag(CompoundNBT compoundNBT) {
-        compoundNBT.put("MatS", getSide().write(new CompoundNBT()));
-        compoundNBT.put("MatT", getTrim().write(new CompoundNBT()));
-        compoundNBT.put("MatF", getFront().write(new CompoundNBT()));
+    default CompoundTag writeToTag(CompoundTag compoundNBT) {
+        compoundNBT.put("MatS", getSide().save(new CompoundTag()));
+        compoundNBT.put("MatT", getTrim().save(new CompoundTag()));
+        compoundNBT.put("MatF", getFront().save(new CompoundTag()));
         return compoundNBT;
     }
 

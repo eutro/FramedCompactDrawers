@@ -39,9 +39,9 @@ jobs:
           project_id: 376351
           game_endpoint: minecraft
           file_path: ${{ steps.var.outputs.file_path }}
-          changelog: See recent commits [here](https://github.com/eutropius225/FramedCompactDrawers/commits/${{ github.sha }}).
+          changelog: See recent commits [here](https://github.com/eutro/FramedCompactDrawers/commits/${{ github.sha }}).
           changelog_type: markdown
-          # 1.16.1, 1.16.2, 1.16.3, 1.16.4, Java 8
-          game_versions: 7892,8010,8056,8134,4458
+          # 1.17.1, Java 16
+          game_versions: 3866,3682
           release_type: release
           relations: storage-drawers:requiredDependency

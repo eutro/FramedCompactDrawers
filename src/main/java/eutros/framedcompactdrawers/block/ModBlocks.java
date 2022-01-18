@@ -8,28 +8,26 @@ import eutros.framedcompactdrawers.block.tile.*;
 import eutros.framedcompactdrawers.item.ItemDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
 import eutros.framedcompactdrawers.render.RenderHelper;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.ToolType;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class ModBlocks {
 
@@ -47,11 +45,12 @@ public class ModBlocks {
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         IForgeRegistry<Block> r = event.getRegistry();
-        AbstractBlock.Properties properties = AbstractBlock.Properties
-                .create(Material.WOOD)
-                .harvestTool(ToolType.AXE)
-                .hardnessAndResistance(5.0F)
-                .notSolid();
+        BlockBehaviour.Properties properties = BlockBehaviour.Properties
+                .of(Material.WOOD)
+                .strength(3.0F, 5.0F)
+                .sound(SoundType.WOOD)
+                .isSuffocating((_1, _2, _3) -> false)
+                .isRedstoneConductor((_1, _2, _3) -> false);
 
         r.register((framedCompactDrawer = new BlockCompDrawersCustom(properties))
                 .setRegistryName(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"));
@@ -79,7 +78,7 @@ public class ModBlocks {
     public static void registerItems(RegistryEvent.Register<Item> event) {
         IForgeRegistry<Item> r = event.getRegistry();
 
-        Item.Properties properties = new Item.Properties().group(FramedCompactDrawers.CREATIVE_TAB);
+        Item.Properties properties = new Item.Properties().tab(FramedCompactDrawers.CREATIVE_TAB);
 
         r.register(new ItemDrawersCustom(framedCompactDrawer, properties)
                 .setRegistryName(Objects.requireNonNull(framedCompactDrawer.getRegistryName())));
@@ -118,7 +117,7 @@ public class ModBlocks {
                 framedHalfTwo,
                 framedHalfFour,
         })
-            RenderTypeLookup.setRenderLayer(b, crf);
+            ItemBlockRenderTypes.setRenderLayer(b, crf);
 
         framedCompactDrawer.setGeometryData();
         for (BlockDrawersStandardCustom bdsc : new BlockDrawersStandardCustom[]{
@@ -134,18 +133,18 @@ public class ModBlocks {
 
     public static class Tile {
 
-        public static TileEntityType<TileCompDrawersCustom.Slot3> fractionalDrawers3;
-        public static TileEntityType<TileControllerCustom> controllerCustom;
-        public static TileEntityType<TileSlaveCustom> slaveCustom;
-        public static TileEntityType<TileTrimCustom> trimCustom;
+        public static BlockEntityType<TileCompDrawersCustom.Slot3> fractionalDrawers3;
+        public static BlockEntityType<TileControllerCustom> controllerCustom;
+        public static BlockEntityType<TileSlaveCustom> slaveCustom;
+        public static BlockEntityType<TileTrimCustom> trimCustom;
 
-        public static TileEntityType<TileDrawersStandardCustom.Slot1> standardDrawers1;
-        public static TileEntityType<TileDrawersStandardCustom.Slot2> standardDrawers2;
-        public static TileEntityType<TileDrawersStandardCustom.Slot4> standardDrawers4;
+        public static BlockEntityType<TileDrawersStandardCustom.Slot1> standardDrawers1;
+        public static BlockEntityType<TileDrawersStandardCustom.Slot2> standardDrawers2;
+        public static BlockEntityType<TileDrawersStandardCustom.Slot4> standardDrawers4;
 
         @SubscribeEvent
-        public void registerTiles(RegistryEvent.Register<TileEntityType<?>> evt) {
-            IForgeRegistry<TileEntityType<?>> r = evt.getRegistry();
+        public void registerTiles(RegistryEvent.Register<BlockEntityType<?>> evt) {
+            IForgeRegistry<BlockEntityType<?>> r = evt.getRegistry();
 
             fractionalDrawers3 = registerTile(r, TileCompDrawersCustom.Slot3::new, framedCompactDrawer);
             controllerCustom = registerTile(r, TileControllerCustom::new, framedDrawerController);
@@ -157,12 +156,12 @@ public class ModBlocks {
             standardDrawers4 = registerTile(r, TileDrawersStandardCustom.Slot4::new, framedFullFour, framedHalfFour);
         }
 
-        private <T extends TileEntity> TileEntityType<T> registerTile(IForgeRegistry<TileEntityType<?>> registry,
-                                                                      Supplier<T> supplier,
-                                                                      Block... blocks) {
+        private <T extends BlockEntity> BlockEntityType<T> registerTile(IForgeRegistry<BlockEntityType<?>> registry,
+                                                                        BlockEntityType.BlockEntitySupplier<T> supplier,
+                                                                        Block... blocks) {
             @SuppressWarnings("ConstantConditions")
-            TileEntityType<T> type = TileEntityType.Builder
-                    .create(supplier, blocks)
+            BlockEntityType<T> type = BlockEntityType.Builder
+                    .of(supplier, blocks)
                     .build(null);
             type.setRegistryName(Objects.requireNonNull(blocks[0].getRegistryName()));
             registry.register(type);
@@ -171,14 +170,14 @@ public class ModBlocks {
 
         @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
-        public void registerTERs(ModelBakeEvent evt) {
-            for (TileEntityType<? extends TileEntityDrawers> drawer : ImmutableList.of(
+        public void registerTERs(EntityRenderersEvent.RegisterRenderers evt) {
+            for (BlockEntityType<? extends TileEntityDrawers> drawer : ImmutableList.of(
                     fractionalDrawers3,
                     standardDrawers1,
                     standardDrawers2,
                     standardDrawers4
             ))
-                ClientRegistry.bindTileEntityRenderer(drawer, TileEntityDrawersRenderer::new);
+                evt.registerBlockEntityRenderer(drawer, TileEntityDrawersRenderer::new);
         }
 
     }

@@ -1,33 +1,33 @@
 package eutros.framedcompactdrawers.data;
 
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
+import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.recipe.ModTags;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.ForgeBlockTagsProvider;
-import net.minecraftforge.common.data.ForgeItemTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import static eutros.framedcompactdrawers.block.ModBlocks.*;
 
 public class FCDTagProvider {
 
-    public static void register(DataGenerator gen) {
-        BlockTags blockTags = new BlockTags(gen);
+    public static void register(DataGenerator gen, ExistingFileHelper efh) {
+        BlockTags blockTags = new BlockTags(gen, efh);
         gen.addProvider(blockTags);
-        gen.addProvider(new ItemTags(gen, blockTags));
+        gen.addProvider(new ItemTags(gen, blockTags, efh));
     }
 
-    private static class BlockTags extends ForgeBlockTagsProvider {
+    private static class BlockTags extends BlockTagsProvider {
 
-        public BlockTags(DataGenerator gen) {
-            super(gen);
+        public BlockTags(DataGenerator gen, ExistingFileHelper efh) {
+            super(gen, FramedCompactDrawers.MOD_ID, efh);
         }
 
         @Override
-        public void registerTags() {
-            getOrCreateBuilder(ModTags.Blocks.FRAME_DOUBLE).add(framedTrim);
-            getOrCreateBuilder(ModTags.Blocks.FRAME_TRIPLE)
-                    .add(
+        public void addTags() {
+            tag(ModTags.Blocks.FRAME_DOUBLE).add(framedTrim);
+            tag(ModTags.Blocks.FRAME_TRIPLE).add(
                             framedCompactDrawer,
                             framedDrawerController,
                             framedSlave,
@@ -38,21 +38,33 @@ public class FCDTagProvider {
                             framedHalfTwo,
                             framedHalfFour
                     );
-            getOrCreateBuilder(ModTags.Blocks.COMPACTING).add(ModBlocks.COMPACTING_DRAWERS_3);
-            getOrCreateBuilder(ModTags.Blocks.SLAVE).add(ModBlocks.CONTROLLER_SLAVE);
-            getOrCreateBuilder(ModTags.Blocks.CONTROLLER).add(ModBlocks.CONTROLLER);
+            tag(ModTags.Blocks.COMPACTING).add(ModBlocks.COMPACTING_DRAWERS_3);
+            tag(ModTags.Blocks.SLAVE).add(ModBlocks.CONTROLLER_SLAVE);
+            tag(ModTags.Blocks.CONTROLLER).add(ModBlocks.CONTROLLER);
+            tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_AXE).add(
+                    framedTrim,
+                    framedCompactDrawer,
+                    framedDrawerController,
+                    framedSlave,
+                    framedFullOne,
+                    framedFullTwo,
+                    framedFullFour,
+                    framedHalfOne,
+                    framedHalfTwo,
+                    framedHalfFour
+            );
         }
 
     }
 
-    private static class ItemTags extends ForgeItemTagsProvider {
+    private static class ItemTags extends ItemTagsProvider {
 
-        public ItemTags(DataGenerator gen, BlockTagsProvider blockTagProvider) {
-            super(gen, blockTagProvider);
+        public ItemTags(DataGenerator gen, BlockTagsProvider blockTagProvider, ExistingFileHelper efh) {
+            super(gen, blockTagProvider, FramedCompactDrawers.MOD_ID, efh);
         }
 
         @Override
-        public void registerTags() {
+        public void addTags() {
             copy(ModTags.Blocks.FRAME_DOUBLE, ModTags.Items.FRAME_DOUBLE);
             copy(ModTags.Blocks.FRAME_TRIPLE, ModTags.Items.FRAME_TRIPLE);
             copy(ModTags.Blocks.COMPACTING, ModTags.Items.COMPACTING);
