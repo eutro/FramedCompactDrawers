@@ -34,7 +34,7 @@ jobs:
         id: var
 
       - name: Upload to CurseForge
-        uses: itsmeow/curseforge-upload@v2
+        uses: itsmeow/curseforge-upload@v3.1.0
         with:
           token: ${{ secrets.CURSEFORGE_TOKEN }}
           project_id: 376351
