@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 16
+      - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 16
+          java-version: 17
 
       - name: Cache
         uses: actions/cache@v1
@@ -34,7 +34,7 @@ jobs:
         id: var
 
       - name: Upload to CurseForge
-        uses: itsmeow/curseforge-upload@v2
+        uses: itsmeow/curseforge-upload@v3.1.0
         with:
           token: ${{ secrets.CURSEFORGE_TOKEN }}
           project_id: 376351
@@ -42,7 +42,7 @@ jobs:
           file_path: ${{ steps.var.outputs.file_path }}
           changelog: See recent commits [here](https://github.com/eutro/FramedCompactDrawers/commits/${{ github.sha }}).
           changelog_type: markdown
-          # 1.17.1, Java 16
-          game_versions: 3866,3682
+          # 1.18, 1.18.1, Java 17, Forge
+          game_versions: 8849,8857,8326,7498
           release_type: release
           relations: storage-drawers:requiredDependency

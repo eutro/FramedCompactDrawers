@@ -258,7 +258,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         @Override
         public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
             List<BakedQuad> quads = new ArrayList<>();
-            RenderType layer = MinecraftForgeClient.getRenderLayer();
+            RenderType layer = MinecraftForgeClient.getRenderType();
             for(MaterialSide material : MaterialSide.values()) {
                 if(layer != null && material.type != layer) continue;
                 for(FramingCandidate.Baked baked : bakedSides.get(material)) {

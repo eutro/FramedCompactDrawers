@@ -23,9 +23,9 @@ public class BlockTrimCustom extends BlockTrim implements EntityBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         BlockEntity tile = world.getBlockEntity(pos);
-        ItemStack stack = super.getPickBlock(state, target, world, pos, player);
+        ItemStack stack = super.getCloneItemStack(state, target, world, pos, player);
         if(tile instanceof IFramingHolder) {
             ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
         }

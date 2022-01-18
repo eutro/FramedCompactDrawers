@@ -4,10 +4,10 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.TickList;
-import net.minecraft.world.level.TickPriority;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.ticks.LevelTickAccess;
+import net.minecraft.world.ticks.TickPriority;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -26,9 +26,9 @@ public class TileControllerCustom extends TileEntityController implements IFrami
     public void clearRemoved() {
         super.clearRemoved();
         if (level != null) {
-            TickList<Block> pendingTicks = level.getBlockTicks();
+            LevelTickAccess<Block> pendingTicks = level.getBlockTicks();
             if(!pendingTicks.willTickThisTick(worldPosition, ModBlocks.framedDrawerController)) {
-                pendingTicks.scheduleTick(worldPosition, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
+                level.scheduleTick(worldPosition, ModBlocks.framedDrawerController, 1, TickPriority.NORMAL);
             }
         }
     }
