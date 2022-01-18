@@ -42,7 +42,7 @@ jobs:
           file_path: ${{ steps.var.outputs.file_path }}
           changelog: See recent commits [here](https://github.com/eutro/FramedCompactDrawers/commits/${{ github.sha }}).
           changelog_type: markdown
-          # 1.17.1, Java 16
-          game_versions: 3866,3682
+          # 1.17.1, Java 16, Forge
+          game_versions: 8516,8325,7498
           release_type: release
           relations: storage-drawers:requiredDependency
