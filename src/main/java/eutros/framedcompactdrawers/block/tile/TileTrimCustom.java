@@ -24,21 +24,19 @@ public class TileTrimCustom extends BlockEntity implements IFramingHolder {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void deserializeNBT(CompoundTag nbt) {
+        super.deserializeNBT(nbt);
         readFromTag(nbt);
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
-        super.save(nbt);
-        writeToTag(nbt);
-        return nbt;
+    public CompoundTag serializeNBT() {
+        return writeToTag(super.serializeNBT());
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return save(new CompoundTag());
+        return serializeNBT();
     }
 
     @Nonnull
