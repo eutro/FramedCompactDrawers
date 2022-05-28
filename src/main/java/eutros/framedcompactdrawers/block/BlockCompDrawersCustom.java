@@ -60,9 +60,9 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
     }
 
     public void setGeometryData() {
-        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.countGeometry, 0, countGeometry, 0, countGeometry.length);
-        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.labelGeometry, 0, labelGeometry, 0, labelGeometry.length);
-        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.slotGeometry, 0, slotGeometry, 0, slotGeometry.length);
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.get().countGeometry, 0, countGeometry, 0, countGeometry.length);
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.get().labelGeometry, 0, labelGeometry, 0, labelGeometry.length);
+        System.arraycopy(ModBlocks.COMPACTING_DRAWERS_3.get().slotGeometry, 0, slotGeometry, 0, slotGeometry.length);
     }
 
 }

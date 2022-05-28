@@ -13,6 +13,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -36,7 +37,7 @@ public class FCDRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        for (Pair<? extends Block, Tags.IOptionalNamedTag<Item>> pair : ImmutableList.of(
+        for (Pair<? extends Block, TagKey<Item>> pair : ImmutableList.of(
                 Pair.of(ModBlocks.framedCompactDrawer, ModTags.Items.COMPACTING),
                 Pair.of(ModBlocks.framedDrawerController, ModTags.Items.CONTROLLER),
                 Pair.of(ModBlocks.framedSlave, ModTags.Items.SLAVE)
@@ -47,7 +48,7 @@ public class FCDRecipeProvider extends RecipeProvider {
                     .pattern("///")
                     .define('/', Tags.Items.RODS_WOODEN)
                     .define('D', pair.getRight())
-                    .unlockedBy("has_" + pair.getRight().getName().getNamespace(),
+                    .unlockedBy("has_" + pair.getRight().location().getNamespace(),
                             has(pair.getRight()))
                     .unlockedBy("has_sticks", has(Tags.Items.RODS_WOODEN))
                     .group("framed_drawers")

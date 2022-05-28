@@ -34,7 +34,7 @@ public class BlockDrawersStandardCustom extends BlockStandardDrawers {
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         BlockEntity tile = world.getBlockEntity(pos);
         ItemStack stack = super.getCloneItemStack(state, target, world, pos, player);
-        if(tile instanceof IFramingHolder) {
+        if (tile instanceof IFramingHolder) {
             ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
         }
         return stack;
@@ -43,7 +43,7 @@ public class BlockDrawersStandardCustom extends BlockStandardDrawers {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BlockEntity tile = world.getBlockEntity(pos);
-        if(tile instanceof IFramingHolder && !((IFramingHolder) tile).getSide().isEmpty()) {
+        if (tile instanceof IFramingHolder && !((IFramingHolder) tile).getSide().isEmpty()) {
             return super.use(state, world, pos, player, hand, hit);
         }
         return InteractionResult.PASS;
@@ -57,20 +57,20 @@ public class BlockDrawersStandardCustom extends BlockStandardDrawers {
     }
 
     private BlockDrawers getGeometrySource() {
-        if(isHalfDepth()) {
-            return switch (getDrawerCount()) {
+        if (isHalfDepth()) {
+            return (switch (getDrawerCount()) {
                 case 1 -> ModBlocks.OAK_HALF_DRAWERS_1;
                 case 2 -> ModBlocks.OAK_HALF_DRAWERS_2;
                 case 4 -> ModBlocks.OAK_HALF_DRAWERS_4;
                 default -> throw new IllegalArgumentException("Illegal drawer count.");
-            };
+            }).get();
         } else {
-            return switch (getDrawerCount()) {
+            return (switch (getDrawerCount()) {
                 case 1 -> ModBlocks.OAK_FULL_DRAWERS_1;
                 case 2 -> ModBlocks.OAK_FULL_DRAWERS_2;
                 case 4 -> ModBlocks.OAK_FULL_DRAWERS_4;
                 default -> throw new IllegalArgumentException("Illegal drawer count.");
-            };
+            }).get();
         }
     }
 
@@ -78,7 +78,7 @@ public class BlockDrawersStandardCustom extends BlockStandardDrawers {
     protected ItemStack getMainDrop(BlockState state, TileEntityDrawers tile) {
         // SD not using loot tables grumble grumble
         ItemStack stack = super.getMainDrop(state, tile);
-        if(tile instanceof IFramingHolder) {
+        if (tile instanceof IFramingHolder) {
             ((IFramingHolder) tile).writeToTag(stack.getOrCreateTag());
         }
         return stack;

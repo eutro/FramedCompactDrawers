@@ -38,9 +38,9 @@ public class FCDTagProvider {
                             framedHalfTwo,
                             framedHalfFour
                     );
-            tag(ModTags.Blocks.COMPACTING).add(ModBlocks.COMPACTING_DRAWERS_3);
-            tag(ModTags.Blocks.SLAVE).add(ModBlocks.CONTROLLER_SLAVE);
-            tag(ModTags.Blocks.CONTROLLER).add(ModBlocks.CONTROLLER);
+            tag(ModTags.Blocks.COMPACTING).add(ModBlocks.COMPACTING_DRAWERS_3.get());
+            tag(ModTags.Blocks.SLAVE).add(ModBlocks.CONTROLLER_SLAVE.get());
+            tag(ModTags.Blocks.CONTROLLER).add(ModBlocks.CONTROLLER.get());
             tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_AXE).add(
                     framedTrim,
                     framedCompactDrawer,
