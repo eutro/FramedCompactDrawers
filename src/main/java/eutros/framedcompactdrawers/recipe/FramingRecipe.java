@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -112,9 +111,7 @@ public class FramingRecipe extends CustomRecipe {
         return SERIALIZER;
     }
 
-    public static class Serializer
-            extends ForgeRegistryEntry<RecipeSerializer<?>>
-            implements RecipeSerializer<FramingRecipe> {
+    public static class Serializer implements RecipeSerializer<FramingRecipe> {
 
         @Override
         public FramingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {

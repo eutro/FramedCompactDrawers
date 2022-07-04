@@ -1,6 +1,6 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersComp;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawersComp;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public abstract class TileCompDrawersCustom {
 
-    public static class Slot3 extends TileEntityDrawersComp.Slot3 implements IFramingHolder {
+    public static class Slot3 extends BlockEntityDrawersComp.Slot3 implements IFramingHolder {
 
         private ItemStack side = ItemStack.EMPTY;
         private ItemStack trim = ItemStack.EMPTY;

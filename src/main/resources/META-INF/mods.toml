@@ -15,12 +15,12 @@ Adds a framed version of the Compacting Drawers from the Storage Drawers mod.
 [[dependencies.framedcompactdrawers]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.framedcompactdrawers]]
     modId="storagedrawers"
     mandatory=true
-    versionRange="[10.2,)"
+    versionRange="[11,)"
     ordering="NONE"
     side="BOTH"

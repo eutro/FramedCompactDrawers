@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockCompDrawers;
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
 import com.jaquadro.minecraft.storagedrawers.core.ModBlocks;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileCompDrawersCustom;
@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockCompDrawersCustom extends BlockCompDrawers {
 
@@ -40,6 +41,7 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
         return stack;
     }
 
+    @NotNull
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BlockEntity tile = world.getBlockEntity(pos);
@@ -50,7 +52,7 @@ public class BlockCompDrawersCustom extends BlockCompDrawers {
     }
 
     @Override
-    protected ItemStack getMainDrop(BlockState state, TileEntityDrawers tile) {
+    protected ItemStack getMainDrop(BlockState state, BlockEntityDrawers tile) {
         // SD not using loot tables grumble grumble
         ItemStack stack = super.getMainDrop(state, tile);
         if(tile instanceof IFramingHolder) {

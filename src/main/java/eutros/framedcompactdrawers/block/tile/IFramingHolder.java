@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.ChamTileEntity;
-import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.TileDataShim;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BaseBlockEntity;
+import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.BlockEntityDataShim;
 import eutros.framedcompactdrawers.render.model.FrameableModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -11,8 +11,8 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 
 public interface IFramingHolder {
 
-    default void injectCustomData(ChamTileEntity tile) {
-        tile.injectData(new TileDataShim() {
+    default void injectCustomData(BaseBlockEntity tile) {
+        tile.injectData(new BlockEntityDataShim() {
             @Override
             public void read(CompoundTag compoundNBT) {
                 readFromTag(compoundNBT);

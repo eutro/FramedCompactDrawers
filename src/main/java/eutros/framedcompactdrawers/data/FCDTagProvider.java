@@ -7,15 +7,16 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import static eutros.framedcompactdrawers.block.ModBlocks.*;
 
 public class FCDTagProvider {
 
-    public static void register(DataGenerator gen, ExistingFileHelper efh) {
+    public static void register(GatherDataEvent evt, DataGenerator gen, ExistingFileHelper efh) {
         BlockTags blockTags = new BlockTags(gen, efh);
-        gen.addProvider(blockTags);
-        gen.addProvider(new ItemTags(gen, blockTags, efh));
+        gen.addProvider(evt.includeServer(), blockTags);
+        gen.addProvider(evt.includeServer(), new ItemTags(gen, blockTags, efh));
     }
 
     private static class BlockTags extends BlockTagsProvider {

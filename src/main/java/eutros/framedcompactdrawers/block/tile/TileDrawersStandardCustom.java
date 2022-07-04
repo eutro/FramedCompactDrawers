@@ -1,6 +1,6 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawersStandard;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawersStandard;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 public abstract class TileDrawersStandardCustom {
 
     @Nonnull
-    public static TileEntityDrawersStandard createEntity(int drawerCount, BlockPos pos, BlockState state) {
+    public static BlockEntityDrawersStandard createEntity(int drawerCount, BlockPos pos, BlockState state) {
         return switch (drawerCount) {
             case 1 -> new Slot1(pos, state);
             case 2 -> new Slot2(pos, state);
@@ -21,7 +21,7 @@ public abstract class TileDrawersStandardCustom {
         };
     }
 
-    public static class Slot4 extends TileEntityDrawersStandard.Slot4 implements IFramingHolder {
+    public static class Slot4 extends BlockEntityDrawersStandard.Slot4 implements IFramingHolder {
 
         private ItemStack side = ItemStack.EMPTY;
         private ItemStack trim = ItemStack.EMPTY;
@@ -71,7 +71,7 @@ public abstract class TileDrawersStandardCustom {
 
     }
 
-    public static class Slot2 extends TileEntityDrawersStandard.Slot2 implements IFramingHolder {
+    public static class Slot2 extends BlockEntityDrawersStandard.Slot2 implements IFramingHolder {
 
         private ItemStack side = ItemStack.EMPTY;
         private ItemStack trim = ItemStack.EMPTY;
@@ -121,7 +121,7 @@ public abstract class TileDrawersStandardCustom {
 
     }
 
-    public static class Slot1 extends TileEntityDrawersStandard.Slot1 implements IFramingHolder {
+    public static class Slot1 extends BlockEntityDrawersStandard.Slot1 implements IFramingHolder {
 
         private ItemStack side = ItemStack.EMPTY;
         private ItemStack trim = ItemStack.EMPTY;

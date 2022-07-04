@@ -6,7 +6,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityDrawers;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
@@ -20,6 +20,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +31,7 @@ import net.minecraftforge.client.model.data.*;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,9 +52,9 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
     public List<ResourceLocation> inherits = Collections.emptyList();
 
     public enum MaterialSide {
-        SIDE(RenderType.cutout()),
-        FRONT(RenderType.cutout()),
-        TRIM(RenderType.cutout()),
+        SIDE(RenderType.cutoutMipped()),
+        FRONT(RenderType.cutoutMipped()),
+        TRIM(RenderType.cutoutMipped()),
         OVERLAY(RenderType.translucent());
 
         public final ModelProperty<ItemStack> property = new ModelProperty<>();
@@ -64,7 +66,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         @Nullable
         public String getKey() {
-            if(this != OVERLAY) {
+            if (this != OVERLAY) {
                 return "Mat" + name().charAt(0);
             }
             return null;
@@ -123,14 +125,18 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             }
 
             public BakedQuad getQuad(ItemStack stack) {
-                TextureAtlasSprite sprite = stack == null || stack.isEmpty() ?
-                                            rawMaterial.sprite() :
-                                            getSprite(stack);
+                TextureAtlasSprite sprite = getSpriteOrRaw(stack);
                 try {
                     return quadCache.get(sprite, () -> quadSupplier.apply(sprite));
-                } catch(ExecutionException e) {
+                } catch (ExecutionException e) {
                     return quadSupplier.apply(sprite);
                 }
+            }
+
+            public TextureAtlasSprite getSpriteOrRaw(ItemStack stack) {
+                return stack == null || stack.isEmpty() ?
+                        rawMaterial.sprite() :
+                        getSprite(stack);
             }
 
             private TextureAtlasSprite getSprite(ItemStack stack) {
@@ -145,7 +151,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         @SuppressWarnings("unused")
         public enum Condition implements Predicate<IModelData> {
             LOCKED(data -> {
-                IDrawerAttributes attr = data.getData(TileEntityDrawers.ATTRIBUTES);
+                IDrawerAttributes attr = data.getData(BlockEntityDrawers.ATTRIBUTES);
                 return attr != null &&
                         (attr.isItemLocked(LockAttribute.LOCK_EMPTY) ||
                                 attr.isItemLocked(LockAttribute.LOCK_POPULATED));
@@ -179,9 +185,9 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel parent = null;
         UnbakedModel ownerModel = owner.getOwnerModel();
-        if(ownerModel instanceof BlockModel) {
+        if (ownerModel instanceof BlockModel) {
             ResourceLocation parentLoc = ((BlockModel) ownerModel).getParentLocation();
-            if(parentLoc != null) {
+            if (parentLoc != null) {
                 parent = bakery.bake(parentLoc, modelTransform, spriteGetter);
             }
         }
@@ -197,16 +203,16 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                             return first;
                         },
                         Collector.Characteristics.UNORDERED));
-        for(ResourceLocation rl : inherits) {
+        for (ResourceLocation rl : inherits) {
             BakedModel baked = bakery.bake(rl, modelTransform, spriteGetter);
-            if(baked instanceof Baked) {
-                for(Map.Entry<MaterialSide, FramingCandidate.Baked> entry : ((Baked) baked).bakedSides.entries()) {
+            if (baked instanceof Baked) {
+                for (Map.Entry<MaterialSide, FramingCandidate.Baked> entry : ((Baked) baked).bakedSides.entries()) {
                     bakedSides.put(entry.getKey(), entry.getValue());
                 }
             } else {
                 LOGGER.warn("Inherited model must be a frameable model! Got: " + (baked == null ?
-                                                                                  "null" :
-                                                                                  baked.getClass()));
+                        "null" :
+                        baked.getClass()));
             }
         }
         return new Baked(parent, bakedSides);
@@ -230,13 +236,16 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                     return new Baked(parent, bakedSides) {
                         @Nonnull
                         @Override
-                        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
-                            if(stack.hasTag()) {
+                        public List<BakedQuad> getQuads(@Nullable BlockState state,
+                                                        @Nullable Direction side,
+                                                        @Nonnull RandomSource rand,
+                                                        @Nonnull IModelData extraData) {
+                            if (stack.hasTag()) {
                                 CompoundTag tag = Objects.requireNonNull(stack.getTag());
                                 ModelDataMap.Builder builder = new ModelDataMap.Builder();
-                                for(MaterialSide material : MaterialSide.values()) {
+                                for (MaterialSide material : MaterialSide.values()) {
                                     String key = material.getKey();
-                                    if(key != null && tag.contains(key))
+                                    if (key != null && tag.contains(key))
                                         builder.withInitial(material.property, ItemStack.of(tag.getCompound(key)));
                                 }
                                 extraData = builder.build();
@@ -256,13 +265,13 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         @Nonnull
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
             List<BakedQuad> quads = new ArrayList<>();
             RenderType layer = MinecraftForgeClient.getRenderType();
-            for(MaterialSide material : MaterialSide.values()) {
-                if(layer != null && material.type != layer) continue;
-                for(FramingCandidate.Baked baked : bakedSides.get(material)) {
-                    if(baked.getEnclosing().face.cullForDirection == side &&
+            for (MaterialSide material : MaterialSide.values()) {
+                if (layer != null && material.type != layer) continue;
+                for (FramingCandidate.Baked baked : bakedSides.get(material)) {
+                    if (baked.getEnclosing().face.cullForDirection == side &&
                             baked.getEnclosing().condition.test(extraData))
                         quads.add(baked.getQuad(resolve(extraData, material)));
                 }
@@ -271,11 +280,11 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         }
 
         private ItemStack resolve(IModelData data, MaterialSide material) {
-            if(material == MaterialSide.OVERLAY) {
+            if (material == MaterialSide.OVERLAY) {
                 return null;
             }
             ItemStack stack = data.getData(material.property);
-            if(material != MaterialSide.SIDE && (stack == null || stack.isEmpty())) {
+            if (material != MaterialSide.SIDE && (stack == null || stack.isEmpty())) {
                 return resolve(data, MaterialSide.SIDE);
             }
             return stack;
@@ -304,15 +313,20 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         @Nonnull
         @Override
         public TextureAtlasSprite getParticleIcon() {
+            return getParticleIcon(EmptyModelData.INSTANCE);
+        }
+
+        @Override
+        public @NotNull TextureAtlasSprite getParticleIcon(@NotNull IModelData data) {
             return bakedSides.get(MaterialSide.SIDE)
                     .stream()
                     .findFirst()
-                    .map(mat -> mat.rawMaterial.sprite())
+                    .map(mat -> mat.getSpriteOrRaw(resolve(data, MaterialSide.SIDE)))
                     .orElseGet(() -> parent == null ?
-                                     Minecraft.getInstance()
-                                             .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                                             .apply(MissingTextureAtlasSprite.getLocation()) :
-                                     parent.getParticleIcon(EmptyModelData.INSTANCE));
+                            Minecraft.getInstance()
+                                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                                    .apply(MissingTextureAtlasSprite.getLocation()) :
+                            parent.getParticleIcon(EmptyModelData.INSTANCE));
         }
 
         @Nonnull
@@ -321,9 +335,10 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             return overrides;
         }
 
+        @NotNull
         @Override
-        public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat) {
-            if(parent != null) parent.handlePerspective(cameraTransformType, mat);
+        public BakedModel handlePerspective(@NotNull ItemTransforms.TransformType cameraTransformType, @NotNull PoseStack mat) {
+            if (parent != null) parent.handlePerspective(cameraTransformType, mat);
             return this;
         }
 

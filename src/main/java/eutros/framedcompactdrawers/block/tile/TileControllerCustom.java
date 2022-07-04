@@ -1,6 +1,6 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityController;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 
-public class TileControllerCustom extends TileEntityController implements IFramingHolder {
+public class TileControllerCustom extends BlockEntityController implements IFramingHolder {
 
     private ItemStack side = ItemStack.EMPTY;
     private ItemStack trim = ItemStack.EMPTY;

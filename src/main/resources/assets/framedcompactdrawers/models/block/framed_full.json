@@ -1,8 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_side": "framedcompactdrawers:blocks/raw_side",
-    "lock": "storagedrawers:blocks/indicator/lock_icon"
+    "raw_side": "framedcompactdrawers:blocks/raw_side"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {
@@ -40,16 +39,6 @@
           "end": [15, 15, 16],
           "face": "south",
           "texture": "#raw_side"
-        }
-      ],
-      "overlay": [
-        {
-          "condition": "locked",
-          "start": [7.5, 15, -0.01],
-          "end": [8.5, 16, -0.01],
-          "uv": [0, 0, 16, 16],
-          "face": "north",
-          "texture": "lock"
         }
       ]
     }

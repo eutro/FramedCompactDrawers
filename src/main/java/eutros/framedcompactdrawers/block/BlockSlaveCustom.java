@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockSlave;
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntitySlave;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntitySlave;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileSlaveCustom;
 import net.minecraft.core.BlockPos;
@@ -29,7 +29,7 @@ public class BlockSlaveCustom extends BlockSlave {
     }
 
     @Override
-    public TileEntitySlave newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntitySlave newBlockEntity(BlockPos pos, BlockState state) {
         return new TileSlaveCustom(pos, state);
     }
 

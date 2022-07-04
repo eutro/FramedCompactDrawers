@@ -1,7 +1,7 @@
 package eutros.framedcompactdrawers.block;
 
 import com.jaquadro.minecraft.storagedrawers.block.BlockController;
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntityController;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityController;
 import eutros.framedcompactdrawers.block.tile.IFramingHolder;
 import eutros.framedcompactdrawers.block.tile.TileControllerCustom;
 import net.minecraft.core.BlockPos;
@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockControllerCustom extends BlockController {
 
@@ -23,7 +24,7 @@ public class BlockControllerCustom extends BlockController {
     }
 
     @Override
-    public TileEntityController newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntityController newBlockEntity(BlockPos pos, BlockState state) {
         return new TileControllerCustom(pos, state);
     }
 
@@ -37,6 +38,7 @@ public class BlockControllerCustom extends BlockController {
         return stack;
     }
 
+    @NotNull
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BlockEntity tile = world.getBlockEntity(pos);

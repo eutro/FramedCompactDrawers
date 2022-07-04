@@ -1,27 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            name "Forge"
-            url "https://maven.minecraftforge.net/"
-        }
-        maven {
-            name "Sponge"
-            url "https://repo.spongepowered.org/repository/maven-public/"
-            content { includeGroup "org.spongepowered" }
-        }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.+', changing: true
-    }
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1.+'
 }
-apply plugin: 'net.minecraftforge.gradle'
 
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
 }
-
-apply plugin: 'eclipse'
 
 version = "${mc_part}-${major}.${minor}.${patch}"
 group = "eutros.framedcompactdrawers"
@@ -79,6 +62,11 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     implementation fg.deobf("curse.maven:StorageDrawers-223852:${storagedrawers_version}")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.compilerArgs.add("-Xlint:deprecation")
 }
 
 jar {

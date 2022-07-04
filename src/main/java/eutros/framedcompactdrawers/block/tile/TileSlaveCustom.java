@@ -1,6 +1,6 @@
 package eutros.framedcompactdrawers.block.tile;
 
-import com.jaquadro.minecraft.storagedrawers.block.tile.TileEntitySlave;
+import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntitySlave;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -9,7 +9,7 @@ import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 
-public class TileSlaveCustom extends TileEntitySlave implements IFramingHolder {
+public class TileSlaveCustom extends BlockEntitySlave implements IFramingHolder {
 
     private ItemStack side = ItemStack.EMPTY;
     private ItemStack trim = ItemStack.EMPTY;
