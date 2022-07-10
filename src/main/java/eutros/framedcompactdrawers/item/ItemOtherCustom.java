@@ -13,6 +13,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static eutros.framedcompactdrawers.item.ItemDrawersCustom.setFrame;
 
+import net.minecraft.world.item.Item.Properties;
+
 @ParametersAreNonnullByDefault
 public class ItemOtherCustom extends BlockItem {
 

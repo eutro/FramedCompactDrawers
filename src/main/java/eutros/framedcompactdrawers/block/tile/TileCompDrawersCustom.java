@@ -5,7 +5,7 @@ import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 
@@ -25,7 +25,7 @@ public abstract class TileCompDrawersCustom {
 
         @Nonnull
         @Override
-        public IModelData getModelData() {
+        public ModelData getModelData() {
             return getCustomModelData(super.getModelData(), this);
         }
 

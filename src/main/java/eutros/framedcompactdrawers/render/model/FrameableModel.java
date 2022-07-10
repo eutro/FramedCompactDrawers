@@ -7,9 +7,9 @@ import com.google.common.collect.Multimap;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -25,10 +25,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.*;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.RenderTypeGroup;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -44,10 +47,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class FrameableModel implements IModelGeometry<FrameableModel> {
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
 
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public ResourceLocation parent = null;
     public Multimap<MaterialSide, FramingCandidate> materials;
     public List<ResourceLocation> inherits = Collections.emptyList();
 
@@ -62,6 +68,10 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         MaterialSide(RenderType type) {
             this.type = type;
+        }
+
+        public static List<RenderType> getRenderTypes() {
+            return List.of(SIDE.type, OVERLAY.type);
         }
 
         @Nullable
@@ -87,8 +97,8 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             return face.texture;
         }
 
-        public Baked baked(IModelConfiguration owner, ModelState transform, ResourceLocation modelLocation) {
-            return new Baked(owner, transform, modelLocation);
+        public Baked baked(IGeometryBakingContext context, ModelState state, ResourceLocation modelLocation) {
+            return new Baked(context, state, modelLocation);
         }
 
         public class Baked {
@@ -104,10 +114,10 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 return FramingCandidate.this;
             }
 
-            private Baked(IModelConfiguration owner, ModelState transform, ResourceLocation modelLocation) {
-                rawMaterial = owner.resolveTexture(face.texture);
+            private Baked(IGeometryBakingContext context, ModelState state, ResourceLocation modelLocation) {
+                rawMaterial = context.getMaterial(face.texture);
                 face.uv.setMissingUv(getFaceUvs(direction));
-                quadSupplier = sprite -> FACE_BAKERY.bakeQuad(start, end, face, sprite, direction, transform, null, true, modelLocation);
+                quadSupplier = sprite -> FACE_BAKERY.bakeQuad(start, end, face, sprite, direction, state, null, true, modelLocation);
             }
 
             /**
@@ -124,7 +134,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 };
             }
 
-            public BakedQuad getQuad(ItemStack stack) {
+            public BakedQuad getQuad(@Nullable ItemStack stack) {
                 TextureAtlasSprite sprite = getSpriteOrRaw(stack);
                 try {
                     return quadCache.get(sprite, () -> quadSupplier.apply(sprite));
@@ -133,7 +143,7 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 }
             }
 
-            public TextureAtlasSprite getSpriteOrRaw(ItemStack stack) {
+            public TextureAtlasSprite getSpriteOrRaw(@Nullable ItemStack stack) {
                 return stack == null || stack.isEmpty() ?
                         rawMaterial.sprite() :
                         getSprite(stack);
@@ -143,29 +153,29 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                 return Minecraft.getInstance()
                         .getItemRenderer()
                         .getModel(stack, null, null, 0)
-                        .getParticleIcon(EmptyModelData.INSTANCE);
+                        .getParticleIcon(ModelData.EMPTY);
             }
 
         }
 
         @SuppressWarnings("unused")
-        public enum Condition implements Predicate<IModelData> {
+        public enum Condition implements Predicate<ModelData> {
             LOCKED(data -> {
-                IDrawerAttributes attr = data.getData(BlockEntityDrawers.ATTRIBUTES);
+                IDrawerAttributes attr = data.get(BlockEntityDrawers.ATTRIBUTES);
                 return attr != null &&
                         (attr.isItemLocked(LockAttribute.LOCK_EMPTY) ||
                                 attr.isItemLocked(LockAttribute.LOCK_POPULATED));
             }),
             ALWAYS(data -> true);
 
-            private final Predicate<IModelData> predicate;
+            private final Predicate<ModelData> predicate;
 
-            Condition(Predicate<IModelData> predicate) {
+            Condition(Predicate<ModelData> predicate) {
                 this.predicate = predicate;
             }
 
             @Override
-            public boolean test(IModelData data) {
+            public boolean test(ModelData data) {
                 return predicate.test(data);
             }
         }
@@ -173,23 +183,19 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
     }
 
     @Override
-    public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+    public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         return materials.values()
                 .stream()
                 .map(FramingCandidate::getRaw)
-                .map(owner::resolveTexture)
+                .map(owner::getMaterial)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
         BakedModel parent = null;
-        UnbakedModel ownerModel = owner.getOwnerModel();
-        if (ownerModel instanceof BlockModel) {
-            ResourceLocation parentLoc = ((BlockModel) ownerModel).getParentLocation();
-            if (parentLoc != null) {
-                parent = bakery.bake(parentLoc, modelTransform, spriteGetter);
-            }
+        if (this.parent != null) {
+            parent = bakery.bake(this.parent, modelState, spriteGetter);
         }
         HashMultimap<MaterialSide, FramingCandidate.Baked> bakedSides = materials.entries()
                 .stream()
@@ -197,14 +203,14 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                         (map, entry) ->
                                 map.put(entry.getKey(),
                                         entry.getValue()
-                                                .baked(owner, modelTransform, modelLocation)),
+                                                .baked(context, modelState, modelLocation)),
                         (first, second) -> {
                             first.putAll(second);
                             return first;
                         },
                         Collector.Characteristics.UNORDERED));
         for (ResourceLocation rl : inherits) {
-            BakedModel baked = bakery.bake(rl, modelTransform, spriteGetter);
+            BakedModel baked = bakery.bake(rl, modelState, spriteGetter);
             if (baked instanceof Baked) {
                 for (Map.Entry<MaterialSide, FramingCandidate.Baked> entry : ((Baked) baked).bakedSides.entries()) {
                     bakedSides.put(entry.getKey(), entry.getValue());
@@ -215,7 +221,8 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                         baked.getClass()));
             }
         }
-        return new Baked(parent, bakedSides);
+        RenderTypeGroup rtg = context.getRenderType(new ResourceLocation("translucent"));
+        return new Baked(parent, bakedSides, List.of(rtg.entity()), List.of(rtg.entityFabulous()));
     }
 
     private static class Baked implements IDynamicBakedModel {
@@ -224,33 +231,45 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
         @Nullable
         private final BakedModel parent;
         private final ItemOverrides overrides;
+        private final List<RenderType> itemRenderTypes, itemRenderTypesFabulous;
 
-        public Baked(@Nullable BakedModel parent, Multimap<MaterialSide, FramingCandidate.Baked> bakedSides) {
+        public Baked(@Nullable BakedModel parent,
+                     Multimap<MaterialSide, FramingCandidate.Baked> bakedSides,
+                     List<RenderType> itemRenderTypes,
+                     List<RenderType> itemRenderTypesFabulous) {
             this.bakedSides = bakedSides;
             this.parent = parent;
+            this.itemRenderTypes = itemRenderTypes;
+            this.itemRenderTypesFabulous = itemRenderTypesFabulous;
             overrides = new ItemOverrides() {
                 @Nonnull
                 @Override
                 @ParametersAreNonnullByDefault
-                public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int idkMan) {
-                    return new Baked(parent, bakedSides) {
+                public BakedModel resolve(BakedModel model,
+                                          ItemStack stack,
+                                          @Nullable ClientLevel world,
+                                          @Nullable LivingEntity entity,
+                                          int idkMan) {
+                    return new Baked(parent, bakedSides, itemRenderTypes, itemRenderTypesFabulous) {
                         @Nonnull
                         @Override
                         public List<BakedQuad> getQuads(@Nullable BlockState state,
                                                         @Nullable Direction side,
                                                         @Nonnull RandomSource rand,
-                                                        @Nonnull IModelData extraData) {
+                                                        @Nonnull ModelData extraData,
+                                                        @Nullable RenderType layer) {
                             if (stack.hasTag()) {
                                 CompoundTag tag = Objects.requireNonNull(stack.getTag());
-                                ModelDataMap.Builder builder = new ModelDataMap.Builder();
+                                ModelData.Builder builder = ModelData.builder();
                                 for (MaterialSide material : MaterialSide.values()) {
                                     String key = material.getKey();
-                                    if (key != null && tag.contains(key))
-                                        builder.withInitial(material.property, ItemStack.of(tag.getCompound(key)));
+                                    if (key != null && tag.contains(key)) {
+                                        builder.with(material.property, ItemStack.of(tag.getCompound(key)));
+                                    }
                                 }
                                 extraData = builder.build();
                             }
-                            return super.getQuads(state, side, rand, extraData);
+                            return super.getQuads(state, side, rand, extraData, layer);
                         }
 
                         @Nonnull
@@ -265,9 +284,12 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
 
         @Nonnull
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state,
+                                        @Nullable Direction side,
+                                        @Nonnull RandomSource rand,
+                                        @Nonnull ModelData extraData,
+                                        @Nullable RenderType layer) {
             List<BakedQuad> quads = new ArrayList<>();
-            RenderType layer = MinecraftForgeClient.getRenderType();
             for (MaterialSide material : MaterialSide.values()) {
                 if (layer != null && material.type != layer) continue;
                 for (FramingCandidate.Baked baked : bakedSides.get(material)) {
@@ -279,11 +301,12 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             return quads;
         }
 
-        private ItemStack resolve(IModelData data, MaterialSide material) {
+        @Nullable
+        private ItemStack resolve(ModelData data, MaterialSide material) {
             if (material == MaterialSide.OVERLAY) {
                 return null;
             }
-            ItemStack stack = data.getData(material.property);
+            ItemStack stack = data.get(material.property);
             if (material != MaterialSide.SIDE && (stack == null || stack.isEmpty())) {
                 return resolve(data, MaterialSide.SIDE);
             }
@@ -310,14 +333,13 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
             return false;
         }
 
-        @Nonnull
         @Override
         public TextureAtlasSprite getParticleIcon() {
-            return getParticleIcon(EmptyModelData.INSTANCE);
+            return getParticleIcon(ModelData.EMPTY);
         }
 
         @Override
-        public @NotNull TextureAtlasSprite getParticleIcon(@NotNull IModelData data) {
+        public @NotNull TextureAtlasSprite getParticleIcon(@NotNull ModelData data) {
             return bakedSides.get(MaterialSide.SIDE)
                     .stream()
                     .findFirst()
@@ -326,22 +348,29 @@ public class FrameableModel implements IModelGeometry<FrameableModel> {
                             Minecraft.getInstance()
                                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                                     .apply(MissingTextureAtlasSprite.getLocation()) :
-                            parent.getParticleIcon(EmptyModelData.INSTANCE));
+                            parent.getParticleIcon(ModelData.EMPTY));
         }
 
-        @Nonnull
         @Override
         public ItemOverrides getOverrides() {
             return overrides;
         }
 
-        @NotNull
+        @SuppressWarnings("deprecation") // shut UP
         @Override
-        public BakedModel handlePerspective(@NotNull ItemTransforms.TransformType cameraTransformType, @NotNull PoseStack mat) {
-            if (parent != null) parent.handlePerspective(cameraTransformType, mat);
-            return this;
+        public ItemTransforms getTransforms() {
+            if (parent != null) return parent.getTransforms();
+            return ItemTransforms.NO_TRANSFORMS;
         }
 
-    }
+        @Override
+        public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
+            return ChunkRenderTypeSet.of(MaterialSide.getRenderTypes());
+        }
 
+        @Override
+        public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
+            return fabulous ? itemRenderTypesFabulous : itemRenderTypes;
+        }
+    }
 }

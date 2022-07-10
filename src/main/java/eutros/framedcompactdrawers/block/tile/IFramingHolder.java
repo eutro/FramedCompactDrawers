@@ -5,9 +5,7 @@ import com.jaquadro.minecraft.storagedrawers.block.tile.tiledata.BlockEntityData
 import eutros.framedcompactdrawers.render.model.FrameableModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 
 public interface IFramingHolder {
 
@@ -38,14 +36,12 @@ public interface IFramingHolder {
         return compoundNBT;
     }
 
-    default IModelData getCustomModelData(IModelData data, IFramingHolder holder) {
-        if(data == EmptyModelData.INSTANCE) {
-            data = new ModelDataMap.Builder().build();
-        }
-        data.setData(FrameableModel.MaterialSide.SIDE.property, holder.getSide());
-        data.setData(FrameableModel.MaterialSide.TRIM.property, holder.getTrim());
-        data.setData(FrameableModel.MaterialSide.FRONT.property, holder.getFront());
-        return data;
+    default ModelData getCustomModelData(ModelData data, IFramingHolder holder) {
+        return data.derive()
+                .with(FrameableModel.MaterialSide.SIDE.property, holder.getSide())
+                .with(FrameableModel.MaterialSide.TRIM.property, holder.getTrim())
+                .with(FrameableModel.MaterialSide.FRONT.property, holder.getFront())
+                .build();
     }
 
     ItemStack getSide();

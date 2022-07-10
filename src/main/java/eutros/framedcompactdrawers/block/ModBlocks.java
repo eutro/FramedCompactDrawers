@@ -7,9 +7,6 @@ import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.block.tile.*;
 import eutros.framedcompactdrawers.item.ItemDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
-import eutros.framedcompactdrawers.render.RenderHelper;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +25,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
-
-import java.util.function.Predicate;
 
 public class ModBlocks {
 
@@ -99,22 +94,7 @@ public class ModBlocks {
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfFour), new ItemDrawersCustom(framedHalfFour, properties));
     }
 
-    public static void setRenderLayers() {
-        Predicate<RenderType> crf = RenderHelper::canRenderFrameable;
-        for (Block b : new Block[]{
-                framedCompactDrawer,
-                framedDrawerController,
-                framedSlave,
-                framedTrim,
-                framedFullOne,
-                framedFullTwo,
-                framedFullFour,
-                framedHalfOne,
-                framedHalfTwo,
-                framedHalfFour,
-        })
-            ItemBlockRenderTypes.setRenderLayer(b, crf);
-
+    public static void setGeometryData() {
         framedCompactDrawer.setGeometryData();
         for (BlockDrawersStandardCustom bdsc : new BlockDrawersStandardCustom[]{
                 framedFullOne,

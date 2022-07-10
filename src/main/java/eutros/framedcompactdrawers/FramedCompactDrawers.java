@@ -8,8 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -36,20 +35,12 @@ public class FramedCompactDrawers {
         }
     };
 
-    @SuppressWarnings("DanglingJavadoc") // I just want the link man
     public FramedCompactDrawers() {
         IEventBus eb = FMLJavaModLoadingContext.get().getModEventBus();
         eb.addListener(ModBlocks::registerBlocks);
         eb.addListener(ModBlocks::registerItems);
-        eb.addListener((ModelRegistryEvent evt) -> ModelLoaderRegistry.registerLoader(new ResourceLocation(FramedCompactDrawers.MOD_ID, "frameable"), new FrameableModelLoader()));
-        /**
-         * NB: StorageDrawers runs through ALL registered BlockDrawers instances and sets their render layers,
-         * so we have to replace it with our own later.
-         * @see com.jaquadro.minecraft.storagedrawers.client.ClientModBusSubscriber#clientSetup(FMLClientSetupEvent)
-         *
-         * The event is run in parallel so our only shot is to enqueue it.
-         */
-        eb.addListener((FMLClientSetupEvent evt) -> evt.enqueueWork(ModBlocks::setRenderLayers));
+        eb.addListener((RegisterGeometryLoaders evt) -> evt.register("frameable", new FrameableModelLoader()));
+        eb.addListener((FMLClientSetupEvent evt) -> ModBlocks.setGeometryData());
         eb.addListener((RegisterEvent event) -> {
             if (Registry.RECIPE_SERIALIZER_REGISTRY.equals(event.getRegistryKey())) {
                 ForgeRegistries.RECIPE_SERIALIZERS.register(new ResourceLocation(MOD_ID, "framing"), FramingRecipe.SERIALIZER);

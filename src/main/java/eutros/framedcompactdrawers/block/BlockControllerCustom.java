@@ -17,6 +17,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class BlockControllerCustom extends BlockController {
 
     public BlockControllerCustom(Properties properties) {

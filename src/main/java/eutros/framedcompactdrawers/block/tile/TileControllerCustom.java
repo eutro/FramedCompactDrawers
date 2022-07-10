@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.ticks.LevelTickAccess;
 import net.minecraft.world.ticks.TickPriority;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +35,7 @@ public class TileControllerCustom extends BlockEntityController implements IFram
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
+    public ModelData getModelData() {
         return getCustomModelData(super.getModelData(), this);
     }
 

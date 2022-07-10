@@ -12,9 +12,8 @@ import net.minecraft.client.renderer.block.model.BlockElementFace;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
-import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.ParameterizedType;
@@ -26,12 +25,7 @@ import java.util.stream.StreamSupport;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FrameableModelLoader implements IModelLoader<FrameableModel> {
-
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
-    }
-
+public class FrameableModelLoader implements IGeometryLoader<FrameableModel> {
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory())
             .registerTypeAdapter(Multimap.class, (JsonDeserializer<Multimap<?, ?>>) (json, typeOfT, context) -> {
@@ -107,8 +101,10 @@ public class FrameableModelLoader implements IModelLoader<FrameableModel> {
             .create();
 
     @Override
-    public FrameableModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-        return gson.fromJson(modelContents.get("frameable"), FrameableModel.class);
+    public FrameableModel read(JsonObject modelContents, JsonDeserializationContext deserializationContext) {
+        FrameableModel model = gson.fromJson(modelContents.get("frameable"), FrameableModel.class);
+        model.parent = gson.fromJson(modelContents.get("parent"), ResourceLocation.class);
+        return model;
     }
 
 }

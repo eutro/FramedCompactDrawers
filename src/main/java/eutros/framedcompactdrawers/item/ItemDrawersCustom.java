@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
 
+import net.minecraft.world.item.Item.Properties;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemDrawersCustom extends ItemDrawers {

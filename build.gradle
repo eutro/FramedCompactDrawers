@@ -61,7 +61,8 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    implementation fg.deobf("curse.maven:StorageDrawers-223852:${storagedrawers_version}")
+    // implementation fg.deobf("curse.maven:StorageDrawers-223852:${storagedrawers_version}")
+    implementation files("$rootDir/libs/StorageDrawers-1.19-11.0.0-deobf.jar")
 }
 
 tasks.withType(JavaCompile).configureEach {
