@@ -61,8 +61,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    // implementation fg.deobf("curse.maven:StorageDrawers-223852:${storagedrawers_version}")
-    implementation files("$rootDir/libs/StorageDrawers-1.19-11.0.0-deobf.jar")
+    implementation fg.deobf("curse.maven:StorageDrawers-223852:${storagedrawers_version}")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -74,10 +73,9 @@ jar {
     manifest {
         attributes([
                 "Specification-Title"     : "${mod_id}",
-                "Specification-Vendor"    : "Eutros",
+                "Specification-Vendor"    : "Eutro",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${project.version}",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

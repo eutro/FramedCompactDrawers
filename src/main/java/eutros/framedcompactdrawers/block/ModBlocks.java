@@ -121,7 +121,7 @@ public class ModBlocks {
         @SubscribeEvent
         public void registerTiles(RegisterEvent evt) {
             if (!Registry.BLOCK_ENTITY_TYPE_REGISTRY.equals(evt.getRegistryKey())) return;
-            IForgeRegistry<BlockEntityType<?>> r = ForgeRegistries.BLOCK_ENTITIES;
+            IForgeRegistry<BlockEntityType<?>> r = ForgeRegistries.BLOCK_ENTITY_TYPES;
 
             fractionalDrawers3 = registerTile(r, TileCompDrawersCustom.Slot3::new, framedCompactDrawer);
             controllerCustom = registerTile(r, TileControllerCustom::new, framedDrawerController);
@@ -133,9 +133,11 @@ public class ModBlocks {
             standardDrawers4 = registerTile(r, TileDrawersStandardCustom.Slot4::new, framedFullFour, framedHalfFour);
         }
 
-        private <T extends BlockEntity> BlockEntityType<T> registerTile(IForgeRegistry<BlockEntityType<?>> registry,
-                                                                        BlockEntityType.BlockEntitySupplier<T> supplier,
-                                                                        Block... blocks) {
+        private <T extends BlockEntity> BlockEntityType<T> registerTile(
+                IForgeRegistry<BlockEntityType<?>> registry,
+                BlockEntityType.BlockEntitySupplier<T> supplier,
+                Block... blocks
+        ) {
             @SuppressWarnings("ConstantConditions")
             BlockEntityType<T> type = BlockEntityType.Builder
                     .of(supplier, blocks)
