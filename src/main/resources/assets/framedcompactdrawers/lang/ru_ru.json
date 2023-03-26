@@ -1,4 +1,13 @@
 {
-  "block.framedcompactdrawers.framed_compact_drawer": "Обрамлённый Уплотняющий Ящик",
-  "itemGroup.framed_compacting_drawers": "Обрамлённый Уплотняющий Ящик"
+  "block.framedcompactdrawers.framed_compact_drawer": "Обрамленный объёмный ящик",
+  "block.framedcompactdrawers.framed_drawer_controller": "Обрамленный регулятор ящика",
+  "block.framedcompactdrawers.framed_slave": "Обрамленный регулятор-получатель",
+  "block.framedcompactdrawers.framed_trim": "Обрамленный декоративный элемент",
+  "block.framedcompactdrawers.framed_full_one": "Обрамленный ящик",
+  "block.framedcompactdrawers.framed_full_two": "Обрамленный ящики 1х2",
+  "block.framedcompactdrawers.framed_full_four": "Обрамленный ящики 2х2",
+  "block.framedcompactdrawers.framed_half_one": "Обрамленная половина ящика",
+  "block.framedcompactdrawers.framed_half_two": "Обрамленная половина ящиков 1х2",
+  "block.framedcompactdrawers.framed_half_four": "Обрамленная половина ящиков 2х2",
+  "itemGroup.framed_compacting_drawers": "Framed Compacting Drawers"
 }
