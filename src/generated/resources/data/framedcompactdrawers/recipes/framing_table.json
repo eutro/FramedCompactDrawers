@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "framing_table",
+  "key": {
+    "T": {
+      "tag": "framedcompactdrawers:trim"
+    }
+  },
+  "pattern": [
+    "TTT",
+    "T T"
+  ],
+  "result": {
+    "item": "framedcompactdrawers:framing_table"
+  }
+}

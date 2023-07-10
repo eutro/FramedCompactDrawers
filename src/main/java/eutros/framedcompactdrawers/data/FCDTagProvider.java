@@ -29,19 +29,30 @@ public class FCDTagProvider {
         public void addTags() {
             tag(ModTags.Blocks.FRAME_DOUBLE).add(framedTrim);
             tag(ModTags.Blocks.FRAME_TRIPLE).add(
-                            framedCompactDrawer,
-                            framedDrawerController,
-                            framedSlave,
-                            framedFullOne,
-                            framedFullTwo,
-                            framedFullFour,
-                            framedHalfOne,
-                            framedHalfTwo,
-                            framedHalfFour
-                    );
+                    framedCompactDrawer,
+                    framedDrawerController,
+                    framedSlave,
+                    framedFullOne,
+                    framedFullTwo,
+                    framedFullFour,
+                    framedHalfOne,
+                    framedHalfTwo,
+                    framedHalfFour
+            );
             tag(ModTags.Blocks.COMPACTING).add(ModBlocks.COMPACTING_DRAWERS_3.get());
             tag(ModTags.Blocks.SLAVE).add(ModBlocks.CONTROLLER_SLAVE.get());
             tag(ModTags.Blocks.CONTROLLER).add(ModBlocks.CONTROLLER.get());
+            tag(ModTags.Blocks.TRIM).add(
+                    ModBlocks.OAK_TRIM.get(),
+                    ModBlocks.SPRUCE_TRIM.get(),
+                    ModBlocks.BIRCH_TRIM.get(),
+                    ModBlocks.JUNGLE_TRIM.get(),
+                    ModBlocks.ACACIA_TRIM.get(),
+                    ModBlocks.DARK_OAK_TRIM.get(),
+                    ModBlocks.CRIMSON_TRIM.get(),
+                    ModBlocks.WARPED_TRIM.get(),
+                    framedTrim
+            );
             tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_AXE).add(
                     framedTrim,
                     framedCompactDrawer,
@@ -52,7 +63,8 @@ public class FCDTagProvider {
                     framedFullFour,
                     framedHalfOne,
                     framedHalfTwo,
-                    framedHalfFour
+                    framedHalfFour,
+                    framingTable
             );
         }
 
@@ -71,6 +83,7 @@ public class FCDTagProvider {
             copy(ModTags.Blocks.COMPACTING, ModTags.Items.COMPACTING);
             copy(ModTags.Blocks.SLAVE, ModTags.Items.SLAVE);
             copy(ModTags.Blocks.CONTROLLER, ModTags.Items.CONTROLLER);
+            copy(ModTags.Blocks.TRIM, ModTags.Items.TRIM);
         }
 
     }

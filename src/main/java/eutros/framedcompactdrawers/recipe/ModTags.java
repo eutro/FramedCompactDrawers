@@ -18,6 +18,7 @@ public interface ModTags {
         TagKey<Item> COMPACTING = tag("compacting");
         TagKey<Item> SLAVE = tag("slave");
         TagKey<Item> CONTROLLER = tag("controller");
+        TagKey<Item> TRIM = tag("trim");
 
         static TagKey<Item> tag(String name) {
             return ItemTags.create(new ResourceLocation(FramedCompactDrawers.MOD_ID, name));
@@ -33,6 +34,7 @@ public interface ModTags {
         TagKey<Block> COMPACTING = tag("compacting");
         TagKey<Block> SLAVE = tag("slave");
         TagKey<Block> CONTROLLER = tag("controller");
+        TagKey<Block> TRIM = tag("trim");
 
         static TagKey<Block> tag(String name) {
             return BlockTags.create(new ResourceLocation(FramedCompactDrawers.MOD_ID, name));

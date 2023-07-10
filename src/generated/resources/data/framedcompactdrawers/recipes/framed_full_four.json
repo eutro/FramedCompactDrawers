@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "framed_drawers",
-  "pattern": [
-    "C/C",
-    "///",
-    "C/C"
-  ],
   "key": {
     "/": {
       "tag": "forge:rods/wooden"
@@ -14,8 +9,13 @@
       "tag": "forge:chests/wooden"
     }
   },
+  "pattern": [
+    "C/C",
+    "///",
+    "C/C"
+  ],
   "result": {
-    "item": "framedcompactdrawers:framed_full_four",
-    "count": 4
+    "count": 4,
+    "item": "framedcompactdrawers:framed_full_four"
   }
 }

@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "framedcompactdrawers:framed_trim",
     "framedcompactdrawers:framed_compact_drawer",
@@ -10,6 +9,7 @@
     "framedcompactdrawers:framed_full_four",
     "framedcompactdrawers:framed_half_one",
     "framedcompactdrawers:framed_half_two",
-    "framedcompactdrawers:framed_half_four"
+    "framedcompactdrawers:framed_half_four",
+    "framedcompactdrawers:framing_table"
   ]
 }

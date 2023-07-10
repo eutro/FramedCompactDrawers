@@ -2,6 +2,7 @@ package eutros.framedcompactdrawers.data;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
+import eutros.framedcompactdrawers.block.BlockFramingTable;
 import eutros.framedcompactdrawers.block.ModBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.BlockLoot;
@@ -54,6 +55,10 @@ public class FCDLootTableProvider extends LootTableProvider {
                                         .copy("MatF", "MatF")
                                         .copy("MatT", "MatT")));
             }
+            consumer.accept(ModBlocks.framingTable.getLootTable(),
+                    createSinglePropConditionTable(ModBlocks.framingTable,
+                            BlockFramingTable.SIDE,
+                            BlockFramingTable.TableSide.RIGHT));
         }
 
     }

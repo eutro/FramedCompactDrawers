@@ -16,6 +16,7 @@ public class FramedCompactDrawersDataGenerator {
         ExistingFileHelper efh = evt.getExistingFileHelper();
         gen.addProvider(evt.includeServer(), new FCDLootTableProvider(gen));
         gen.addProvider(evt.includeServer(), new FCDRecipeProvider(gen));
+        FCDModelsProvider.register(gen, efh);
         FCDTagProvider.register(evt, gen, efh);
     }
 

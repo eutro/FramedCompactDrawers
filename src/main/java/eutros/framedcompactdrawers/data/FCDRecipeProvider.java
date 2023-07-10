@@ -118,21 +118,24 @@ public class FCDRecipeProvider extends RecipeProvider {
             srb.save(consumer);
         }
 
+        ShapedRecipeBuilder
+                .shaped(ModBlocks.framingTable)
+                .pattern("TTT")
+                .pattern("T T")
+                .define('T', ModTags.Items.TRIM)
+                .unlockedBy("has_trims", has(ModTags.Items.TRIM))
+                .group("framing_table")
+                .save(consumer);
+
         consumer.accept(new FinishedFramingRecipe("frame_three", Ingredient.of(ModTags.Items.FRAME_TRIPLE), true));
         consumer.accept(new FinishedFramingRecipe("frame_two", Ingredient.of(ModTags.Items.FRAME_DOUBLE), false));
     }
 
-    private static class FinishedFramingRecipe implements FinishedRecipe {
-
-        private final String path;
-        private final Ingredient ingredient;
-        private final boolean includeFront;
-
-        public FinishedFramingRecipe(String path, Ingredient ingredient, boolean includeFront) {
-            this.path = path;
-            this.ingredient = ingredient;
-            this.includeFront = includeFront;
-        }
+    private record FinishedFramingRecipe(
+            String path,
+            Ingredient ingredient,
+            boolean includeFront
+    ) implements FinishedRecipe {
 
         @Override
         public void serializeRecipeData(JsonObject json) {
@@ -157,7 +160,6 @@ public class FCDRecipeProvider extends RecipeProvider {
         }
 
         @Override
-        @Nullable
         public ResourceLocation getAdvancementId() {
             return new ResourceLocation("");
         }

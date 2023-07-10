@@ -1,46 +1,41 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "framedcompactdrawers:framed_half_one"
-    ]
-  },
   "criteria": {
     "has_chests_wooden": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:chests/wooden"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_sticks": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:rods/wooden"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "framedcompactdrawers:framed_half_one"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     },
     "has_wooden_slabs": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "minecraft:wooden_slabs"
           }
         ]
-      }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "framedcompactdrawers:framed_half_one"
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
@@ -50,5 +45,10 @@
       "has_wooden_slabs",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "framedcompactdrawers:framed_half_one"
+    ]
+  }
 }

@@ -6,7 +6,9 @@ import com.jaquadro.minecraft.storagedrawers.client.renderer.BlockEntityDrawersR
 import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.block.tile.*;
 import eutros.framedcompactdrawers.item.ItemDrawersCustom;
+import eutros.framedcompactdrawers.item.ItemFramingTable;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
+import eutros.framedcompactdrawers.render.FramingTableRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +41,8 @@ public class ModBlocks {
     public static BlockDrawersStandardCustom framedHalfOne;
     public static BlockDrawersStandardCustom framedHalfTwo;
     public static BlockDrawersStandardCustom framedHalfFour;
+
+    public static BlockFramingTable framingTable;
 
     public static void registerBlocks(RegisterEvent event) {
         if (!Registry.BLOCK_REGISTRY.equals(event.getRegistryKey())) return;
@@ -73,6 +77,9 @@ public class ModBlocks {
                 (framedHalfTwo = new BlockDrawersStandardCustom(2, true, properties)));
         r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_half_four"),
                 (framedHalfFour = new BlockDrawersStandardCustom(4, true, properties)));
+
+        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framing_table"),
+                (framingTable = new BlockFramingTable(properties)));
     }
 
     public static void registerItems(RegisterEvent event) {
@@ -92,6 +99,8 @@ public class ModBlocks {
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfOne), new ItemDrawersCustom(framedHalfOne, properties));
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfTwo), new ItemDrawersCustom(framedHalfTwo, properties));
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfFour), new ItemDrawersCustom(framedHalfFour, properties));
+
+        r.register(ForgeRegistries.BLOCKS.getKey(framingTable), new ItemFramingTable(framingTable, properties));
     }
 
     public static void setGeometryData() {
@@ -117,6 +126,7 @@ public class ModBlocks {
         public static BlockEntityType<TileDrawersStandardCustom.Slot1> standardDrawers1;
         public static BlockEntityType<TileDrawersStandardCustom.Slot2> standardDrawers2;
         public static BlockEntityType<TileDrawersStandardCustom.Slot4> standardDrawers4;
+        public static BlockEntityType<TileFramingTable> framingTable;
 
         @SubscribeEvent
         public void registerTiles(RegisterEvent evt) {
@@ -131,6 +141,8 @@ public class ModBlocks {
             standardDrawers1 = registerTile(r, TileDrawersStandardCustom.Slot1::new, framedFullOne, framedHalfOne);
             standardDrawers2 = registerTile(r, TileDrawersStandardCustom.Slot2::new, framedFullTwo, framedHalfTwo);
             standardDrawers4 = registerTile(r, TileDrawersStandardCustom.Slot4::new, framedFullFour, framedHalfFour);
+
+            framingTable = registerTile(r, TileFramingTable::new, ModBlocks.framingTable);
         }
 
         private <T extends BlockEntity> BlockEntityType<T> registerTile(
@@ -156,6 +168,8 @@ public class ModBlocks {
                     standardDrawers4
             ))
                 evt.registerBlockEntityRenderer(drawer, BlockEntityDrawersRenderer::new);
+
+            evt.registerBlockEntityRenderer(framingTable, FramingTableRenderer::new);
         }
 
     }
@@ -172,6 +186,7 @@ public class ModBlocks {
                 framedHalfOne,
                 framedHalfTwo,
                 framedHalfFour,
+                framingTable,
         })
             items.add(new ItemStack(block));
     }

@@ -1,7 +1,7 @@
 {
   "type": "framedcompactdrawers:framing",
+  "includeFront": true,
   "ingredient": {
     "tag": "framedcompactdrawers:frame_triple"
-  },
-  "includeFront": true
+  }
 }
