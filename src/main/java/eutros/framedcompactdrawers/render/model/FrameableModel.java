@@ -7,8 +7,6 @@ import com.google.common.collect.Multimap;
 import com.jaquadro.minecraft.storagedrawers.api.storage.IDrawerAttributes;
 import com.jaquadro.minecraft.storagedrawers.api.storage.attribute.LockAttribute;
 import com.jaquadro.minecraft.storagedrawers.block.tile.BlockEntityDrawers;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,7 +14,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,7 @@ import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -93,12 +94,11 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
         public BlockElementFace face;
         public Condition condition = Condition.ALWAYS;
 
-        public String getRaw() {
-            return face.texture;
-        }
-
-        public Baked baked(IGeometryBakingContext context, ModelState state, ResourceLocation modelLocation) {
-            return new Baked(context, state, modelLocation);
+        public Baked baked(IGeometryBakingContext context,
+                           Function<Material, TextureAtlasSprite> spriteGetter,
+                           ModelState state,
+                           ResourceLocation modelLocation) {
+            return new Baked(context, spriteGetter, state, modelLocation);
         }
 
         public class Baked {
@@ -108,14 +108,18 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
                     CacheBuilder.newBuilder()
                             .expireAfterAccess(60, TimeUnit.SECONDS)
                             .build();
-            public Material rawMaterial;
+            private final TextureAtlasSprite rawSprite;
 
             public FramingCandidate getEnclosing() {
                 return FramingCandidate.this;
             }
 
-            private Baked(IGeometryBakingContext context, ModelState state, ResourceLocation modelLocation) {
-                rawMaterial = context.getMaterial(face.texture);
+            private Baked(IGeometryBakingContext context,
+                          Function<Material, TextureAtlasSprite> spriteGetter,
+                          ModelState state,
+                          ResourceLocation modelLocation) {
+                Material rawMaterial = context.getMaterial(face.texture);
+                rawSprite = spriteGetter.apply(rawMaterial);
                 face.uv.setMissingUv(getFaceUvs(direction));
                 quadSupplier = sprite -> FACE_BAKERY.bakeQuad(start, end, face, sprite, direction, state, null, true, modelLocation);
             }
@@ -145,7 +149,7 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
 
             public TextureAtlasSprite getSpriteOrRaw(@Nullable ItemStack stack) {
                 return stack == null || stack.isEmpty() ?
-                        rawMaterial.sprite() :
+                        rawSprite :
                         getSprite(stack);
             }
 
@@ -183,19 +187,15 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
     }
 
     @Override
-    public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        return materials.values()
-                .stream()
-                .map(FramingCandidate::getRaw)
-                .map(owner::getMaterial)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+    public BakedModel bake(IGeometryBakingContext context,
+                           ModelBaker baker,
+                           Function<Material, TextureAtlasSprite> spriteGetter,
+                           ModelState modelState,
+                           ItemOverrides overrides,
+                           ResourceLocation modelLocation) {
         BakedModel parent = null;
         if (this.parent != null) {
-            parent = bakery.bake(this.parent, modelState, spriteGetter);
+            parent = baker.bake(this.parent, modelState, spriteGetter);
         }
         HashMultimap<MaterialSide, FramingCandidate.Baked> bakedSides = materials.entries()
                 .stream()
@@ -203,14 +203,14 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
                         (map, entry) ->
                                 map.put(entry.getKey(),
                                         entry.getValue()
-                                                .baked(context, modelState, modelLocation)),
+                                                .baked(context, spriteGetter, modelState, modelLocation)),
                         (first, second) -> {
                             first.putAll(second);
                             return first;
                         },
                         Collector.Characteristics.UNORDERED));
         for (ResourceLocation rl : inherits) {
-            BakedModel baked = bakery.bake(rl, modelState, spriteGetter);
+            BakedModel baked = baker.bake(rl, modelState, spriteGetter);
             if (baked instanceof Baked) {
                 for (Map.Entry<MaterialSide, FramingCandidate.Baked> entry : ((Baked) baked).bakedSides.entries()) {
                     bakedSides.put(entry.getKey(), entry.getValue());
@@ -333,6 +333,7 @@ public class FrameableModel implements IUnbakedGeometry<FrameableModel> {
             return false;
         }
 
+        @SuppressWarnings("deprecated")
         @Override
         public TextureAtlasSprite getParticleIcon() {
             return getParticleIcon(ModelData.EMPTY);

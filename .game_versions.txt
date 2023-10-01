@@ -1,0 +1,11 @@
+7498,8326,9971,9990,10236
+
+(Lines beyond the first are ignored by the CI)
+
+7498: Forge
+
+8326: Java 17
+
+9971: 1.20
+9990: 1.20.1
+10236: 1.20.2

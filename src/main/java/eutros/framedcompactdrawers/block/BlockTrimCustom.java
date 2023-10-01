@@ -15,8 +15,6 @@ import net.minecraft.world.phys.HitResult;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 @ParametersAreNonnullByDefault
 public class BlockTrimCustom extends BlockTrim implements EntityBlock {
 

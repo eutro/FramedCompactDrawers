@@ -7,9 +7,10 @@ import eutros.framedcompactdrawers.FramedCompactDrawers;
 import eutros.framedcompactdrawers.block.tile.*;
 import eutros.framedcompactdrawers.item.ItemDrawersCustom;
 import eutros.framedcompactdrawers.item.ItemOtherCustom;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -25,6 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ModBlocks {
 
@@ -41,45 +42,45 @@ public class ModBlocks {
     public static BlockDrawersStandardCustom framedHalfFour;
 
     public static void registerBlocks(RegisterEvent event) {
-        if (!Registry.BLOCK_REGISTRY.equals(event.getRegistryKey())) return;
+        if (!Registries.BLOCK.equals(event.getRegistryKey())) return;
         IForgeRegistry<Block> r = ForgeRegistries.BLOCKS;
         BlockBehaviour.Properties properties = BlockBehaviour.Properties
-                .of(Material.WOOD)
-                .strength(3.0F, 5.0F)
+                .of()
+                .strength(3.0F, 4.0F)
                 .sound(SoundType.WOOD)
                 .isSuffocating((_1, _2, _3) -> false)
                 .isRedstoneConductor((_1, _2, _3) -> false)
                 // it should be possible to do occlusion conditionally, but I tried briefly and gave up
                 .noOcclusion();
 
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_compact_drawer"),
+        r.register(res("framed_compact_drawer"),
                 (framedCompactDrawer = new BlockCompDrawersCustom(properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_drawer_controller"),
+        r.register(res("framed_drawer_controller"),
                 (framedDrawerController = new BlockControllerCustom(properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_slave"),
+        r.register(res("framed_slave"),
                 (framedSlave = new BlockSlaveCustom(properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_trim"),
+        r.register(res("framed_trim"),
                 (framedTrim = new BlockTrimCustom(properties)));
 
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_full_one"),
+        r.register(res("framed_full_one"),
                 (framedFullOne = new BlockDrawersStandardCustom(1, false, properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_full_two"),
+        r.register(res("framed_full_two"),
                 (framedFullTwo = new BlockDrawersStandardCustom(2, false, properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_full_four"),
+        r.register(res("framed_full_four"),
                 (framedFullFour = new BlockDrawersStandardCustom(4, false, properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_half_one"),
+        r.register(res("framed_half_one"),
                 (framedHalfOne = new BlockDrawersStandardCustom(1, true, properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_half_two"),
+        r.register(res("framed_half_two"),
                 (framedHalfTwo = new BlockDrawersStandardCustom(2, true, properties)));
-        r.register(new ResourceLocation(FramedCompactDrawers.MOD_ID, "framed_half_four"),
+        r.register(res("framed_half_four"),
                 (framedHalfFour = new BlockDrawersStandardCustom(4, true, properties)));
     }
 
     public static void registerItems(RegisterEvent event) {
-        if (!Registry.ITEM_REGISTRY.equals(event.getRegistryKey())) return;
+        if (!Registries.ITEM.equals(event.getRegistryKey())) return;
         IForgeRegistry<Item> r = ForgeRegistries.ITEMS;
 
-        Item.Properties properties = new Item.Properties().tab(FramedCompactDrawers.CREATIVE_TAB);
+        Item.Properties properties = new Item.Properties();
 
         r.register(ForgeRegistries.BLOCKS.getKey(framedCompactDrawer), new ItemDrawersCustom(framedCompactDrawer, properties));
         r.register(ForgeRegistries.BLOCKS.getKey(framedDrawerController), new ItemOtherCustom(framedDrawerController, properties));
@@ -92,6 +93,23 @@ public class ModBlocks {
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfOne), new ItemDrawersCustom(framedHalfOne, properties));
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfTwo), new ItemDrawersCustom(framedHalfTwo, properties));
         r.register(ForgeRegistries.BLOCKS.getKey(framedHalfFour), new ItemDrawersCustom(framedHalfFour, properties));
+    }
+
+    public static void registerCreativeTab(RegisterEvent event) {
+        event.register(Registries.CREATIVE_MODE_TAB, helper -> helper.register(
+                res(FramedCompactDrawers.MOD_ID),
+                CreativeModeTab.builder()
+                        .icon(() -> new ItemStack(framedCompactDrawer))
+                        .title(Component.translatable("itemGroup.framed_compacting_drawers"))
+                        .displayItems((params, output) -> {
+                            fill(output);
+                        })
+                        .build()));
+    }
+
+    @NotNull
+    private static ResourceLocation res(String name) {
+        return new ResourceLocation(FramedCompactDrawers.MOD_ID, name);
     }
 
     public static void setGeometryData() {
@@ -120,7 +138,7 @@ public class ModBlocks {
 
         @SubscribeEvent
         public void registerTiles(RegisterEvent evt) {
-            if (!Registry.BLOCK_ENTITY_TYPE_REGISTRY.equals(evt.getRegistryKey())) return;
+            if (!Registries.BLOCK_ENTITY_TYPE.equals(evt.getRegistryKey())) return;
             IForgeRegistry<BlockEntityType<?>> r = ForgeRegistries.BLOCK_ENTITY_TYPES;
 
             fractionalDrawers3 = registerTile(r, TileCompDrawersCustom.Slot3::new, framedCompactDrawer);
@@ -160,7 +178,7 @@ public class ModBlocks {
 
     }
 
-    public static void fill(NonNullList<ItemStack> items) {
+    public static void fill(CreativeModeTab.Output out) {
         for (Block block : new Block[]{
                 framedCompactDrawer,
                 framedDrawerController,
@@ -173,7 +191,7 @@ public class ModBlocks {
                 framedHalfTwo,
                 framedHalfFour,
         })
-            items.add(new ItemStack(block));
+            out.accept(block);
     }
 
 }

@@ -1,11 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "framed_drawers",
-  "pattern": [
-    "/X/",
-    "X/X",
-    "/X/"
-  ],
   "key": {
     "/": {
       "tag": "forge:rods/wooden"
@@ -14,8 +10,14 @@
       "tag": "minecraft:planks"
     }
   },
+  "pattern": [
+    "/X/",
+    "X/X",
+    "/X/"
+  ],
   "result": {
-    "item": "framedcompactdrawers:framed_trim",
-    "count": 4
-  }
+    "count": 4,
+    "item": "framedcompactdrawers:framed_trim"
+  },
+  "show_notification": true
 }

@@ -1,9 +1,9 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_side": "framedcompactdrawers:blocks/raw_side",
-    "raw_top_bottom": "framedcompactdrawers:blocks/slave_raw_top_bottom",
-    "overlay": "framedcompactdrawers:blocks/overlay/shading_side"
+    "raw_side": "framedcompactdrawers:block/raw_side",
+    "raw_top_bottom": "framedcompactdrawers:block/slave_raw_top_bottom",
+    "overlay": "framedcompactdrawers:block/overlay/shading_side"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {

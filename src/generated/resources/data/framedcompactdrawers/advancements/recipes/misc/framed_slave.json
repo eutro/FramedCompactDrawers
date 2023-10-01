@@ -1,36 +1,31 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "framedcompactdrawers:framed_drawer_controller"
-    ]
-  },
   "criteria": {
     "has_framedcompactdrawers": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "framedcompactdrawers:controller"
+            "tag": "framedcompactdrawers:slave"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_sticks": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "tag": "forge:rods/wooden"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "framedcompactdrawers:framed_drawer_controller"
-      }
+        "recipe": "framedcompactdrawers:framed_slave"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -39,5 +34,11 @@
       "has_sticks",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "framedcompactdrawers:framed_slave"
+    ]
+  },
+  "sends_telemetry_event": false
 }

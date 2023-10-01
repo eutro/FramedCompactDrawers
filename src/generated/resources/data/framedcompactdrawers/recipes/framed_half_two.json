@@ -1,11 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "framed_drawers",
-  "pattern": [
-    "/C/",
-    "/S/",
-    "/C/"
-  ],
   "key": {
     "/": {
       "tag": "forge:rods/wooden"
@@ -17,8 +13,14 @@
       "tag": "minecraft:wooden_slabs"
     }
   },
+  "pattern": [
+    "/C/",
+    "/S/",
+    "/C/"
+  ],
   "result": {
-    "item": "framedcompactdrawers:framed_half_two",
-    "count": 2
-  }
+    "count": 2,
+    "item": "framedcompactdrawers:framed_half_two"
+  },
+  "show_notification": true
 }

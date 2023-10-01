@@ -1,11 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "group": "framed_drawers",
-  "pattern": [
-    "///",
-    "/D/",
-    "///"
-  ],
   "key": {
     "/": {
       "tag": "forge:rods/wooden"
@@ -14,7 +10,13 @@
       "tag": "framedcompactdrawers:compacting"
     }
   },
+  "pattern": [
+    "///",
+    "/D/",
+    "///"
+  ],
   "result": {
     "item": "framedcompactdrawers:framed_compact_drawer"
-  }
+  },
+  "show_notification": true
 }

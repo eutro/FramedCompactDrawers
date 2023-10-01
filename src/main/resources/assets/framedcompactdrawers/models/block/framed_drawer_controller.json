@@ -1,10 +1,10 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_front": "framedcompactdrawers:blocks/drawer_controller_raw_front",
-    "shading_face": "framedcompactdrawers:blocks/overlay/shading_controller_face",
-    "shading_front_trim": "framedcompactdrawers:blocks/overlay/shading_controller_trim",
-    "handle": "framedcompactdrawers:blocks/overlay/handle"
+    "raw_front": "framedcompactdrawers:block/drawer_controller_raw_front",
+    "shading_face": "framedcompactdrawers:block/overlay/shading_controller_face",
+    "shading_front_trim": "framedcompactdrawers:block/overlay/shading_controller_bold_trim",
+    "handle": "framedcompactdrawers:block/overlay/handle"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {

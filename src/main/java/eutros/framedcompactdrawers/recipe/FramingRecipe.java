@@ -3,15 +3,18 @@ package eutros.framedcompactdrawers.recipe;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,14 +30,14 @@ public class FramingRecipe extends CustomRecipe {
     final boolean includeFront;
 
     public FramingRecipe(ResourceLocation idIn, Ingredient ingredient, boolean includeFront) {
-        super(idIn);
+        super(idIn, CraftingBookCategory.MISC);
         this.ingredient = ingredient;
         this.includeFront = includeFront;
     }
 
     @Override
     public boolean matches(CraftingContainer inv, Level worldIn) {
-        return !assemble(inv).isEmpty();
+        return !assemble(inv, null).isEmpty();
     }
 
     private static CompoundTag materialNbt(ItemStack stack) {
@@ -46,7 +49,7 @@ public class FramingRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, @Nullable RegistryAccess access) {
         int drawerIndex = -1;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             if (ingredient.test(inv.getItem(i))) {

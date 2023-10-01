@@ -1,7 +1,7 @@
 {
   "parent": "framedcompactdrawers:block/framed_compact_drawer",
   "textures": {
-    "raw_front": "framedcompactdrawers:blocks/drawers_comp_raw_open_1",
-    "overlay": "framedcompactdrawers:blocks/overlay/open_1"
+    "raw_front": "framedcompactdrawers:block/drawers_comp_raw_open_1",
+    "overlay": "framedcompactdrawers:block/overlay/open_1"
   }
 }

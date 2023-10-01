@@ -8,7 +8,9 @@ import eutros.framedcompactdrawers.recipe.FramingRecipe;
 import eutros.framedcompactdrawers.recipe.ModTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -31,18 +33,18 @@ import java.util.function.Consumer;
 @MethodsReturnNonnullByDefault
 public class FCDRecipeProvider extends RecipeProvider {
 
-    public FCDRecipeProvider(DataGenerator generatorIn) {
-        super(generatorIn);
+    public FCDRecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         for (Pair<? extends Block, TagKey<Item>> pair : ImmutableList.of(
                 Pair.of(ModBlocks.framedCompactDrawer, ModTags.Items.COMPACTING),
                 Pair.of(ModBlocks.framedDrawerController, ModTags.Items.CONTROLLER),
                 Pair.of(ModBlocks.framedSlave, ModTags.Items.SLAVE)
         )) {
-            ShapedRecipeBuilder.shaped(pair.getLeft())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, pair.getLeft())
                     .pattern("///")
                     .pattern("/D/")
                     .pattern("///")
@@ -55,7 +57,7 @@ public class FCDRecipeProvider extends RecipeProvider {
                     .save(consumer);
         }
 
-        ShapedRecipeBuilder.shaped(ModBlocks.framedTrim, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.framedTrim, 4)
                 .pattern("/X/")
                 .pattern("X/X")
                 .pattern("/X/")
@@ -100,7 +102,7 @@ public class FCDRecipeProvider extends RecipeProvider {
                 })
         )) {
             ShapedRecipeBuilder srb = ShapedRecipeBuilder
-                    .shaped(triple.getLeft(), triple.getMiddle())
+                    .shaped(RecipeCategory.MISC, triple.getLeft(), triple.getMiddle())
                     .pattern(triple.getRight()[0])
                     .pattern(triple.getRight()[1])
                     .pattern(triple.getRight()[2])

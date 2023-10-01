@@ -3,7 +3,6 @@ package eutros.framedcompactdrawers.render.model;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.*;
-import com.mojang.math.Vector3f;
 import eutros.framedcompactdrawers.render.model.FrameableModel.FramingCandidate;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
@@ -14,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import org.joml.Vector3f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.ParameterizedType;

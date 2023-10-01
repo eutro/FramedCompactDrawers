@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "raw_side": "framedcompactdrawers:blocks/raw_side"
+    "raw_side": "framedcompactdrawers:block/raw_side"
   },
   "loader": "framedcompactdrawers:frameable",
   "frameable": {

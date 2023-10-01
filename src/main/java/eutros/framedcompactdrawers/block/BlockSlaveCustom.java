@@ -12,8 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-
 public class BlockSlaveCustom extends BlockSlave {
 
     public BlockSlaveCustom(Properties properties) {
