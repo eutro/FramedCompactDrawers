@@ -29,7 +29,7 @@ public class FCDLootTableProvider implements DataProvider {
     private final PackOutput.PathProvider pathProvider;
 
     public FCDLootTableProvider(PackOutput output) {
-        pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_tables/blocks");
+        pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "loot_tables");
     }
 
     @SuppressWarnings("rawtypes")
